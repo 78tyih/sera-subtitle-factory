@@ -8,7 +8,10 @@
     "build": "next build",
     "start": "next start -p 4310",
     "lint": "next lint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "export": "SSF_EXPORT=1 next build",
+    "static": "SSF_EXPORT=1 next build && node scripts/serve.mjs",
+    "serve:static": "node scripts/serve.mjs"
   },
   "dependencies": {
     "framer-motion": "^11.11.17",

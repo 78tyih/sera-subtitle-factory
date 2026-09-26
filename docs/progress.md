@@ -43,7 +43,11 @@
 - 12 张卡片，Hover 播放 1–2 秒动效，Style / Background / Motion / Highlight 四维过滤 + 搜索
 
 ## Current
-- Phase 1 验收全部通过（见下），等指令进入 Phase 2
+- Phase 1 验收全部通过，等指令进入 Phase 2
+- **交付形态修正**：新增静态导出（`npm run static` → `./out` + `scripts/serve.mjs` :4311）。
+  原因：Next 客户端路由 `/studio` 在静态预览面板里会被当作静态文件请求而 404；
+  改成静态导出后 `/studio/`、`/studio`、`/library/`、`/recipes/` 全部直出 HTML，任意静态环境可用。
+  `next.config.mjs` 用 `SSF_EXPORT=1` 切换 `output: 'export'` + `trailingSlash`。
 
 ## Problems（已解决）
 1. **Hydration mismatch（React #418）**：SSR 用估算宽度、客户端用 canvas 真实测量 →

@@ -10,15 +10,25 @@
 
 ```bash
 npm install
-npm run dev        # http://localhost:4310
+npm run dev        # 开发：http://localhost:4310
+```
+
+**推荐入口（静态版，零 SSR、可被任何静态预览面板 / CDN 打开）**
+
+```bash
+npm run static     # 导出 + 起静态服务器 → http://127.0.0.1:4311/studio/
 ```
 
 | 命令 | 作用 |
 |---|---|
 | `npm run dev` | 开发服务器 :4310 |
-| `npm run build` / `npm start` | 生产构建 / 启动 |
+| `npm run static` | 静态导出(./out) + 静态服务器 :4311 ← **推荐** |
+| `npm run export` | 只做静态导出（`./out`，可直接上传到任意静态托管） |
+| `npm run build` / `npm start` | 动态构建 / 启动 :4310 |
 | `npm run typecheck` | `tsc --noEmit` |
 | `npm run lint` | ESLint |
+
+> 说明：`npm run export` 与 `npm run build` 共用 `.next`，两者之间切换时需要重新跑对应命令。
 
 ## 四个页面
 

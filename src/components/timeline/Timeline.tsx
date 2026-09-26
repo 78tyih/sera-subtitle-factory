@@ -11,7 +11,12 @@ import { useI18n } from '@/lib/i18n';
 /** words of the selected transcript */
 export function useCurrentWords(): WordTimestamp[] {
   const transcriptId = useCaptionStore((s) => s.transcriptId);
-  return useMemo(() => getTranscript(transcriptId).words, [transcriptId]);
+  const customWords = useCaptionStore((s) => s.customWords);
+  void getTranscript;
+  return useMemo(
+    () => customWords ?? getTranscript(transcriptId).words,
+    [transcriptId, customWords]
+  );
 }
 
 /**

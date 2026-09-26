@@ -7,3 +7,5 @@ out-local/
 *.log
 assets/verify/
 tsconfig.tsbuildinfo
+.vercel
+.env*

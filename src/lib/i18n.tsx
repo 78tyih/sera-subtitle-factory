@@ -70,7 +70,7 @@ export const dict = {
     'home.subtitle': '单行字幕 · 语音驱动 · 数字自动放大 · 像设计 UI 一样设计字幕。',
     'home.cta.studio': '打开工作台',
     'home.cta.library': '浏览模板库',
-    'home.stat.presets': '12 个预设',
+    'home.stat.presets': '40 个预设',
     'home.stat.motions': '9 种逐词动效',
     'home.stat.singleLine': '单行锁定',
     'home.stat.numbers': '数字 ×1.20',
@@ -110,7 +110,7 @@ export const dict = {
     'studio.hoverHint': '悬停播放',
 
     /* inspector */
-    'inspector.presets': '预设 · 12',
+    'inspector.presets': '预设',
     'inspector.typography': '排版',
     'inspector.fontFamily': '字体',
     'inspector.weight': '字重',
@@ -184,7 +184,7 @@ export const dict = {
     /* library */
     'library.kicker': '字幕模板库',
     'library.title': '预设模板',
-    'library.subtitle': '12 个高质量预设 + 你保存的配方。鼠标悬停即播放 1–2 秒动效预览，点「使用此模板」直接进工作台继续改。',
+    'library.subtitle': '40 个预置样式（12 核心 + 28 扩展） + 你保存的配方。鼠标悬停即播放 1–2 秒动效预览，点「使用此模板」直接进工作台继续改。',
     'library.searchPlaceholder': '搜索：金融 / 黄色 / 弹跳 / 无背景 / 数据…',
     'library.filter.style': '风格',
     'library.filter.background': '背景',
@@ -206,6 +206,46 @@ export const dict = {
     'recipes.imported': '已导入 {n} 份配方',
     'recipes.importedOne': '已导入 1 份配方',
     'recipes.importFail': '该文件不是有效配方（需要单份配方或 { recipes: [...] } 打包）',
+
+    /* motion names (中文) */
+    'motion.none': '无',
+    'motion.highlight': '高亮',
+    'motion.pop': '弹跳',
+    'motion.bounce': '回弹',
+    'motion.float': '浮动',
+    'motion.scale': '缩放',
+    'motion.glow': '发光',
+    'motion.weightShift': '字重变化',
+    'motion.blurReveal': '模糊显现',
+    'motion.fade': '淡入',
+    'motion.slideUp': '上滑',
+    'motion.slideDown': '下滑',
+
+    /* export */
+    'export.title': '导出',
+    'export.json': 'JSON 配方',
+    'export.srt': 'SRT 字幕',
+    'export.vtt': 'WebVTT 字幕',
+    'export.ass': 'ASS 字幕',
+    'export.done': '已导出 {name}',
+
+    /* ai */
+    'ai.title': 'AI 字幕助手',
+    'ai.open': 'AI 助手',
+    'ai.placeholder': '说出你想要的字幕，例如：帮我写一句关于仓位管理的口播',
+    'ai.send': '发送',
+    'ai.thinking': '生成中…',
+    'ai.settings': '连接设置',
+    'ai.endpoint': '接口地址（OpenAI 兼容）',
+    'ai.key': 'API Key',
+    'ai.model': '模型',
+    'ai.save': '保存',
+    'ai.localMode': '本地模式（未配置 API Key，用内置规则生成）',
+    'ai.onlineMode': '已连接 {model}',
+    'ai.applyText': '用作字幕文本',
+    'ai.applyPreset': '套用推荐样式',
+    'ai.empty': '还没有对话。描述你要的场景，我来写字幕。',
+    'ai.hintPreset': '推荐样式',
     'recipes.savedMsg': '已保存当前工作台配方'
   },
 
@@ -262,7 +302,7 @@ export const dict = {
     'home.subtitle': 'Single-line captions · speech-driven · numbers emphasised · design subtitles like UI components.',
     'home.cta.studio': 'Open Studio',
     'home.cta.library': 'Browse Library',
-    'home.stat.presets': '12 presets',
+    'home.stat.presets': '40 presets',
     'home.stat.motions': '9 word motions',
     'home.stat.singleLine': 'single line locked',
     'home.stat.numbers': 'numbers ×1.20',
@@ -300,7 +340,7 @@ export const dict = {
     'studio.timeline.scrub': 'click / drag to scrub',
     'studio.hoverHint': 'hover to play',
 
-    'inspector.presets': 'Presets · 12',
+    'inspector.presets': 'Presets',
     'inspector.typography': 'Typography',
     'inspector.fontFamily': 'Font family',
     'inspector.weight': 'Weight',
@@ -373,7 +413,7 @@ export const dict = {
 
     'library.kicker': 'caption library',
     'library.title': 'Presets',
-    'library.subtitle': '12 high-quality presets plus your own recipes. Hover a card to play a 1–2s motion preview, then hit “Use Template” to keep editing in the Studio.',
+    'library.subtitle': '40 presets (12 core + 28 extended) plus your own recipes. Hover a card to play a 1–2s motion preview, then hit “Use Template” to keep editing in the Studio.',
     'library.searchPlaceholder': 'Search: finance / yellow / pop / no background / data…',
     'library.filter.style': 'Style',
     'library.filter.background': 'Background',
@@ -394,6 +434,46 @@ export const dict = {
     'recipes.imported': 'Imported {n} recipes',
     'recipes.importedOne': 'Imported 1 recipe',
     'recipes.importFail': 'Invalid file — expected a recipe or a { recipes: [] } bundle',
+
+    /* motion names */
+    'motion.none': 'None',
+    'motion.highlight': 'Highlight',
+    'motion.pop': 'Pop',
+    'motion.bounce': 'Bounce',
+    'motion.float': 'Float',
+    'motion.scale': 'Scale',
+    'motion.glow': 'Glow',
+    'motion.weightShift': 'Weight shift',
+    'motion.blurReveal': 'Blur reveal',
+    'motion.fade': 'Fade',
+    'motion.slideUp': 'Slide up',
+    'motion.slideDown': 'Slide down',
+
+    /* export */
+    'export.title': 'Export',
+    'export.json': 'JSON recipe',
+    'export.srt': 'SRT subtitles',
+    'export.vtt': 'WebVTT subtitles',
+    'export.ass': 'ASS subtitles',
+    'export.done': 'Exported {name}',
+
+    /* ai */
+    'ai.title': 'AI caption assistant',
+    'ai.open': 'AI assistant',
+    'ai.placeholder': 'Describe the caption you want, e.g. "write a line about position sizing"',
+    'ai.send': 'Send',
+    'ai.thinking': 'Generating…',
+    'ai.settings': 'Connection',
+    'ai.endpoint': 'Endpoint (OpenAI compatible)',
+    'ai.key': 'API key',
+    'ai.model': 'Model',
+    'ai.save': 'Save',
+    'ai.localMode': 'Local mode (no API key — using built-in rules)',
+    'ai.onlineMode': 'Connected · {model}',
+    'ai.applyText': 'Use as caption text',
+    'ai.applyPreset': 'Apply suggested style',
+    'ai.empty': 'No conversation yet. Describe your scene and I will write the caption.',
+    'ai.hintPreset': 'Suggested style',
     'recipes.savedMsg': 'Saved current studio recipe'
   }
 } as const;

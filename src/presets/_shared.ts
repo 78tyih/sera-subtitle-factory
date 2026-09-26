@@ -1,4 +1,4 @@
-import type { CaptionRecipe } from '@/types/caption';
+import type { CaptionRecipe, DeepPartial } from '@/types/caption';
 import { defaultBackground } from '@/caption-engine/backgrounds';
 import { defaultBorder } from '@/caption-engine/borders';
 import { motionTokens } from '@/caption-engine/motion-tokens';
@@ -76,7 +76,7 @@ export const baseRecipe: CaptionRecipe = {
 
 /** helper: build a preset from overrides */
 export function preset(
-  overrides: Partial<CaptionRecipe> & Pick<CaptionRecipe, 'id' | 'name' | 'category'>
+  overrides: DeepPartial<CaptionRecipe> & Pick<CaptionRecipe, 'id' | 'name' | 'category'>
 ): CaptionRecipe {
   return {
     ...baseRecipe,
@@ -94,6 +94,6 @@ export function preset(
       word: { ...baseRecipe.motion.word, ...(overrides.motion?.word ?? {}) },
       exit: { ...baseRecipe.motion.exit, ...(overrides.motion?.exit ?? {}) }
     },
-    tags: overrides.tags ?? baseRecipe.tags
+    tags: (overrides.tags as string[]) ?? baseRecipe.tags
   };
 }

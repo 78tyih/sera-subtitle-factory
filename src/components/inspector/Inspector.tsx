@@ -26,17 +26,20 @@ export function Inspector({ className = '' }: { className?: string }) {
       {/* ------------------------------------------------ TEMPLATES */}
       {s.tab === 'templates' && (
         <>
-          <Panel title={t('inspector.presets')}>
+          <Panel title={`${t('inspector.presets')} · ${presets.length}`}>
             <Row gap={6} wrap>
-              {presetCategories.slice(0, 6).map((c) => {
-                const n = presets.filter((p) => p.category === c).length;
-                if (!n) return null;
-                return (
-                  <button key={c} className="rounded-[7px] border border-line2 px-2 py-1 text-[10.5px] text-ink2 hover:bg-hover hover:text-ink" onClick={() => useCaptionStore.getState().usePreset(presets.find((p) => p.category === c)!.id)}>
+              {presetCategories
+                .map((c) => ({ c, n: presets.filter((p) => p.category === c).length }))
+                .filter((x) => x.n > 0)
+                .map(({ c, n }) => (
+                  <button
+                    key={c}
+                    className="rounded-[7px] border border-line2 px-2 py-1 text-[10.5px] text-ink2 hover:bg-hover hover:text-ink"
+                    onClick={() => useCaptionStore.getState().usePreset(presets.find((p) => p.category === c)!.id)}
+                  >
                     {c} <span className="font-mono text-[9.5px] text-muted">{n}</span>
                   </button>
-                );
-              })}
+                ))}
             </Row>
             <Divider />
             <div className="flex flex-col gap-1.5">
@@ -68,19 +71,32 @@ export function Inspector({ className = '' }: { className?: string }) {
       {s.tab === 'typography' && (
         <Panel title={t('inspector.typography')}>
           <Field label={t('inspector.fontFamily')}>
-            <div className="grid grid-cols-3 gap-1.5">
-              {fontOptions.map((f) => {
-                const on = r.typography.fontFamily === f.key;
-                return (
-                  <button
-                    key={f.key}
-                    onClick={() => s.patchRecipe({ typography: { fontFamily: f.key } })}
-                    className={['rounded-[8px] border px-2 py-1.5 text-[10.5px] transition-all duration-150 ease-out', on ? 'border-ink bg-chip text-ink' : 'border-line bg-panel2 text-ink2 hover:bg-hover'].join(' ')}
-                  >
-                    {f.label}
-                  </button>
-                );
-              })}
+            <div className="space-y-2.5">
+              {Array.from(new Set(fontOptions.map((f) => f.group))).map((group) => (
+                <div key={group}>
+                  <p className="mb-1 font-mono text-[9.5px] uppercase tracking-[0.1em] text-muted">{group}</p>
+                  <div className="grid grid-cols-3 gap-1.5">
+                    {fontOptions
+                      .filter((f) => f.group === group)
+                      .map((f) => {
+                        const on = r.typography.fontFamily === f.key;
+                        return (
+                          <button
+                            key={f.key}
+                            onClick={() => s.patchRecipe({ typography: { fontFamily: f.key } })}
+                            title={f.label}
+                            className={[
+                              'truncate rounded-[8px] border px-2 py-1.5 text-[10.5px] transition-all duration-150 ease-out',
+                              on ? 'border-ink bg-chip text-ink' : 'border-line bg-panel2 text-ink2 hover:bg-hover'
+                            ].join(' ')}
+                          >
+                            {f.label}
+                          </button>
+                        );
+                      })}
+                  </div>
+                </div>
+              ))}
             </div>
           </Field>
 
@@ -212,13 +228,13 @@ export function Inspector({ className = '' }: { className?: string }) {
       {s.tab === 'motion' && (
         <Panel title={t('inspector.motion')}>
           <Field label={t('inspector.motion.entrance')}>
-            <Segmented size="sm" options={entranceNames.map((m) => ({ value: m, label: m }))} value={r.motion.entrance.type} onChange={(v) => s.patchRecipe({ motion: { entrance: { type: v as never } } })} />
+            <Segmented size="sm" options={entranceNames.map((m) => ({ value: m, label: t(`motion.${m}` as never) }))} value={r.motion.entrance.type} onChange={(v) => s.patchRecipe({ motion: { entrance: { type: v as never } } })} />
           </Field>
           <Field label={t('inspector.motion.word')} hint={t('inspector.motion.wordHint')}>
-            <Segmented size="sm" options={wordMotionNames.map((m) => ({ value: m, label: m }))} value={r.motion.word.type} onChange={(v) => s.patchRecipe({ motion: { word: { type: v as never } } })} />
+            <Segmented size="sm" options={wordMotionNames.map((m) => ({ value: m, label: t(`motion.${m}` as never) }))} value={r.motion.word.type} onChange={(v) => s.patchRecipe({ motion: { word: { type: v as never } } })} />
           </Field>
           <Field label={t('inspector.motion.exit')}>
-            <Segmented size="sm" options={exitNames.map((m) => ({ value: m, label: m }))} value={r.motion.exit.type} onChange={(v) => s.patchRecipe({ motion: { exit: { type: v as never } } })} />
+            <Segmented size="sm" options={exitNames.map((m) => ({ value: m, label: t(`motion.${m}` as never) }))} value={r.motion.exit.type} onChange={(v) => s.patchRecipe({ motion: { exit: { type: v as never } } })} />
           </Field>
           <Divider />
           <Slider label={t('inspector.motion.wordDuration')} value={r.motion.word.duration} min={100} max={400} step={10} format={(v) => `${v}ms`} onChange={(v) => s.patchRecipe({ motion: { word: { duration: v } } })} />

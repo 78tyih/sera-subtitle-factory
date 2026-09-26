@@ -33,18 +33,16 @@ export interface CaptionSegment {
 /* ---------- typography ---------- */
 
 export type FontKey =
-  | 'inter'
-  | 'geist'
-  | 'helvetica'
-  | 'arial'
-  | 'roboto'
-  | 'montserrat'
-  | 'poppins'
-  | 'sourceHanSans'
-  | 'notoSansSC'
-  | 'system'
-  | 'editorial'
-  | 'mono';
+  /* sans (latin) */
+  | 'inter' | 'interTight' | 'geist' | 'spaceGrotesk' | 'dmSans' | 'manrope'
+  | 'ibmPlex' | 'outfit' | 'workSans' | 'helvetica' | 'arial' | 'roboto'
+  | 'montserrat' | 'poppins'
+  /* sans (中文) */
+  | 'sourceHanSans' | 'notoSansSC' | 'harmonyOS' | 'alibaba' | 'smiley' | 'system'
+  /* serif */
+  | 'editorial' | 'sourceHanSerif' | 'notoSerif' | 'playfair' | 'lora' | 'instrumentSerif'
+  /* mono / hand */
+  | 'mono' | 'jetbrains' | 'firaCode' | 'lxgw';
 
 export interface TypographyStyle {
   fontFamily: FontKey;
@@ -244,3 +242,9 @@ export interface EmphasisPlugin {
   id: string;
   analyse(text: string, word: WordTimestamp): WordType;
 }
+
+/* ---------- utility ---------- */
+
+export type DeepPartial<T> = {
+  [K in keyof T]?: T[K] extends Array<unknown> ? T[K] : T[K] extends object ? DeepPartial<T[K]> : T[K];
+};

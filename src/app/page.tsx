@@ -58,8 +58,8 @@ export default function HomePage() {
               {t('home.cta.library')}
             </Link>
             <div className="ml-1 flex items-center gap-2">
-              <ThemeToggle compact />
-              <LangToggle compact />
+              <ThemeToggle />
+              <LangToggle />
             </div>
           </div>
 

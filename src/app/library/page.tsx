@@ -95,12 +95,12 @@ export default function LibraryPage() {
               size="sm"
               options={[
                 { value: 'all', label: t('ui.all') },
-                { value: 'highlight', label: 'Highlight' },
-                { value: 'pop', label: 'Pop' },
-                { value: 'float', label: 'Float' },
+                { value: 'highlight', label: t('motion.highlight' as never) },
+                { value: 'pop', label: t('motion.pop' as never) },
+                { value: 'float', label: t('motion.float' as never) },
                 { value: 'slideUp', label: 'Slide' },
-                { value: 'scale', label: 'Scale' },
-                { value: 'glow', label: 'Glow' }
+                { value: 'scale', label: t('motion.scale' as never) },
+                { value: 'glow', label: t('motion.glow' as never) }
               ]}
               value={motion}
               onChange={(v) => setMotion(v as MotionFilter)}

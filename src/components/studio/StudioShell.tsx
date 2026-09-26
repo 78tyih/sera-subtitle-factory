@@ -1,39 +1,67 @@
 'use client';
 
-import { useRef } from 'react';
-import { useCaptionStore } from '@/store/caption-store';
+import { useRef, useState } from 'react';
+import { useCaptionStore, allTranscripts } from '@/store/caption-store';
 import { Sidebar } from '@/components/studio/Sidebar';
 import { Inspector } from '@/components/inspector/Inspector';
 import { Timeline, useCurrentWords } from '@/components/timeline/Timeline';
 import { CaptionStage, ASPECT } from '@/components/preview/CaptionStage';
-import { usePlayback, useStageWidth } from '@/lib/hooks';
-import { allTranscripts } from '@/store/caption-store';
-import { Btn, Segmented } from '@/components/ui';
+import { AiPanel } from '@/components/studio/AiPanel';
+import { usePlayback, useSegments, useStageWidth } from '@/lib/hooks';
+import { IconBtn, RatioIcon, Segmented } from '@/components/ui';
+import { exportCaptions, type ExportKind } from '@/lib/export-captions';
 import { useI18n } from '@/lib/i18n';
 import type { AspectRatio } from '@/types/caption';
+
+const RATIOS: AspectRatio[] = ['16:9', '4:3', '1:1', '9:16'];
+
+const I = (d: string, w = 14) => (
+  <svg width={w} height={w} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+    <path d={d} />
+  </svg>
+);
+
+const ICON = {
+  undo: I('M9 14L4 9l5-5M4 9h9a7 7 0 010 14H8'),
+  redo: I('M15 14l5-5-5-5M20 9h-9a7 7 0 000 14h5'),
+  safe: I('M4 6h16v12H4zM4 10h16'),
+  save: I('M5 4h11l3 3v13H5zM9 4v5h6'),
+  download: I('M12 4v11M7 12l5 5 5-5M5 20h14'),
+  sparkle: I('M12 3l1.8 4.9L19 9.6l-4.4 3 .6 5.4-3.2-2.6-3.2 2.6.6-5.4L5 9.6l5.2-1.7z'),
+  restart: I('M4 10a8 8 0 1114 5M4 5v5h5')
+};
 
 export function StudioShell() {
   const { t, lang } = useI18n();
   const s = useCaptionStore();
   const words = useCurrentWords();
   const { time, seek, restart } = usePlayback(s.duration, s.playing);
+  const { segments } = useSegments(words, s.recipe);
+
+  const [aiOpen, setAiOpen] = useState(false);
+  const [exportOpen, setExportOpen] = useState(false);
 
   const stageBox = useRef<HTMLDivElement>(null);
   const aspect = s.aspect;
-  const ratio = ASPECT[aspect];
-  const width = useStageWidth(stageBox, ratio);
+  const width = useStageWidth(stageBox, ASPECT[aspect]);
+
+  const doExport = (kind: ExportKind) => {
+    exportCaptions(kind, s.recipe, segments, s.recipe.id);
+    setExportOpen(false);
+  };
 
   return (
     <div className="flex h-[calc(100vh-52px)] overflow-hidden">
       <Sidebar />
 
       <div className="flex min-w-0 flex-1 flex-col">
-        {/* ---------------------------------------------------- top bar */}
-        <header className="flex h-[54px] shrink-0 items-center gap-2.5 border-b border-line bg-panel px-4">
+        {/* ------------------------------------------- top bar — icons first */}
+        <header className="flex h-[54px] shrink-0 items-center gap-2 border-b border-line bg-panel px-4">
           <select
             value={s.transcriptId}
             onChange={(e) => s.setTranscript(e.target.value)}
-            className="rounded-[9px] border border-line bg-panel2 px-2.5 py-1.5 text-[11.5px] text-ink outline-none hover:border-line2"
+            title={t('studio.transcript')}
+            className="max-w-[190px] rounded-[9px] border border-line bg-panel2 px-2.5 py-1.5 text-[11.5px] text-ink outline-none hover:border-line2"
           >
             {allTranscripts.map((item) => (
               <option key={item.id} value={item.id}>
@@ -44,28 +72,59 @@ export function StudioShell() {
 
           <Segmented
             size="sm"
-            options={(['16:9', '4:3', '1:1', '9:16'] as AspectRatio[]).map((a) => ({ value: a, label: a }))}
+            options={RATIOS.map((a) => ({ value: a, label: <RatioIcon ratio={a} />, title: a }))}
             value={aspect}
             onChange={(v) => s.setAspect(v as AspectRatio)}
           />
 
-          <button
-            onClick={s.toggleSafeArea}
-            className={['rounded-[8px] border px-2.5 py-1.5 text-[11px] transition-all duration-150 ease-out', s.showSafeArea ? 'border-ink bg-chip text-ink' : 'border-line text-ink2 hover:bg-hover'].join(' ')}
-          >
-            {t('ui.safeArea')}
-          </button>
+          <div className="ml-auto flex items-center gap-1.5">
+            <IconBtn title={t('ui.safeArea')} active={s.showSafeArea} onClick={s.toggleSafeArea}>
+              {ICON.safe}
+            </IconBtn>
+            <IconBtn title={t('ui.undo')} onClick={s.undo} disabled={!s.past.length}>
+              {ICON.undo}
+            </IconBtn>
+            <IconBtn title={t('ui.redo')} onClick={s.redo} disabled={!s.future.length}>
+              {ICON.redo}
+            </IconBtn>
+            <IconBtn title={t('ui.saveRecipe')} onClick={() => s.saveRecipe()}>
+              {ICON.save}
+            </IconBtn>
 
-          <div className="ml-auto flex items-center gap-2">
-            <Btn size="sm" onClick={s.undo} disabled={!s.past.length} title={t('ui.undo')}>{t('ui.undo')}</Btn>
-            <Btn size="sm" onClick={s.redo} disabled={!s.future.length} title={t('ui.redo')}>{t('ui.redo')}</Btn>
-            <span className="mx-1 h-4 w-px bg-line" />
-            <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-muted">{s.recipe.name}</span>
-            <Btn size="sm" variant="primary" onClick={() => s.saveRecipe()}>{t('ui.saveRecipe')}</Btn>
+            <div className="relative">
+              <IconBtn title={t('export.title')} active={exportOpen} onClick={() => setExportOpen((v) => !v)}>
+                {ICON.download}
+              </IconBtn>
+              {exportOpen && (
+                <div className="absolute right-0 top-[38px] z-30 w-[176px] overflow-hidden rounded-[11px] border border-line bg-panel py-1 shadow-[0_16px_40px_rgba(0,0,0,0.35)]">
+                  {(
+                    [
+                      ['json', t('export.json')],
+                      ['srt', t('export.srt')],
+                      ['vtt', t('export.vtt')],
+                      ['ass', t('export.ass')]
+                    ] as Array<[ExportKind, string]>
+                  ).map(([kind, label]) => (
+                    <button
+                      key={kind}
+                      onClick={() => doExport(kind)}
+                      className="flex w-full items-center gap-2 px-3 py-2 text-left text-[12px] text-ink2 transition-colors duration-150 ease-out hover:bg-hover hover:text-ink"
+                    >
+                      <span className="w-[30px] font-mono text-[9.5px] uppercase text-muted">{kind}</span>
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <IconBtn title={t('ai.open')} active={aiOpen} onClick={() => setAiOpen((v) => !v)}>
+              <span className="text-accent">{ICON.sparkle}</span>
+            </IconBtn>
           </div>
         </header>
 
-        {/* ---------------------------------------------------- center + right */}
+        {/* ------------------------------------------- stage + inspector */}
         <div className="flex min-h-0 flex-1">
           <div className="flex min-w-0 flex-1 flex-col">
             <div ref={stageBox} className="flex min-h-0 flex-1 items-center justify-center p-6">
@@ -81,18 +140,19 @@ export function StudioShell() {
               />
             </div>
 
-            {/* playback controls — deliberately few (spec §29) */}
-            <div className="flex shrink-0 items-center justify-center gap-3 border-t border-line bg-panel py-2.5">
-              <Btn size="sm" onClick={restart} title="Restart">⟲</Btn>
+            <div className="flex shrink-0 items-center justify-center gap-3 border-t border-line bg-panel py-2">
+              <IconBtn title={t('ui.restart')} onClick={restart}>
+                {ICON.restart}
+              </IconBtn>
               <button
                 onClick={s.togglePlaying}
-                className="grid h-9 w-9 place-items-center rounded-full bg-ink text-[13px] text-bg transition-transform duration-150 ease-out hover:scale-105"
                 title={s.playing ? t('ui.pause') : t('ui.play')}
+                className="grid h-9 w-9 place-items-center rounded-full bg-ink text-[13px] text-bg transition-transform duration-150 ease-out hover:scale-105"
               >
                 {s.playing ? '❚❚' : '▶'}
               </button>
               <span className="font-mono text-[10.5px] text-muted">
-                {time.toFixed(2)}s / {s.duration.toFixed(2)}s
+                {time.toFixed(2)} / {s.duration.toFixed(2)}s
               </span>
             </div>
           </div>
@@ -102,6 +162,8 @@ export function StudioShell() {
 
         <Timeline time={time} duration={s.duration} onSeek={seek} />
       </div>
+
+      <AiPanel open={aiOpen} onClose={() => setAiOpen(false)} />
     </div>
   );
 }

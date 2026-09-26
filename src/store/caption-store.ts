@@ -2,7 +2,7 @@
 
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { AspectRatio, CaptionRecipe } from '@/types/caption';
+import type { AspectRatio, CaptionRecipe, DeepPartial, WordTimestamp } from '@/types/caption';
 import { presets, getPreset } from '@/presets';
 import { demoTranscripts, DEFAULT_DEMO_ID, getTranscript } from '@/lib/demo-transcripts';
 
@@ -33,6 +33,10 @@ interface CaptionState {
   selectedSegmentId: string | null;
   tab: StudioTab;
 
+  /** caption text produced by the AI assistant (or typed by hand); null = use the demo transcript */
+  customWords: WordTimestamp[] | null;
+  customText: string;
+
   /* library */
   savedRecipes: CaptionRecipe[];
   recentPresetIds: string[];
@@ -53,6 +57,8 @@ interface CaptionState {
   setPlaying: (p: boolean) => void;
   togglePlaying: () => void;
   selectSegment: (id: string | null) => void;
+  setCustomCaption: (text: string, words: WordTimestamp[]) => void;
+  clearCustomCaption: () => void;
   saveRecipe: (name?: string) => void;
   duplicateRecipe: (id: string) => void;
   renameRecipe: (id: string, name: string) => void;
@@ -61,8 +67,6 @@ interface CaptionState {
   undo: () => void;
   redo: () => void;
 }
-
-export type DeepPartial<T> = { [K in keyof T]?: T[K] extends object ? DeepPartial<T[K]> : T[K] };
 
 function mergeDeep<T>(base: T, patch: DeepPartial<T>): T {
   const out: Record<string, unknown> = { ...(base as Record<string, unknown>) };
@@ -100,6 +104,9 @@ export const useCaptionStore = create<CaptionState>()(
       selectedSegmentId: null,
       tab: 'templates',
 
+      customWords: null,
+      customText: '',
+
       savedRecipes: [],
       recentPresetIds: [],
 
@@ -111,8 +118,19 @@ export const useCaptionStore = create<CaptionState>()(
       setTranscript: (id) => {
         const t = getTranscript(id);
         const duration = t.words.length ? t.words[t.words.length - 1].end + 0.8 : 5;
-        set({ transcriptId: id, currentTime: 0, duration, selectedSegmentId: null });
+        set({ transcriptId: id, currentTime: 0, duration, selectedSegmentId: null, customWords: null, customText: '' });
       },
+
+      setCustomCaption: (text, words) =>
+        set({
+          customText: text,
+          customWords: words,
+          currentTime: 0,
+          duration: words.length ? words[words.length - 1].end + 0.8 : 5,
+          selectedSegmentId: null
+        }),
+
+      clearCustomCaption: () => set({ customWords: null, customText: '' }),
 
       setAspect: (aspect) => set({ aspect }),
       toggleSafeArea: () => set((s) => ({ showSafeArea: !s.showSafeArea })),

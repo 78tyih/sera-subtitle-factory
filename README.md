@@ -39,6 +39,14 @@ npm run static     # 导出 + 起静态服务器 → http://127.0.0.1:4311/studi
 - **中文 / English**：右上角切换，默认跟随浏览器语言（zh → 中文），可随时切换并记忆。
   所有界面文案走 `src/lib/i18n.tsx` 字典；预设与转录标题也带中英双语字段（`nameZh` / `descriptionEn`）。
 
+## 字体 / 调色盘 / 导出 / AI
+
+- **字体 31 种**，按「西文无衬线 / 中文黑体 / 衬线 / 等宽手写」分组
+- **调色盘**：16 色预设 + 系统取色器 + **HEX 输入框**（支持 `#FFF` / `#FFD400`）
+- **导出**（顶栏下载图标）：JSON 配方 · SRT · WebVTT · ASS 字幕
+- **AI 助手**（顶栏星标）：对话框直接写字幕，输完可「用作字幕文本」+「套用推荐样式」；
+  配置任意 OpenAI 兼容接口即可联网，**没配 Key 时走本地规则模式**（关键词匹配样式 + 造句）
+
 ## 四个页面
 
 | 路由 | 内容 |
@@ -65,10 +73,11 @@ Caption Recipe = Layout + Typography + Color + ActiveWord + Number
    状态机：`idle → active → spoken`。
 3. **不推挤邻词** —— active / 强调只改 `transform` + `color`，不改 layout 尺寸。
 
-## 12 个 Preset
+## 40 个 Preset（12 核心 + 28 扩展）
 
-Minimal White · Minimal Black · **Editorial** · **Finance Yellow** · **Finance Blue** ·
-Data Focus · **Left Bar** · Clean White Card · Clean Black Card · Neon Blue · Word Pop · Word Float
+核心 12：Minimal White · Minimal Black · **Editorial** · **Finance Yellow** · **Finance Blue** · Data Focus · **Left Bar** · Clean White Card · Clean Black Card · Neon Blue · Word Pop · Word Float
+
+扩展 28：Outline Hollow · Uppercase Tight · Wide Tracking · Soft Shadow · Marker Yellow · Underline Accent · Number Hero · Crimson Strong · Amber Alert · Emerald Calm · Purple Glow · Left Box · Glass Soft · Top Band · Quote Serif · Classic Subtitle · News Band · Serif Minimal · Karaoke Yellow · Karaoke Blue · Word Pop Soft · Editorial Weight · Mono Terminal · Split Color · Bold Outline Box · Podcast Lower · Editorial Inverse · Tech Blue Bar
 
 粗体 = 四个旗舰 Demo（整个视觉系统的基准）。数字默认 ×1.20 / 字重 800 / 黄色。
 

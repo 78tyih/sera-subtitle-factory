@@ -12,9 +12,10 @@ import { cleanBlackCard } from './clean-black-card';
 import { neonBlue } from './neon-blue';
 import { wordPop } from './word-pop';
 import { wordFloat } from './word-float';
+import { extendedPresets } from './extended';
 
-/** Phase 1 ships 12 high-quality presets — quality over quantity (spec §34). */
-export const presets: CaptionRecipe[] = [
+/** Core pack (12 hand-tuned styles, spec §34) + extended pack (28 more). */
+export const corePresets: CaptionRecipe[] = [
   minimalWhite,
   minimalBlack,
   editorial,
@@ -28,6 +29,8 @@ export const presets: CaptionRecipe[] = [
   wordPop,
   wordFloat
 ];
+
+export const presets: CaptionRecipe[] = [...corePresets, ...extendedPresets];
 
 export const presetCategories: PresetCategory[] = [
   'Minimal',

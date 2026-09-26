@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import type { FontKey } from '@/types/caption';
 
 /* ---------------------------------------------------------------- Panel */
 
@@ -68,7 +69,7 @@ export function Segmented<T extends string | number>({
   size = 'md',
   full = false
 }: {
-  options: Array<{ value: T; label: string }>;
+  options: Array<{ value: T; label: React.ReactNode; title?: string }>;
   value: T;
   onChange: (v: T) => void;
   size?: 'sm' | 'md';
@@ -82,6 +83,7 @@ export function Segmented<T extends string | number>({
           <button
             key={String(o.value)}
             onClick={() => onChange(o.value)}
+            title={o.title}
             className={[
               'rounded-[7px] transition-all duration-150 ease-out',
               size === 'sm' ? 'px-2 py-1 text-[10.5px]' : 'px-2.5 py-1.5 text-[11.5px]',
@@ -97,7 +99,34 @@ export function Segmented<T extends string | number>({
   );
 }
 
-/* ---------------------------------------------------------------- Swatches */
+/* ---------------------------------------------------------------- Ratio icon */
+
+/** Aspect-ratio switcher icon: a little rectangle, no text. */
+export function RatioIcon({ ratio }: { ratio: string }) {
+  const dims: Record<string, [number, number]> = {
+    '16:9': [20, 11],
+    '4:3': [18, 13],
+    '1:1': [15, 15],
+    '9:16': [11, 20],
+    '4:5': [13, 17]
+  };
+  const [w, h] = dims[ratio] ?? [18, 11];
+  return (
+    <svg width="24" height="22" viewBox="0 0 24 22" aria-hidden>
+      <rect x={(24 - w) / 2} y={(22 - h) / 2} width={w} height={h} rx={2.5} fill="none" stroke="currentColor" strokeWidth={1.8} />
+    </svg>
+  );
+}
+
+/* ---------------------------------------------------------------- Swatches + HEX */
+
+const HEX_RE = /^#?([0-9a-f]{3}|[0-9a-f]{6})$/i;
+const normalize = (v: string) => {
+  const m = HEX_RE.exec(v.trim());
+  if (!m) return null;
+  const hex = m[1];
+  return ('#' + (hex.length === 3 ? hex.split('').map((c) => c + c).join('') : hex)).toUpperCase();
+};
 
 export function Swatches({
   colors,
@@ -110,27 +139,89 @@ export function Swatches({
   onChange: (c: string) => void;
   allowCustom?: boolean;
 }) {
+  const [draft, setDraft] = React.useState(value);
+
+  React.useEffect(() => setDraft(value), [value]);
+
+  const commit = (v: string) => {
+    const hex = normalize(v);
+    if (hex) onChange(hex);
+    else setDraft(value);
+  };
+
   return (
-    <div className="flex flex-wrap items-center gap-1.5">
-      {colors.map((c) => (
-        <button
-          key={c}
-          title={c}
-          onClick={() => onChange(c)}
-          className={[
-            'h-6 w-6 rounded-[7px] border transition-transform duration-150 ease-out hover:scale-110',
-            value.toLowerCase() === c.toLowerCase() ? 'border-ink ring-1 ring-ink/40' : 'border-white/10'
-          ].join(' ')}
-          style={{ background: c }}
-        />
-      ))}
+    <div className="space-y-2">
+      <div className="flex flex-wrap items-center gap-1.5">
+        {colors.map((c) => (
+          <button
+            key={c}
+            title={c}
+            onClick={() => onChange(c)}
+            className={[
+              'h-6 w-6 rounded-[7px] border transition-transform duration-150 ease-out hover:scale-110',
+              value.toLowerCase() === c.toLowerCase() ? 'border-ink ring-1 ring-ink/40' : 'border-line2'
+            ].join(' ')}
+            style={{ background: c }}
+          />
+        ))}
+        {allowCustom && (
+          <label className="relative h-6 w-6 cursor-pointer overflow-hidden rounded-[7px] border border-line2" title="Color picker">
+            <span className="pointer-events-none absolute inset-0" style={{ background: value }} />
+            <input
+              type="color"
+              value={normalize(value) ?? '#000000'}
+              onChange={(e) => onChange(e.target.value.toUpperCase())}
+              className="absolute inset-0 cursor-pointer opacity-0"
+            />
+          </label>
+        )}
+      </div>
+
       {allowCustom && (
-        <label className="relative h-6 w-6 cursor-pointer overflow-hidden rounded-[7px] border border-white/10" title="Custom color">
-          <span className="pointer-events-none absolute inset-0 grid place-items-center text-[10px] text-ink2">+</span>
-          <input type="color" value={value} onChange={(e) => onChange(e.target.value)} className="absolute inset-0 cursor-pointer opacity-0" />
-        </label>
+        <div className="flex items-center gap-1.5">
+          <input
+            value={draft}
+            onChange={(e) => setDraft(e.target.value)}
+            onBlur={(e) => commit(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && commit((e.target as HTMLInputElement).value)}
+            placeholder="#FFD400"
+            spellCheck={false}
+            className="w-[104px] rounded-[7px] border border-line bg-sunken px-2 py-1 font-mono text-[11px] uppercase text-ink outline-none placeholder:text-muted focus:border-accent/60"
+          />
+          <span className="font-mono text-[10px] text-muted">HEX</span>
+        </div>
       )}
     </div>
+  );
+}
+
+/* ---------------------------------------------------------------- Icon button */
+
+export function IconBtn({
+  children,
+  onClick,
+  title,
+  active,
+  disabled
+}: {
+  children: React.ReactNode;
+  onClick?: () => void;
+  title?: string;
+  active?: boolean;
+  disabled?: boolean;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      title={title}
+      disabled={disabled}
+      className={[
+        'grid h-8 w-8 place-items-center rounded-[9px] border transition-all duration-150 ease-out disabled:opacity-35',
+        active ? 'border-ink bg-chip text-ink' : 'border-line bg-panel2 text-ink2 hover:border-line2 hover:text-ink'
+      ].join(' ')}
+    >
+      {children}
+    </button>
   );
 }
 
@@ -153,8 +244,8 @@ export function Btn({
 }) {
   const styles = {
     ghost: 'border border-line2 bg-panel text-ink2 hover:bg-hover hover:text-ink',
-    primary: 'bg-ink text-bg hover:bg-white',
-    subtle: 'bg-hover text-ink2 hover:bg-hover hover:text-ink'
+    primary: 'bg-ink text-bg hover:opacity-90',
+    subtle: 'bg-chip text-ink2 hover:bg-hover hover:text-ink'
   }[variant];
   return (
     <button
@@ -194,3 +285,5 @@ export function Badge({ children, tone = 'default' }: { children: React.ReactNod
   }[tone];
   return <span className={`rounded-[5px] border px-1.5 py-[2px] font-mono text-[9.5px] uppercase tracking-[0.08em] ${map}`}>{children}</span>;
 }
+
+export type { FontKey };

@@ -40,15 +40,15 @@ const DEFAULT_CONFIG: AiConfig = {
 /* ---------------------------------------------------------------- local rules */
 
 const RULES: Array<{ match: RegExp; presetId: string; line: string }> = [
-  { match: /风险|止损|仓位|纪律/, presetId: 'sera-crimson-strong', line: '先想清楚亏多少，再决定买多少。' },
-  { match: /数字|数据|收益|胜率|回测|绩效/, presetId: 'sera-number-hero', line: '胜率 63%，盈亏比 2.4。' },
-  { match: /比特币|BTC|行情|突破|币/, presetId: 'sera-finance-yellow', line: '比特币突破关键阻力位。' },
-  { match: /科技|AI|模型|产品|发布/, presetId: 'sera-tech-blue-bar', line: '模型推理速度提升了 3 倍。' },
-  { match: /金句|慢|温柔|故事|人文/, presetId: 'sera-quote-serif', line: '慢一点，才看得更清楚。' },
-  { match: /观点|判断|本质|逻辑/, presetId: 'sera-editorial', line: '真正重要的是资金正在流向哪里。' },
-  { match: /教程|讲解|知识|科普/, presetId: 'sera-classic-subtitle', line: '今天聊一个非常重要的判断。' },
+  { match: /速度|性能|响应|秒/, presetId: 'sera-number-hero', line: '响应 0.5 秒，内存占用 42%。' },
+  { match: /数字|数据|指标/, presetId: 'sera-number-hero', line: '响应 0.5 秒，内存占用 42%。' },
+  { match: /科技|AI|模型|产品|发布/, presetId: 'sera-tech-blue-bar', line: '一次好的产品，从留白开始。' },
+  { match: /设计|排版|留白|美学/, presetId: 'sera-editorial', line: '好的设计，从留白开始。' },
+  { match: /金句|慢|温柔|故事|人文/, presetId: 'sera-quote-serif', line: '慢一点，把细节做好。' },
+  { match: /观点|判断|本质|逻辑/, presetId: 'sera-editorial', line: '设计，让复杂的事情变得简单。' },
+  { match: /教程|讲解|知识|科普/, presetId: 'sera-classic-subtitle', line: '好的设计，从留白开始。' },
   { match: /强调|重点|注意/, presetId: 'sera-marker-yellow', line: '这一步最容易被忽略。' },
-  { match: /数字放大|hero|标题/, presetId: 'sera-outline-hollow', line: '数据不会说谎。' },
+  { match: /字幕|动起来|标题/, presetId: 'sera-outline-hollow', line: '让每一个字都跟着声音动起来。' },
   { match: /播客|访谈|对话/, presetId: 'sera-podcast-lower', line: '我们从头讲一遍。' }
 ];
 
@@ -62,7 +62,7 @@ function localAnswer(prompt: string): Msg {
   const hit = RULES.find((r) => r.match.test(prompt));
   const dict = presets.find((p) => p.id === (hit?.presetId ?? 'sera-finance-yellow'))!;
   const own = prompt.replace(/^(帮我写|写一句|生成|做一句|来一句)[^，,。]*[，,。]?/, '').trim();
-  const text = own.length >= 6 && own.length <= 22 ? condense(own) : hit?.line ?? '市场不会奖励犹豫的人。';
+  const text = own.length >= 6 && own.length <= 22 ? condense(own) : hit?.line ?? '让每一个字都跟着声音动起来。';
   return { role: 'assistant', content: '', text, presetId: dict.id };
 }
 

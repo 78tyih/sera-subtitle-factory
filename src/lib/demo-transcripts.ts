@@ -57,27 +57,27 @@ export interface DemoTranscript {
   words: WordTimestamp[];
 }
 
-const FINANCE_TEXT = '比特币今天上涨 12%，市场重新回到了关键位置。';
-const TECH_TEXT = '模型推理速度提升了 3 倍，成本却下降了 40%。';
-const PODCAST_TEXT = '真正重要的是资金正在流向哪里，而不是别人在说什么。';
-const MIXED_TEXT = 'BTC 今天上涨 12%，价格来到 $68,500。';
-const LONG_TEXT = '今天比特币市场出现了非常明显的价格波动同时整个加密货币市场的成交量也快速上升';
-const DATA_TEXT = 'BTC +12.5% ETH $4,280 24H Volume $18.6B Funding Rate 0.021% Revenue +35%';
+const BASIC_TEXT = '让每一个字都跟着声音动起来。';
+const DESIGN_TEXT = '好的设计，从留白开始。';
+const STORY_TEXT = '慢一点，把细节做好。';
+const SIMPLE_TEXT = '设计，让复杂的事情变得简单。';
+const LONG_TEXT = '一个真正可扩展的系统，应该让每个组件都能被单独替换和复用';
+const DATA_TEXT = '响应 0.5 秒，内存占用 42%。';
 
 export const demoTranscripts: DemoTranscript[] = [
-  { id: 'demo-finance', title: 'Finance · 行情播报', titleEn: 'Finance · market read', language: 'mixed', text: FINANCE_TEXT, words: synthesizeWords(FINANCE_TEXT) },
-  { id: 'demo-tech', title: 'Tech · 产品发布', titleEn: 'Tech · product launch', language: 'zh', text: TECH_TEXT, words: synthesizeWords(TECH_TEXT) },
-  { id: 'demo-podcast', title: 'Podcast · 观点输出', titleEn: 'Podcast · opinion', language: 'zh', text: PODCAST_TEXT, words: synthesizeWords(PODCAST_TEXT) },
-  { id: 'demo-mixed', title: 'Mixed · 中英混排', titleEn: 'Mixed · CN + EN', language: 'mixed', text: MIXED_TEXT, words: synthesizeWords(MIXED_TEXT) },
-  { id: 'demo-numbers', title: 'Data · 数字识别测试', titleEn: 'Data · number detection', language: 'mixed', text: DATA_TEXT, words: synthesizeWords(DATA_TEXT) },
-  { id: 'demo-long', title: 'Long · 单行分段测试', titleEn: 'Long · single-line segmentation', language: 'zh', text: LONG_TEXT, words: synthesizeWords(LONG_TEXT) }
+  { id: 'demo-finance', title: '基础 · 通用示例', titleEn: 'Basic · generic', language: 'zh', text: BASIC_TEXT, words: synthesizeWords(BASIC_TEXT) },
+  { id: 'demo-tech', title: '设计 · 排版', titleEn: 'Design · typography', language: 'zh', text: DESIGN_TEXT, words: synthesizeWords(DESIGN_TEXT) },
+  { id: 'demo-podcast', title: '金句 · 叙事', titleEn: 'Quote · story', language: 'zh', text: STORY_TEXT, words: synthesizeWords(STORY_TEXT) },
+  { id: 'demo-mixed', title: '混合 · 中英', titleEn: 'Mixed · CN/EN', language: 'mixed', text: SIMPLE_TEXT, words: synthesizeWords(SIMPLE_TEXT) },
+  { id: 'demo-numbers', title: '数字 · 识别测试', titleEn: 'Numbers · detection', language: 'mixed', text: DATA_TEXT, words: synthesizeWords(DATA_TEXT) },
+  { id: 'demo-long', title: '长句 · 单行分段', titleEn: 'Long · single line', language: 'zh', text: LONG_TEXT, words: synthesizeWords(LONG_TEXT) }
 ];
 
 /** Verify the single-line rule on the long demo: it must split, not wrap. */
 export const LONG_DEMO_ID = 'demo-long';
 
 export const DEFAULT_DEMO_ID = 'demo-finance';
-export const STUDIO_DEMO_TEXT = 'BTC 今天上涨 12%，市场重新回到了关键位置。';
+export const STUDIO_DEMO_TEXT = '让每一个字都跟着声音动起来。';
 
 export function getTranscript(id: string): DemoTranscript {
   return demoTranscripts.find((d) => d.id === id) ?? demoTranscripts[0];

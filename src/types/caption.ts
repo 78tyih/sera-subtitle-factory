@@ -155,7 +155,7 @@ export interface MotionStyle {
 
 /* ---------- layout ---------- */
 
-export type AspectRatio = '9:16' | '16:9' | '1:1' | '4:5';
+export type AspectRatio = '16:9' | '4:3' | '1:1' | '9:16' | '4:5';
 
 export interface LayoutStyle {
   /** RULE #1 — always 1 */

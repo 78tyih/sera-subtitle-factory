@@ -29,7 +29,7 @@ export default function HomePage() {
   return (
     <main className="mx-auto max-w-[1180px] px-6 pb-24 pt-16">
       {/* ------------------------------------------------------------ hero */}
-      <section className="grid grid-cols-1 items-center gap-12 md:grid-cols-[1fr_300px]">
+      <section className="grid grid-cols-1 items-center gap-12 md:grid-cols-[1fr_440px]">
         <div>
           <p className="mb-4 font-mono text-[10.5px] uppercase tracking-[0.16em] text-muted">{t('home.kicker')}</p>
           <h1 className="text-[42px] font-semibold leading-[1.08] tracking-[-0.03em] text-ink">
@@ -76,7 +76,7 @@ export default function HomePage() {
             recipe={hero}
             words={finance.words}
             time={finance.words[3]?.start ?? 1}
-            width={300}
+            width={420}
             showSafeArea={false}
             backdrop="finance"
             animate={false}
@@ -91,14 +91,14 @@ export default function HomePage() {
           <h2 className="text-[15px] font-medium tracking-[-0.01em] text-ink">{t('home.demos.title')}</h2>
           <span className="font-mono text-[10.5px] uppercase tracking-[0.1em] text-muted">{t('home.demos.hint')}</span>
         </div>
-        <div className="grid grid-cols-2 gap-5 md:grid-cols-3 lg:grid-cols-6">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {HOME_DEMOS.map((d) => {
             const recipe = presets.find((p) => p.id === d.presetId)!;
             const transcript = getTranscript(d.transcriptId);
             return (
               <div key={d.presetId}>
                 <Link href="/studio">
-                  <DemoTile recipe={recipe} words={transcript.words} width={168} autoplay className="shadow-[0_14px_40px_rgba(0,0,0,0.45)]" />
+                  <DemoTile recipe={recipe} words={transcript.words} width={340} autoplay className="overflow-hidden rounded-[10px] shadow-[0_14px_40px_rgba(0,0,0,0.45)]" />
                 </Link>
                 <div className="mt-2.5 text-[11.5px] text-ink2">{nameOf(recipe)}</div>
                 <div className="font-mono text-[9.5px] uppercase tracking-[0.08em] text-muted">{recipe.category}</div>
@@ -136,7 +136,7 @@ export default function HomePage() {
               href={`/studio?preset=${p.id}`}
               className="group rounded-[14px] border border-line bg-panel p-3 transition-all duration-150 ease-out hover:border-line2"
             >
-              <DemoTile recipe={p} words={getTranscript('demo-finance').words} width={228} aspect="16:9" autoplay className="overflow-hidden rounded-[10px]" />
+              <DemoTile recipe={p} words={getTranscript('demo-finance').words} width={268} autoplay className="overflow-hidden rounded-[10px]" />
               <div className="mt-3 text-[12.5px] font-medium text-ink">{nameOf(p)}</div>
               <div className="mt-1 text-[11px] leading-relaxed text-muted">{descOf(p)}</div>
             </Link>

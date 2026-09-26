@@ -19,7 +19,7 @@ const DEMO_FOR_CATEGORY: Record<string, string> = {
   Neon: 'demo-tech'
 };
 
-export function PresetCard({ recipe, width = 232 }: { recipe: CaptionRecipe; width?: number }) {
+export function PresetCard({ recipe, width = 288 }: { recipe: CaptionRecipe; width?: number }) {
   const router = useRouter();
   const applyPreset = useCaptionStore((s) => s.usePreset);
   const { t } = useI18n();

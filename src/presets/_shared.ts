@@ -20,7 +20,7 @@ export const baseRecipe: CaptionRecipe = {
     yOffset: 0.13,
     align: 'center',
     maxWidth: 0.86,
-    aspect: '9:16',
+    aspect: '16:9',
     safeArea: false
   },
 

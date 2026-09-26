@@ -48,6 +48,11 @@
 - 顶栏 `ThemeToggle` / `LangToggle`，首页 Hero 也放了紧凑版；选择都写入 localStorage
 - 12 个 preset 补 `nameZh` / `descriptionEn`，转录补 `titleEn`，中文模式下不再满屏英文
 
+**比例调整（2026-09-27）**
+- 字幕预览默认 **16:9**（原 9:16 竖版），比例选项改为 16:9 / 4:3 / 1:1 / 9:16
+- Studio 预览、首页 6 个 demo（改 3 列大图）、Library 卡片、旗舰样式卡全部统一 16:9
+- Sera Caption Library 的 12 张导出卡也从 1200×1500 竖版改成 **1600×900 横版规格卡**（左规格栏 / 右 16:9 舞台）
+
 ## Current
 - Phase 1 验收全部通过，等指令进入 Phase 2
 - **交付形态修正**：新增静态导出（`npm run static` → `./out` + `scripts/serve.mjs` :4311）。

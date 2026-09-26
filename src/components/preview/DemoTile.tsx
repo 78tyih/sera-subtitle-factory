@@ -14,7 +14,7 @@ export function DemoTile({
   recipe,
   words,
   width,
-  aspect = '9:16',
+  aspect = '16:9',
   autoplay = false,
   animate = true,
   showSafeArea = false,

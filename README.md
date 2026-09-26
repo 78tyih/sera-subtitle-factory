@@ -32,6 +32,7 @@ npm run static     # 导出 + 起静态服务器 → http://127.0.0.1:4311/studi
 
 ## 主题与语言
 
+- **默认比例 16:9**（可切 4:3 / 1:1 / 9:16），字幕按横屏设计；短视频竖版仍可选。
 - **日间 / 夜间**：右上角切换，默认夜间（spec §50），选择写入 localStorage，刷新保持。
   全部颜色走语义 CSS 变量（`--c-panel` / `--c-ink` / `--c-line`…），Tailwind 类同时适配两个主题；
   字幕预览框固定深色（那是视频画面，不随 UI 主题变化）。
@@ -42,7 +43,7 @@ npm run static     # 导出 + 起静态服务器 → http://127.0.0.1:4311/studi
 
 | 路由 | 内容 |
 |---|---|
-| `/` | Hero + 6 个自动循环的字幕 Demo + 四个旗舰样式 |
+| `/` | Hero + 6 个 16:9 自动循环的字幕 Demo + 四个旗舰样式 |
 | `/studio` | **工作台**：Left Sidebar + Center Preview + Right Inspector + Bottom Timeline |
 | `/library` | 12 个 Preset，Hover 播放动效，四维过滤 + 搜索 |
 | `/recipes` | Recipe 管理：保存 / 复制 / 重命名 / 删除 / 导入 / 导出 JSON |

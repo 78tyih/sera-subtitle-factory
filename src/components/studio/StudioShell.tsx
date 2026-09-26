@@ -44,7 +44,7 @@ export function StudioShell() {
 
           <Segmented
             size="sm"
-            options={(['9:16', '16:9', '1:1', '4:5'] as AspectRatio[]).map((a) => ({ value: a, label: a }))}
+            options={(['16:9', '4:3', '1:1', '9:16'] as AspectRatio[]).map((a) => ({ value: a, label: a }))}
             value={aspect}
             onChange={(v) => s.setAspect(v as AspectRatio)}
           />

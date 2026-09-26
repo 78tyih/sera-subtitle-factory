@@ -7,9 +7,10 @@ import { findSegment, resolveSegment } from '@/caption-engine/resolve';
 import { useSegments } from '@/lib/hooks';
 
 export const ASPECT: Record<AspectRatio, number> = {
-  '9:16': 9 / 16,
   '16:9': 16 / 9,
+  '4:3': 4 / 3,
   '1:1': 1,
+  '9:16': 9 / 16,
   '4:5': 4 / 5
 };
 
@@ -30,7 +31,7 @@ export function CaptionStage({
   recipe,
   words,
   time,
-  aspect = '9:16',
+  aspect = '16:9',
   width,
   showSafeArea = false,
   animate = true,

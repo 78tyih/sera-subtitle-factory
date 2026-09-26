@@ -90,7 +90,7 @@ export const useCaptionStore = create<CaptionState>()(
     (set, get) => ({
       transcriptId: DEFAULT_DEMO_ID,
       recipe: clone(presets[0]),
-      aspect: '9:16',
+      aspect: '16:9',
       showSafeArea: true,
 
       currentTime: 0,

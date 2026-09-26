@@ -1,0 +1,96 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   Sera Subtitle Factory — global styles
+   RULE #1: captions are ALWAYS single line. See .cap-line below.
+   ============================================================ */
+
+:root {
+  --bg: #0a0a0a;
+  --panel: #0f0f10;
+  --line: #1f1f22;
+  --ink: #ededed;
+}
+
+html,
+body {
+  background: var(--bg);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* ---------- RULE #1 : SINGLE LINE ---------- */
+/* Never allow a caption to wrap. Long captions are re-segmented instead. */
+.cap-line,
+.cap-word-line {
+  white-space: nowrap !important;
+  word-break: keep-all;
+  overflow-wrap: normal;
+}
+
+/* ---------- caption stage ---------- */
+.cap-stage {
+  position: relative;
+  overflow: hidden;
+  background: #000;
+}
+
+/* active word scaling must never shift the layout of neighbours */
+.cap-word {
+  display: inline-block;
+  transform-origin: 50% 80%;
+  will-change: transform, color;
+}
+
+/* scrollbars */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: #26262b;
+  border-radius: 8px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* range inputs */
+input[type='range'] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 3px;
+  background: #26262b;
+  border-radius: 999px;
+  outline: none;
+}
+input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: #ededed;
+  cursor: pointer;
+  transition: transform 0.12s ease-out;
+}
+input[type='range']::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+}
+
+/* hairline separators for panels */
+.hairline {
+  border-color: #1f1f22;
+}
+
+::selection {
+  background: rgba(59, 130, 246, 0.35);
+}

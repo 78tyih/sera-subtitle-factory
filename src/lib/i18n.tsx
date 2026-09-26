@@ -66,7 +66,7 @@ export const dict = {
 
     /* home */
     'home.kicker': '字幕设计系统',
-    'home.title': '让每一个字，\n都跟着声音动。',
+    'home.title': '让每一个字\n都跟着声音动起来',
     'home.subtitle': '单行字幕 · 语音驱动 · 数字自动放大 · 像设计 UI 一样设计字幕。',
     'home.cta.studio': '打开工作台',
     'home.cta.library': '浏览模板库',
@@ -298,7 +298,7 @@ export const dict = {
     'ui.white': 'White',
 
     'home.kicker': 'caption design system',
-    'home.title': 'Make captions move\nwith every word.',
+    'home.title': 'Make every word\nmove with the voice.',
     'home.subtitle': 'Single-line captions · speech-driven · numbers emphasised · design subtitles like UI components.',
     'home.cta.studio': 'Open Studio',
     'home.cta.library': 'Browse Library',

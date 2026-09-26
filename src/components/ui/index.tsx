@@ -216,8 +216,8 @@ export function IconBtn({
       title={title}
       disabled={disabled}
       className={[
-        'grid h-8 w-8 place-items-center rounded-[9px] border transition-all duration-150 ease-out disabled:opacity-35',
-        active ? 'border-ink bg-chip text-ink' : 'border-line bg-panel2 text-ink2 hover:border-line2 hover:text-ink'
+        'grid h-9 w-9 place-items-center rounded-[10px] transition-all duration-150 ease-out disabled:opacity-35',
+        active ? 'bg-hover text-ink' : 'text-ink2 hover:bg-hover hover:text-ink'
       ].join(' ')}
     >
       {children}

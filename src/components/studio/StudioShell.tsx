@@ -28,7 +28,9 @@ const ICON = {
   save: I('M5 4h11l3 3v13H5zM9 4v5h6'),
   download: I('M12 4v11M7 12l5 5 5-5M5 20h14'),
   sparkle: I('M12 3l1.8 4.9L19 9.6l-4.4 3 .6 5.4-3.2-2.6-3.2 2.6.6-5.4L5 9.6l5.2-1.7z'),
-  restart: I('M4 10a8 8 0 1114 5M4 5v5h5')
+  restart: I('M4 10a8 8 0 1114 5M4 5v5h5'),
+  play: I('M7 5l12 7-12 7z'),
+  pause: I('M8 5v14M16 5v14')
 };
 
 export function StudioShell() {
@@ -147,9 +149,9 @@ export function StudioShell() {
               <button
                 onClick={s.togglePlaying}
                 title={s.playing ? t('ui.pause') : t('ui.play')}
-                className="grid h-9 w-9 place-items-center rounded-full bg-ink text-[13px] text-bg transition-transform duration-150 ease-out hover:scale-105"
+                className="grid h-10 w-10 place-items-center rounded-full bg-ink text-bg transition-transform duration-150 ease-out hover:scale-105 active:scale-[0.98]"
               >
-                {s.playing ? '❚❚' : '▶'}
+                {s.playing ? ICON.pause : ICON.play}
               </button>
               <span className="font-mono text-[10.5px] text-muted">
                 {time.toFixed(2)} / {s.duration.toFixed(2)}s

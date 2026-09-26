@@ -73,7 +73,7 @@ Caption Recipe = Layout + Typography + Color + ActiveWord + Number
    状态机：`idle → active → spoken`。
 3. **不推挤邻词** —— active / 强调只改 `transform` + `color`，不改 layout 尺寸。
 
-## 40 个 Preset（12 核心 + 28 扩展）
+## 200 个 Preset（12 核心 + 28 扩展 + 160 系统枚举）
 
 核心 12：Minimal White · Minimal Black · **Editorial** · **Finance Yellow** · **Finance Blue** · Data Focus · **Left Bar** · Clean White Card · Clean Black Card · Neon Blue · Word Pop · Word Float
 
@@ -81,12 +81,11 @@ Caption Recipe = Layout + Typography + Color + ActiveWord + Number
 
 粗体 = 四个旗舰 Demo（整个视觉系统的基准）。数字默认 ×1.20 / 字重 800 / 黄色。
 
-## 9 种逐词动效
+## 动效（18 种）
 
-`highlight` · `pop`（1.00→1.09→1.04→1.00）· `bounce`（Y 0→-5→1→0）· `float`（≤8px）·
-`scale` · `glow` · `weightShift` · `blurReveal` · `none`
+逐词：`highlight` · `pop`（1.00→1.09→1.04→1.00）· `bounce`（Y 0→-5→1→0）· `float`（≤8px）· `scale` · `glow` · `weightShift` · `blurReveal` · `wave`（波浪）· `flip`（翻转）· `none`
 
-入场：`fade` · `float` · `slideUp` · `slideDown` · `scale` · `blurReveal`
+入场：`fade` · `float` · `slideUp` · `slideDown` · `scale` · `blurReveal` · `typewriter`（打字机）· `marquee`（跑马灯）
 
 ## 目录
 

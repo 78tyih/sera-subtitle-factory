@@ -71,7 +71,7 @@ export const dict = {
     'home.cta.studio': '打开工作台',
     'home.cta.library': '浏览模板库',
     'home.stat.presets': '40 个预设',
-    'home.stat.motions': '9 种逐词动效',
+    'home.stat.motions': '18 种动效',
     'home.stat.singleLine': '单行锁定',
     'home.stat.numbers': '数字 ×1.20',
     'home.demos.title': '字幕动效预览',
@@ -220,6 +220,10 @@ export const dict = {
     'motion.fade': '淡入',
     'motion.slideUp': '上滑',
     'motion.slideDown': '下滑',
+    'motion.marquee': '跑马灯',
+    'motion.typewriter': '打字机',
+    'motion.wave': '波浪',
+    'motion.flip': '翻转',
 
     /* export */
     'export.title': '导出',
@@ -303,7 +307,7 @@ export const dict = {
     'home.cta.studio': 'Open Studio',
     'home.cta.library': 'Browse Library',
     'home.stat.presets': '40 presets',
-    'home.stat.motions': '9 word motions',
+    'home.stat.motions': '18 motions',
     'home.stat.singleLine': 'single line locked',
     'home.stat.numbers': 'numbers ×1.20',
     'home.demos.title': 'Caption demos',
@@ -448,6 +452,10 @@ export const dict = {
     'motion.fade': 'Fade',
     'motion.slideUp': 'Slide up',
     'motion.slideDown': 'Slide down',
+    'motion.marquee': 'Marquee',
+    'motion.typewriter': 'Typewriter',
+    'motion.wave': 'Wave',
+    'motion.flip': 'Flip',
 
     /* export */
     'export.title': 'Export',

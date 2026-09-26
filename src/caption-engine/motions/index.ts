@@ -11,6 +11,10 @@ import { pop } from './pop';
 import { bounce } from './bounce';
 import { glow, blurReveal } from './glow';
 import { weightShift, highlight } from './weightShift';
+import { marquee } from './marquee';
+import { typewriter } from './typewriter';
+import { wave } from './wave';
+import { flip } from './flip';
 
 import type { EntranceMotionName, WordMotionName, ExitMotionName } from '@/types/caption';
 
@@ -31,7 +35,9 @@ const ENTRANCES: Partial<Record<EntranceMotionName, EntranceFactory>> = {
   slideUp: slideUp.entrance,
   slideDown: slideDown.entrance,
   scale: scale.entrance,
-  blurReveal: blurReveal.entrance
+  blurReveal: blurReveal.entrance,
+  marquee: marquee.entrance as unknown as EntranceFactory,
+  typewriter: typewriter.entrance as unknown as EntranceFactory
 };
 
 export function getEntrance(name: EntranceMotionName, duration: number) {
@@ -47,7 +53,7 @@ export function getEntrance(name: EntranceMotionName, duration: number) {
   return f(duration);
 }
 
-export const entranceNames: EntranceMotionName[] = ['none', 'fade', 'float', 'slideUp', 'slideDown', 'scale', 'blurReveal'];
+export const entranceNames: EntranceMotionName[] = ['none', 'fade', 'float', 'slideUp', 'slideDown', 'scale', 'blurReveal', 'typewriter', 'marquee'];
 
 /* ---------- word ---------- */
 
@@ -76,6 +82,10 @@ export function getWordMotion(name: WordMotionName, env: WordMotionEnv) {
       return blurReveal.word(duration);
     case 'weightShift':
       return weightShift.word(env.baseWeight, env.emphasisWeight, duration);
+    case 'wave':
+      return wave.word(duration, intensity);
+    case 'flip':
+      return flip.word(duration);
     case 'highlight':
       return highlight.word(duration);
     default:
@@ -92,7 +102,9 @@ export const wordMotionNames: WordMotionName[] = [
   'scale',
   'glow',
   'weightShift',
-  'blurReveal'
+  'blurReveal',
+  'wave',
+  'flip'
 ];
 
 export const exitNames: ExitMotionName[] = ['none', 'fade', 'slideDown', 'scale', 'blurReveal'];

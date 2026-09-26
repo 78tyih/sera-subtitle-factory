@@ -13,6 +13,7 @@ import { neonBlue } from './neon-blue';
 import { wordPop } from './word-pop';
 import { wordFloat } from './word-float';
 import { extendedPresets } from './extended';
+import { generatedPresets } from './generated';
 
 /** Core pack (12 hand-tuned styles, spec §34) + extended pack (28 more). */
 export const corePresets: CaptionRecipe[] = [
@@ -30,7 +31,7 @@ export const corePresets: CaptionRecipe[] = [
   wordFloat
 ];
 
-export const presets: CaptionRecipe[] = [...corePresets, ...extendedPresets];
+export const presets: CaptionRecipe[] = [...corePresets, ...extendedPresets, ...generatedPresets];
 
 export const presetCategories: PresetCategory[] = [
   'Minimal',

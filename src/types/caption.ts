@@ -130,7 +130,9 @@ export type EntranceMotionName =
   | 'slideUp'
   | 'slideDown'
   | 'scale'
-  | 'blurReveal';
+  | 'blurReveal'
+  | 'marquee'
+  | 'typewriter';
 
 export type WordMotionName =
   | 'none'
@@ -141,7 +143,9 @@ export type WordMotionName =
   | 'scale'
   | 'glow'
   | 'weightShift'
-  | 'blurReveal';
+  | 'blurReveal'
+  | 'wave'
+  | 'flip';
 
 export type ExitMotionName = 'none' | 'fade' | 'slideDown' | 'scale' | 'blurReveal';
 

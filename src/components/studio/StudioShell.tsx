@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useCaptionStore, allTranscripts } from '@/store/caption-store';
 import { Sidebar } from '@/components/studio/Sidebar';
 import { Inspector } from '@/components/inspector/Inspector';
@@ -36,6 +36,12 @@ const ICON = {
 export function StudioShell() {
   const { t, lang } = useI18n();
   const s = useCaptionStore();
+
+  /* home cards link here with ?preset=<id> — apply it once on mount */
+  useEffect(() => {
+    const pid = new URLSearchParams(window.location.search).get('preset');
+    if (pid) useCaptionStore.getState().usePreset(pid);
+  }, []);
   const words = useCurrentWords();
   const { time, seek, restart } = usePlayback(s.duration, s.playing);
   const { segments } = useSegments(words, s.recipe);

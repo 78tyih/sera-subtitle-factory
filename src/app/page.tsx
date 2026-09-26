@@ -110,7 +110,7 @@ export default function HomePage() {
             className="overflow-hidden rounded-[12px] shadow-[0_20px_60px_rgba(0,0,0,0.5)]"
           />
           <p className="mt-2.5 text-[11px] text-muted">
-            {nameOf(hero)} · {hero.category}
+            {nameOf(hero)} · {t(`cat.${hero.category}` as never)}
           </p>
         </motion.div>
       </section>

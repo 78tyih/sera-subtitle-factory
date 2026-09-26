@@ -36,7 +36,7 @@ export const presets: CaptionRecipe[] = [...corePresets, ...extendedPresets, ...
 export const presetCategories: PresetCategory[] = [
   'Minimal',
   'Editorial',
-  'Finance',
+  'Broadcast',
   'Data',
   'Tech',
   'Neon',

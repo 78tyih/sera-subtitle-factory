@@ -37,7 +37,7 @@ export function Inspector({ className = '' }: { className?: string }) {
                     className="rounded-[7px] border border-line2 px-2 py-1 text-[10.5px] text-ink2 hover:bg-hover hover:text-ink"
                     onClick={() => useCaptionStore.getState().usePreset(presets.find((p) => p.category === c)!.id)}
                   >
-                    {c} <span className="font-mono text-[9.5px] text-muted">{n}</span>
+                    {t(`cat.${c}` as never)} <span className="font-mono text-[9.5px] text-muted">{n}</span>
                   </button>
                 ))}
             </Row>
@@ -56,7 +56,7 @@ export function Inspector({ className = '' }: { className?: string }) {
                   >
                     <div className="flex items-center justify-between">
                       <span className="text-[12.5px] font-medium text-ink">{lang === 'zh' ? p.nameZh ?? p.name : p.name}</span>
-                      <span className="font-mono text-[9.5px] uppercase tracking-[0.08em] text-muted">{p.category}</span>
+                      <span className="font-mono text-[9.5px] uppercase tracking-[0.08em] text-muted">{t(`cat.${p.category}` as never)}</span>
                     </div>
                     <p className="mt-1 text-[10.5px] leading-relaxed text-muted">{lang === 'zh' ? p.description : p.descriptionEn ?? p.description}</p>
                   </button>

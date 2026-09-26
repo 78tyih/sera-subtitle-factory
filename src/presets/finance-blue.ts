@@ -9,7 +9,7 @@ export const financeBlue = preset({
   name: 'Finance Blue',
   nameZh: '财经蓝标',
   descriptionEn: 'White text with a blue active word; numbers ×1.20 with a soft scale instead of a pop.',
-  category: 'Finance',
+  category: 'Broadcast',
   description: '白字 + 蓝色 active，数字放大 1.20，柔和缩放而非弹跳。',
   tags: ['finance', 'blue', 'numbers', 'scale'],
   typography: { fontFamily: 'inter', fontWeight: 700, fontSize: 68, letterSpacing: -0.02, lineHeight: 1.14, textTransform: 'none' },

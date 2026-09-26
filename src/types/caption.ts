@@ -175,7 +175,7 @@ export interface LayoutStyle {
 export type PresetCategory =
   | 'Minimal'
   | 'Editorial'
-  | 'Finance'
+  | 'Broadcast'
   | 'Data'
   | 'Tech'
   | 'Neon'

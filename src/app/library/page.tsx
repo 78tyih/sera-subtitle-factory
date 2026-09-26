@@ -73,7 +73,7 @@ export default function LibraryPage() {
 
         <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-3">
           <FilterGroup label={t('library.filter.style')}>
-            <Segmented size="sm" options={[{ value: 'All', label: t('ui.all') }, ...presetCategories.filter((c) => presets.some((p) => p.category === c)).map((c) => ({ value: c, label: c }))]} value={cat} onChange={(v) => setCat(String(v))} />
+            <Segmented size="sm" options={[{ value: 'All', label: t('ui.all') }, ...presetCategories.filter((c) => presets.some((p) => p.category === c)).map((c) => ({ value: c, label: t(`cat.${c}` as never) }))]} value={cat} onChange={(v) => setCat(String(v))} />
           </FilterGroup>
 
           <FilterGroup label={t('library.filter.background')}>

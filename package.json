@@ -11,7 +11,8 @@
     "typecheck": "tsc --noEmit",
     "export": "SSF_EXPORT=1 next build",
     "static": "SSF_EXPORT=1 next build && node scripts/serve.mjs",
-    "serve:static": "node scripts/serve.mjs"
+    "serve:static": "node scripts/serve.mjs",
+    "local": "SSF_EXPORT=1 next build && node scripts/relativize.mjs"
   },
   "dependencies": {
     "framer-motion": "^11.11.17",

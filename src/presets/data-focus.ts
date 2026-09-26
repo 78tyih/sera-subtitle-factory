@@ -7,6 +7,8 @@ import { preset } from './_shared';
 export const dataFocus = preset({
   id: 'sera-data-focus',
   name: 'Data Focus',
+  nameZh: '数据放大',
+  descriptionEn: 'Numbers are the hero: yellow, ×1.25, weight 800. Everything else stays white.',
   category: 'Data',
   description: '数字是主角：黄色、放大 1.25 倍、字重 800，普通文字保持白。',
   tags: ['data', 'numbers', 'yellow', 'emphasis'],

@@ -6,6 +6,7 @@ import { useSegments, useScrub } from '@/lib/hooks';
 import { activeWordIndex, findSegment, formatTime, resolveSegment } from '@/caption-engine/resolve';
 import { getTranscript } from '@/lib/demo-transcripts';
 import type { WordTimestamp } from '@/types/caption';
+import { useI18n } from '@/lib/i18n';
 
 /** words of the selected transcript */
 export function useCurrentWords(): WordTimestamp[] {
@@ -18,6 +19,7 @@ export function useCurrentWords(): WordTimestamp[] {
  * Audio wave · Caption segments · Word timeline · Playhead. Not a video editor.
  */
 export function Timeline({ time, duration, onSeek }: { time: number; duration: number; onSeek: (t: number) => void }) {
+  const { t } = useI18n();
   const recipe = useCaptionStore((s) => s.recipe);
   const words = useCurrentWords();
   const { segments } = useSegments(words, recipe);
@@ -50,33 +52,33 @@ export function Timeline({ time, duration, onSeek }: { time: number; duration: n
         </span>
         <div className="ml-auto flex items-center gap-1.5">
           <span className="rounded-[6px] border border-line2 px-2 py-[3px] font-mono text-[9.5px] uppercase tracking-[0.08em] text-muted">
-            {active ? active.words.length : 0} words
+            {active ? active.words.length : 0} {t('studio.timeline.wordsCount')}
           </span>
           <span className="rounded-[6px] border border-line2 px-2 py-[3px] font-mono text-[9.5px] uppercase tracking-[0.08em] text-muted">
-            {segments.length} segments
+            {segments.length} {t('studio.timeline.segments')}
           </span>
-          <span className="rounded-[6px] border border-line2 px-2 py-[3px] font-mono text-[9.5px] uppercase tracking-[0.08em] text-muted">1 line</span>
+          <span className="rounded-[6px] border border-line2 px-2 py-[3px] font-mono text-[9.5px] uppercase tracking-[0.08em] text-muted">{t('studio.timeline.line')}</span>
         </div>
       </div>
 
       <div className="flex gap-2 px-4 pb-3">
         <div className="flex w-[52px] shrink-0 flex-col gap-1.5 pt-[1px]">
-          <span className="flex h-6 items-center font-mono text-[9.5px] uppercase tracking-[0.1em] text-muted">Audio</span>
-          <span className="flex h-7 items-center font-mono text-[9.5px] uppercase tracking-[0.1em] text-muted">Caps</span>
-          <span className="flex h-6 items-center font-mono text-[9.5px] uppercase tracking-[0.1em] text-muted">Words</span>
+          <span className="flex h-6 items-center font-mono text-[9.5px] uppercase tracking-[0.1em] text-muted">{t('studio.timeline.audio')}</span>
+          <span className="flex h-7 items-center font-mono text-[9.5px] uppercase tracking-[0.1em] text-muted">{t('studio.timeline.caps')}</span>
+          <span className="flex h-6 items-center font-mono text-[9.5px] uppercase tracking-[0.1em] text-muted">{t('studio.timeline.words')}</span>
         </div>
 
         {/* scrub surface */}
         <div ref={laneRef} className="relative min-w-0 flex-1 cursor-col-resize select-none">
           {/* audio */}
-          <div className="flex h-6 items-center gap-[2px] overflow-hidden rounded-[6px] bg-[#0c0c0d] px-1">
+          <div className="flex h-6 items-center gap-[2px] overflow-hidden rounded-[6px] bg-sunken px-1">
             {wave.map((w, i) => (
               <span key={i} className="w-[2px] shrink-0 rounded-full" style={{ height: `${w.h * 100}%`, background: w.spoken ? 'rgba(59,130,246,0.75)' : 'rgba(255,255,255,0.10)' }} />
             ))}
           </div>
 
           {/* caption segments */}
-          <div data-seg-count={segments.length} className="relative mt-1.5 h-7 overflow-hidden rounded-[6px] bg-[#0c0c0d]">
+          <div data-seg-count={segments.length} className="relative mt-1.5 h-7 overflow-hidden rounded-[6px] bg-sunken">
             {segments.map((seg) => {
               const on = active?.id === seg.id;
               return (
@@ -85,7 +87,7 @@ export function Timeline({ time, duration, onSeek }: { time: number; duration: n
                   data-seg={seg.words.map((w) => w.text).join('')}
                   className={[
                     'absolute bottom-1 top-1 overflow-hidden rounded-[4px] border px-2 text-[10px] leading-[18px] transition-all duration-150 ease-out',
-                    on ? 'border-accent/60 bg-[#16202f] text-ink' : 'border-line2 bg-[#141416] text-ink2'
+                    on ? 'border-accent/60 bg-accent/15 text-ink' : 'border-line2 bg-panel2 text-ink2'
                   ].join(' ')}
                   style={{ left: pct(seg.start), width: `calc(${pct(seg.end - seg.start)} )`, minWidth: 22 }}
                   title={seg.words.map((w) => w.text).join('')}
@@ -97,7 +99,7 @@ export function Timeline({ time, duration, onSeek }: { time: number; duration: n
           </div>
 
           {/* word timeline */}
-          <div className="mt-1.5 flex h-6 items-center gap-[3px] overflow-hidden rounded-[6px] bg-[#0c0c0d] px-1.5">
+          <div className="mt-1.5 flex h-6 items-center gap-[3px] overflow-hidden rounded-[6px] bg-sunken px-1.5">
             {active?.words.map((w, i) => (
               <span
                 key={w.id}

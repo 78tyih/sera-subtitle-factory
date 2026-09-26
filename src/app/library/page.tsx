@@ -5,6 +5,7 @@ import { presets, presetCategories } from '@/presets';
 import { PresetCard } from '@/components/library/PresetCard';
 import { Segmented } from '@/components/ui';
 import { useCaptionStore } from '@/store/caption-store';
+import { useI18n } from '@/lib/i18n';
 
 type BgFilter = 'all' | 'none' | 'light' | 'dark';
 type MotionFilter = 'all' | 'highlight' | 'pop' | 'float' | 'slideUp' | 'scale' | 'glow';
@@ -13,6 +14,7 @@ type HighlightFilter = 'all' | 'yellow' | 'blue' | 'white';
 const isLightBg = (t: string) => t === 'white' || t === 'white92';
 
 export default function LibraryPage() {
+  const { t } = useI18n();
   const savedRecipes = useCaptionStore((s) => s.savedRecipes);
 
   const [q, setQ] = useState('');
@@ -52,11 +54,9 @@ export default function LibraryPage() {
   return (
     <main className="mx-auto max-w-[1240px] px-6 pb-24 pt-10">
       <header className="mb-7">
-        <p className="mb-3 font-mono text-[10.5px] uppercase tracking-[0.16em] text-muted">caption library</p>
-        <h1 className="text-[30px] font-semibold tracking-[-0.025em]">Presets</h1>
-        <p className="mt-2 max-w-[620px] text-[13px] leading-relaxed text-ink2">
-          12 个高质量预设 + 你保存的 Recipe。鼠标悬停即播放 1–2 秒动效预览，点 Use Template 直接进 Studio 继续改。
-        </p>
+        <p className="mb-3 font-mono text-[10.5px] uppercase tracking-[0.16em] text-muted">{t('library.kicker')}</p>
+        <h1 className="text-[30px] font-semibold tracking-[-0.025em]">{t('library.title')}</h1>
+        <p className="mt-2 max-w-[620px] text-[13px] leading-relaxed text-ink2">{t('library.subtitle')}</p>
       </header>
 
       {/* filters */}
@@ -65,36 +65,36 @@ export default function LibraryPage() {
           <input
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            placeholder="Search: finance / yellow / pop / no background / data…"
-            className="min-w-[240px] flex-1 rounded-[9px] border border-line bg-[#111113] px-3 py-2 text-[12.5px] text-ink outline-none placeholder:text-muted focus:border-accent/60"
+            placeholder={t('library.searchPlaceholder')}
+            className="min-w-[240px] flex-1 rounded-[9px] border border-line bg-panel2 px-3 py-2 text-[12.5px] text-ink outline-none placeholder:text-muted focus:border-accent/60"
           />
           <span className="font-mono text-[10.5px] uppercase tracking-[0.1em] text-muted">{list.length} / {all.length}</span>
         </div>
 
         <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-3">
-          <FilterGroup label="Style">
-            <Segmented size="sm" options={[{ value: 'All', label: 'All' }, ...presetCategories.filter((c) => presets.some((p) => p.category === c)).map((c) => ({ value: c, label: c }))]} value={cat} onChange={(v) => setCat(String(v))} />
+          <FilterGroup label={t('library.filter.style')}>
+            <Segmented size="sm" options={[{ value: 'All', label: t('ui.all') }, ...presetCategories.filter((c) => presets.some((p) => p.category === c)).map((c) => ({ value: c, label: c }))]} value={cat} onChange={(v) => setCat(String(v))} />
           </FilterGroup>
 
-          <FilterGroup label="Background">
+          <FilterGroup label={t('library.filter.background')}>
             <Segmented
               size="sm"
               options={[
-                { value: 'all', label: 'All' },
-                { value: 'none', label: 'None' },
-                { value: 'light', label: 'Light' },
-                { value: 'dark', label: 'Dark' }
+                { value: 'all', label: t('library.filter.bg.all') },
+                { value: 'none', label: t('library.filter.bg.none') },
+                { value: 'light', label: t('library.filter.bg.light') },
+                { value: 'dark', label: t('library.filter.bg.dark') }
               ]}
               value={bg}
               onChange={(v) => setBg(v as BgFilter)}
             />
           </FilterGroup>
 
-          <FilterGroup label="Motion">
+          <FilterGroup label={t('library.filter.motion')}>
             <Segmented
               size="sm"
               options={[
-                { value: 'all', label: 'All' },
+                { value: 'all', label: t('ui.all') },
                 { value: 'highlight', label: 'Highlight' },
                 { value: 'pop', label: 'Pop' },
                 { value: 'float', label: 'Float' },
@@ -107,14 +107,14 @@ export default function LibraryPage() {
             />
           </FilterGroup>
 
-          <FilterGroup label="Highlight">
+          <FilterGroup label={t('library.filter.highlight')}>
             <Segmented
               size="sm"
               options={[
-                { value: 'all', label: 'Any' },
-                { value: 'yellow', label: 'Yellow' },
-                { value: 'blue', label: 'Blue' },
-                { value: 'white', label: 'White' }
+                { value: 'all', label: t('ui.any') },
+                { value: 'yellow', label: t('ui.yellow') },
+                { value: 'blue', label: t('ui.blue') },
+                { value: 'white', label: t('ui.white') }
               ]}
               value={highlight}
               onChange={(v) => setHighlight(v as HighlightFilter)}
@@ -131,9 +131,7 @@ export default function LibraryPage() {
       </div>
 
       {list.length === 0 && (
-        <div className="rounded-[14px] border border-line bg-panel p-10 text-center text-[12.5px] text-muted">
-          没有匹配的预设。试试清空过滤条件。
-        </div>
+        <div className="rounded-[14px] border border-line bg-panel p-10 text-center text-[12.5px] text-muted">{t('library.empty')}</div>
       )}
     </main>
   );

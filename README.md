@@ -30,6 +30,14 @@ npm run static     # 导出 + 起静态服务器 → http://127.0.0.1:4311/studi
 
 > 说明：`npm run export` 与 `npm run build` 共用 `.next`，两者之间切换时需要重新跑对应命令。
 
+## 主题与语言
+
+- **日间 / 夜间**：右上角切换，默认夜间（spec §50），选择写入 localStorage，刷新保持。
+  全部颜色走语义 CSS 变量（`--c-panel` / `--c-ink` / `--c-line`…），Tailwind 类同时适配两个主题；
+  字幕预览框固定深色（那是视频画面，不随 UI 主题变化）。
+- **中文 / English**：右上角切换，默认跟随浏览器语言（zh → 中文），可随时切换并记忆。
+  所有界面文案走 `src/lib/i18n.tsx` 字典；预设与转录标题也带中英双语字段（`nameZh` / `descriptionEn`）。
+
 ## 四个页面
 
 | 路由 | 内容 |

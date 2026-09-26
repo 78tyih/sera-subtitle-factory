@@ -1,20 +1,28 @@
 import type { Config } from 'tailwindcss';
 
+/** Colours resolve to CSS variables so both themes share one class vocabulary. */
+const c = (name: string) => `rgb(var(--c-${name}) / <alpha-value>)`;
+
 const config: Config = {
   content: ['./src/**/*.{ts,tsx}'],
   theme: {
     extend: {
       colors: {
-        bg: '#0A0A0A',
-        panel: '#0F0F10',
-        panel2: '#141416',
-        line: '#1F1F22',
-        line2: '#2A2A2E',
-        ink: '#EDEDED',
-        ink2: '#B4B4B8',
-        muted: '#7A7A80',
-        accent: '#3B82F6',
-        highlight: '#FFD400'
+        bg: c('bg'),
+        stage: c('stage'),
+        panel: c('panel'),
+        panel2: c('panel2'),
+        sunken: c('sunken'),
+        hover: c('hover'),
+        active: c('active'),
+        chip: c('chip'),
+        line: c('line'),
+        line2: c('line2'),
+        ink: c('ink'),
+        ink2: c('ink2'),
+        muted: c('muted'),
+        accent: c('accent'),
+        highlight: c('highlight')
       },
       borderRadius: {
         card: '14px',

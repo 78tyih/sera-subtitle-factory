@@ -51,6 +51,7 @@ export function synthesizeWords(text: string, start = 0, opts: SynthOpts = {}): 
 export interface DemoTranscript {
   id: string;
   title: string;
+  titleEn: string;
   language: 'zh' | 'en' | 'mixed';
   text: string;
   words: WordTimestamp[];
@@ -64,12 +65,12 @@ const LONG_TEXT = '今天比特币市场出现了非常明显的价格波动同�
 const DATA_TEXT = 'BTC +12.5% ETH $4,280 24H Volume $18.6B Funding Rate 0.021% Revenue +35%';
 
 export const demoTranscripts: DemoTranscript[] = [
-  { id: 'demo-finance', title: 'Finance · 行情播报', language: 'mixed', text: FINANCE_TEXT, words: synthesizeWords(FINANCE_TEXT) },
-  { id: 'demo-tech', title: 'Tech · 产品发布', language: 'zh', text: TECH_TEXT, words: synthesizeWords(TECH_TEXT) },
-  { id: 'demo-podcast', title: 'Podcast · 观点输出', language: 'zh', text: PODCAST_TEXT, words: synthesizeWords(PODCAST_TEXT) },
-  { id: 'demo-mixed', title: 'Mixed · 中英混排', language: 'mixed', text: MIXED_TEXT, words: synthesizeWords(MIXED_TEXT) },
-  { id: 'demo-numbers', title: 'Data · 数字识别测试', language: 'mixed', text: DATA_TEXT, words: synthesizeWords(DATA_TEXT) },
-  { id: 'demo-long', title: 'Long · 单行分段测试', language: 'zh', text: LONG_TEXT, words: synthesizeWords(LONG_TEXT) }
+  { id: 'demo-finance', title: 'Finance · 行情播报', titleEn: 'Finance · market read', language: 'mixed', text: FINANCE_TEXT, words: synthesizeWords(FINANCE_TEXT) },
+  { id: 'demo-tech', title: 'Tech · 产品发布', titleEn: 'Tech · product launch', language: 'zh', text: TECH_TEXT, words: synthesizeWords(TECH_TEXT) },
+  { id: 'demo-podcast', title: 'Podcast · 观点输出', titleEn: 'Podcast · opinion', language: 'zh', text: PODCAST_TEXT, words: synthesizeWords(PODCAST_TEXT) },
+  { id: 'demo-mixed', title: 'Mixed · 中英混排', titleEn: 'Mixed · CN + EN', language: 'mixed', text: MIXED_TEXT, words: synthesizeWords(MIXED_TEXT) },
+  { id: 'demo-numbers', title: 'Data · 数字识别测试', titleEn: 'Data · number detection', language: 'mixed', text: DATA_TEXT, words: synthesizeWords(DATA_TEXT) },
+  { id: 'demo-long', title: 'Long · 单行分段测试', titleEn: 'Long · single-line segmentation', language: 'zh', text: LONG_TEXT, words: synthesizeWords(LONG_TEXT) }
 ];
 
 /** Verify the single-line rule on the long demo: it must split, not wrap. */

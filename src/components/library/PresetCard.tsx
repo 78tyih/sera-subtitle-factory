@@ -6,6 +6,7 @@ import { DemoTile } from '@/components/preview/DemoTile';
 import { useCaptionStore } from '@/store/caption-store';
 import { getTranscript } from '@/lib/demo-transcripts';
 import { Badge } from '@/components/ui';
+import { useI18n } from '@/lib/i18n';
 
 const DEMO_FOR_CATEGORY: Record<string, string> = {
   Finance: 'demo-finance',
@@ -21,16 +22,17 @@ const DEMO_FOR_CATEGORY: Record<string, string> = {
 export function PresetCard({ recipe, width = 232 }: { recipe: CaptionRecipe; width?: number }) {
   const router = useRouter();
   const applyPreset = useCaptionStore((s) => s.usePreset);
+  const { t } = useI18n();
 
   const transcript = getTranscript(DEMO_FOR_CATEGORY[recipe.category] ?? 'demo-finance');
   const accent = recipe.text.active;
 
   return (
     <article className="group overflow-hidden rounded-[14px] border border-line bg-panel transition-all duration-150 ease-out hover:-translate-y-[2px] hover:border-line2">
-      <div className="relative bg-[#08080a] p-3">
+      <div className="relative bg-sunken p-3">
         <DemoTile recipe={recipe} words={transcript.words} width={width} className="overflow-hidden rounded-[10px]" />
         <span className="pointer-events-none absolute right-5 top-5 rounded-[5px] bg-black/50 px-1.5 py-[2px] font-mono text-[9px] uppercase tracking-[0.1em] text-white/70 opacity-0 transition-opacity duration-150 ease-out group-hover:opacity-100">
-          hover to play
+          {t('ui.hoverToPlay')}
         </span>
       </div>
 
@@ -54,16 +56,16 @@ export function PresetCard({ recipe, width = 232 }: { recipe: CaptionRecipe; wid
               applyPreset(recipe.id);
               router.push('/studio');
             }}
-            className="flex-1 rounded-[9px] bg-ink px-3 py-2 text-[11.5px] font-medium text-[#0b0b0c] transition-transform duration-150 ease-out hover:scale-[1.02]"
+            className="flex-1 rounded-[9px] bg-ink px-3 py-2 text-[11.5px] font-medium text-bg transition-transform duration-150 ease-out hover:scale-[1.02]"
           >
-            Use Template
+            {t('ui.useTemplate')}
           </button>
           <button
             onClick={() => navigator.clipboard?.writeText(JSON.stringify(recipe, null, 2))}
-            className="rounded-[9px] border border-line2 px-3 py-2 text-[11.5px] text-ink2 transition-colors duration-150 ease-out hover:bg-[#1a1a1c] hover:text-ink"
+            className="rounded-[9px] border border-line2 px-3 py-2 text-[11.5px] text-ink2 transition-colors duration-150 ease-out hover:bg-hover hover:text-ink"
             title="Copy recipe JSON"
           >
-            Copy JSON
+            {t('ui.copyJson')}
           </button>
         </div>
       </div>

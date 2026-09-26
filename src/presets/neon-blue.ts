@@ -7,6 +7,8 @@ import { preset } from './_shared';
 export const neonBlue = preset({
   id: 'sera-neon-blue',
   name: 'Neon Blue',
+  nameZh: '霓虹蓝',
+  descriptionEn: 'White text with a soft blue glow on the active word — restrained, never cyberpunk.',
   category: 'Neon',
   description: '白字 + 蓝色 active 微光，克制到不像霓虹。科技内容适用。',
   tags: ['neon', 'blue', 'glow', 'tech'],

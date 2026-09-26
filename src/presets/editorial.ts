@@ -7,6 +7,8 @@ import { preset } from './_shared';
 export const editorial = preset({
   id: 'sera-editorial',
   name: 'Editorial',
+  nameZh: '杂志编辑风',
+  descriptionEn: 'Serif-led, no background, keywords emphasised by weight shift, floating entrance.',
   category: 'Editorial',
   description: '衬线字体主导，无背景，关键词靠字重变化强调，浮动入场。',
   tags: ['editorial', 'none', 'weight-shift', 'float'],

@@ -7,6 +7,8 @@ import { preset } from './_shared';
 export const financeYellow = preset({
   id: 'sera-finance-yellow',
   name: 'Finance Yellow',
+  nameZh: '财经黄标',
+  descriptionEn: 'White text with a yellow active word; numbers scale ×1.20 with a restrained pop. The workhorse finance style.',
   category: 'Finance',
   description: '白字 + 黄色 active，数字放大 1.20 并弹跳。金融播报主力样式。',
   tags: ['finance', 'yellow', 'numbers', 'pop'],

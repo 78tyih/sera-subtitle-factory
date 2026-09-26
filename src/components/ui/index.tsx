@@ -75,7 +75,7 @@ export function Segmented<T extends string | number>({
   full?: boolean;
 }) {
   return (
-    <div className={`inline-flex gap-1 rounded-[10px] border border-line bg-[#0c0c0d] p-1 ${full ? 'w-full' : ''}`}>
+    <div className={`inline-flex gap-1 rounded-[10px] border border-line bg-sunken p-1 ${full ? 'w-full' : ''}`}>
       {options.map((o) => {
         const on = o.value === value;
         return (
@@ -86,7 +86,7 @@ export function Segmented<T extends string | number>({
               'rounded-[7px] transition-all duration-150 ease-out',
               size === 'sm' ? 'px-2 py-1 text-[10.5px]' : 'px-2.5 py-1.5 text-[11.5px]',
               full ? 'flex-1' : '',
-              on ? 'bg-[#232326] text-ink shadow-[inset_0_0_0_1px_rgba(255,255,255,0.05)]' : 'text-ink2 hover:bg-[#1a1a1c] hover:text-ink'
+              on ? 'bg-chip text-ink shadow-[inset_0_0_0_1px_rgba(255,255,255,0.05)]' : 'text-ink2 hover:bg-hover hover:text-ink'
             ].join(' ')}
           >
             {o.label}
@@ -152,9 +152,9 @@ export function Btn({
   title?: string;
 }) {
   const styles = {
-    ghost: 'border border-line2 bg-panel text-ink2 hover:bg-[#1a1a1c] hover:text-ink',
-    primary: 'bg-ink text-[#0b0b0c] hover:bg-white',
-    subtle: 'bg-[#151517] text-ink2 hover:bg-[#1d1d20] hover:text-ink'
+    ghost: 'border border-line2 bg-panel text-ink2 hover:bg-hover hover:text-ink',
+    primary: 'bg-ink text-bg hover:bg-white',
+    subtle: 'bg-hover text-ink2 hover:bg-hover hover:text-ink'
   }[variant];
   return (
     <button

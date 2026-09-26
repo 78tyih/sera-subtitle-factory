@@ -7,6 +7,8 @@ import { preset } from './_shared';
 export const leftBar = preset({
   id: 'sera-left-bar',
   name: 'Left Bar',
+  nameZh: '左竖条',
+  descriptionEn: 'Translucent dark rounded box with a blue left bar, sliding up. Built for opinion content.',
   category: 'Clean',
   description: '黑色半透明圆角底 + 左侧蓝竖条，整行上滑入场。观点输出主力样式。',
   tags: ['left-bar', 'blue', 'slide-up', 'box'],

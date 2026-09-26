@@ -4,6 +4,8 @@ import { preset } from './_shared';
 export const cleanBlackCard = preset({
   id: 'sera-clean-black-card',
   name: 'Clean Black Card',
+  nameZh: '纯黑卡片',
+  descriptionEn: 'Pure black rounded card, white text, keyword highlighted in blue.',
   category: 'Clean',
   description: '纯黑大圆角卡片 + 白字，关键词蓝底高亮。',
   tags: ['black-card', 'white-text', 'blue', 'clean'],

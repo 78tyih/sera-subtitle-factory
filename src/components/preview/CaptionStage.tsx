@@ -68,13 +68,13 @@ export function CaptionStage({
 /** Demo "video frame" — flat black + one quiet price line. No cheap gradients. */
 function Backdrop({ variant, width, height }: { variant: 'plain' | 'finance'; width: number; height: number }) {
   if (variant === 'plain') {
-    return <div className="absolute inset-0 bg-[#08080a]" />;
+    return <div className="absolute inset-0 bg-sunken" />;
   }
   const h = height;
   const w = width;
   const path = `M0 ${h * 0.62} L${w * 0.12} ${h * 0.58} L${w * 0.22} ${h * 0.66} L${w * 0.34} ${h * 0.52} L${w * 0.46} ${h * 0.57} L${w * 0.58} ${h * 0.44} L${w * 0.7} ${h * 0.49} L${w * 0.82} ${h * 0.36} L${w} ${h * 0.4}`;
   return (
-    <div className="absolute inset-0 bg-[#07070a]">
+    <div className="absolute inset-0 bg-stage">
       <svg width={w} height={h} className="absolute inset-0">
         {Array.from({ length: 7 }).map((_, i) => (
           <line key={i} x1={0} x2={w} y1={(h / 7) * i + 20} y2={(h / 7) * i + 20} stroke="rgba(255,255,255,0.028)" strokeWidth={1} />

@@ -4,21 +4,56 @@
 
 /* ============================================================
    Sera Subtitle Factory — global styles
-   RULE #1: captions are ALWAYS single line. See .cap-line below.
+   RULE #1: captions are ALWAYS single line (see .cap-line below).
+   Theming: semantic CSS variables (RGB triplets) so Tailwind's
+   `bg-panel/60` style opacity modifiers keep working in both themes.
    ============================================================ */
 
-:root {
-  --bg: #0a0a0a;
-  --panel: #0f0f10;
-  --line: #1f1f22;
-  --ink: #ededed;
+:root,
+:root[data-theme='dark'] {
+  --c-bg: 10 10 10;
+  --c-panel: 15 15 16;
+  --c-panel2: 20 20 22;
+  --c-sunken: 12 12 13;
+  --c-hover: 23 23 26;
+  --c-active: 28 28 31;
+  --c-chip: 35 35 38;
+  --c-line: 31 31 34;
+  --c-line2: 42 42 46;
+  --c-ink: 237 237 237;
+  --c-ink2: 180 180 184;
+  --c-muted: 122 122 128;
+  --c-accent: 59 130 246;
+  --c-highlight: 255 212 0;
+  --c-stage: 8 8 10;
+  color-scheme: dark;
+}
+
+:root[data-theme='light'] {
+  --c-bg: 247 248 250;
+  --c-panel: 255 255 255;
+  --c-panel2: 250 251 252;
+  --c-sunken: 241 243 246;
+  --c-hover: 244 246 249;
+  --c-active: 236 240 246;
+  --c-chip: 230 234 240;
+  --c-line: 226 229 235;
+  --c-line2: 205 210 219;
+  --c-ink: 15 22 34;
+  --c-ink2: 62 72 90;
+  --c-muted: 120 129 145;
+  --c-accent: 37 99 235;
+  --c-highlight: 176 128 0;
+  --c-stage: 8 8 10;
+  color-scheme: light;
 }
 
 html,
 body {
-  background: var(--bg);
-  color: var(--ink);
+  background: rgb(var(--c-bg));
+  color: rgb(var(--c-ink));
   -webkit-font-smoothing: antialiased;
+  transition: background-color 0.18s ease-out, color 0.18s ease-out;
 }
 
 * {
@@ -48,13 +83,13 @@ body {
   will-change: transform, color;
 }
 
-/* scrollbars */
+/* ---------- scrollbars ---------- */
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
 }
 ::-webkit-scrollbar-thumb {
-  background: #26262b;
+  background: rgb(var(--c-line2));
   border-radius: 8px;
   border: 3px solid transparent;
   background-clip: content-box;
@@ -63,12 +98,12 @@ body {
   background: transparent;
 }
 
-/* range inputs */
+/* ---------- form controls ---------- */
 input[type='range'] {
   -webkit-appearance: none;
   appearance: none;
   height: 3px;
-  background: #26262b;
+  background: rgb(var(--c-line2));
   border-radius: 999px;
   outline: none;
 }
@@ -78,7 +113,7 @@ input[type='range']::-webkit-slider-thumb {
   width: 13px;
   height: 13px;
   border-radius: 50%;
-  background: #ededed;
+  background: rgb(var(--c-ink));
   cursor: pointer;
   transition: transform 0.12s ease-out;
 }
@@ -86,11 +121,24 @@ input[type='range']::-webkit-slider-thumb:hover {
   transform: scale(1.15);
 }
 
-/* hairline separators for panels */
+input[type='checkbox'] {
+  accent-color: rgb(var(--c-accent));
+}
+
+select,
+input[type='text'] {
+  color-scheme: inherit;
+}
+
 .hairline {
-  border-color: #1f1f22;
+  border-color: rgb(var(--c-line));
 }
 
 ::selection {
-  background: rgba(59, 130, 246, 0.35);
+  background: rgb(var(--c-accent) / 0.32);
+}
+
+/* the caption preview frame stays dark in both themes — it is a video */
+.stage-frame {
+  background: rgb(var(--c-stage));
 }

@@ -7,6 +7,8 @@ import { preset } from './_shared';
 export const financeBlue = preset({
   id: 'sera-finance-blue',
   name: 'Finance Blue',
+  nameZh: '财经蓝标',
+  descriptionEn: 'White text with a blue active word; numbers ×1.20 with a soft scale instead of a pop.',
   category: 'Finance',
   description: '白字 + 蓝色 active，数字放大 1.20，柔和缩放而非弹跳。',
   tags: ['finance', 'blue', 'numbers', 'scale'],

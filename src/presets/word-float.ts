@@ -4,6 +4,8 @@ import { preset } from './_shared';
 export const wordFloat = preset({
   id: 'sera-word-float',
   name: 'Word Float',
+  nameZh: '浮动强调',
+  descriptionEn: 'White text with a blue floating active word (8px max travel) — quiet but alive.',
   category: 'Kinetic',
   description: '白字 + 蓝色 active 上浮（最多 8px），安静但有呼吸感。',
   tags: ['float', 'blue', 'kinetic', 'none'],

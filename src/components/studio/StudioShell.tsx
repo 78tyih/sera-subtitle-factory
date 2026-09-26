@@ -9,9 +9,11 @@ import { CaptionStage, ASPECT } from '@/components/preview/CaptionStage';
 import { usePlayback, useStageWidth } from '@/lib/hooks';
 import { allTranscripts } from '@/store/caption-store';
 import { Btn, Segmented } from '@/components/ui';
+import { useI18n } from '@/lib/i18n';
 import type { AspectRatio } from '@/types/caption';
 
 export function StudioShell() {
+  const { t, lang } = useI18n();
   const s = useCaptionStore();
   const words = useCurrentWords();
   const { time, seek, restart } = usePlayback(s.duration, s.playing);
@@ -31,11 +33,11 @@ export function StudioShell() {
           <select
             value={s.transcriptId}
             onChange={(e) => s.setTranscript(e.target.value)}
-            className="rounded-[9px] border border-line bg-[#111113] px-2.5 py-1.5 text-[11.5px] text-ink outline-none hover:border-line2"
+            className="rounded-[9px] border border-line bg-panel2 px-2.5 py-1.5 text-[11.5px] text-ink outline-none hover:border-line2"
           >
-            {allTranscripts.map((t) => (
-              <option key={t.id} value={t.id}>
-                {t.title}
+            {allTranscripts.map((item) => (
+              <option key={item.id} value={item.id}>
+                {lang === 'zh' ? item.title : item.titleEn}
               </option>
             ))}
           </select>
@@ -49,17 +51,17 @@ export function StudioShell() {
 
           <button
             onClick={s.toggleSafeArea}
-            className={['rounded-[8px] border px-2.5 py-1.5 text-[11px] transition-all duration-150 ease-out', s.showSafeArea ? 'border-ink bg-[#232326] text-ink' : 'border-line text-ink2 hover:bg-[#1a1a1c]'].join(' ')}
+            className={['rounded-[8px] border px-2.5 py-1.5 text-[11px] transition-all duration-150 ease-out', s.showSafeArea ? 'border-ink bg-chip text-ink' : 'border-line text-ink2 hover:bg-hover'].join(' ')}
           >
-            Safe area
+            {t('ui.safeArea')}
           </button>
 
           <div className="ml-auto flex items-center gap-2">
-            <Btn size="sm" onClick={s.undo} disabled={!s.past.length} title="Undo">Undo</Btn>
-            <Btn size="sm" onClick={s.redo} disabled={!s.future.length} title="Redo">Redo</Btn>
+            <Btn size="sm" onClick={s.undo} disabled={!s.past.length} title={t('ui.undo')}>{t('ui.undo')}</Btn>
+            <Btn size="sm" onClick={s.redo} disabled={!s.future.length} title={t('ui.redo')}>{t('ui.redo')}</Btn>
             <span className="mx-1 h-4 w-px bg-line" />
             <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-muted">{s.recipe.name}</span>
-            <Btn size="sm" variant="primary" onClick={() => s.saveRecipe()}>Save Recipe</Btn>
+            <Btn size="sm" variant="primary" onClick={() => s.saveRecipe()}>{t('ui.saveRecipe')}</Btn>
           </div>
         </header>
 
@@ -84,8 +86,8 @@ export function StudioShell() {
               <Btn size="sm" onClick={restart} title="Restart">⟲</Btn>
               <button
                 onClick={s.togglePlaying}
-                className="grid h-9 w-9 place-items-center rounded-full bg-ink text-[13px] text-[#0b0b0c] transition-transform duration-150 ease-out hover:scale-105"
-                title={s.playing ? 'Pause' : 'Play'}
+                className="grid h-9 w-9 place-items-center rounded-full bg-ink text-[13px] text-bg transition-transform duration-150 ease-out hover:scale-105"
+                title={s.playing ? t('ui.pause') : t('ui.play')}
               >
                 {s.playing ? '❚❚' : '▶'}
               </button>

@@ -4,6 +4,8 @@ import { preset } from './_shared';
 export const minimalBlack = preset({
   id: 'sera-minimal-black',
   name: 'Minimal Black',
+  nameZh: '纯白底黑字',
+  descriptionEn: 'Pure white rounded card with black text, active word turns blue — built for light footage.',
   category: 'Minimal',
   description: '纯白大圆角底 + 黑字，active 词转蓝，浅色画面首选。',
   tags: ['minimal', 'white-bg', 'blue', 'fade'],

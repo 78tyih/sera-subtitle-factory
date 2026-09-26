@@ -4,6 +4,8 @@ import { preset } from './_shared';
 export const wordPop = preset({
   id: 'sera-word-pop',
   name: 'Word Pop',
+  nameZh: '弹跳强调',
+  descriptionEn: 'White text with a restrained yellow pop (1.00 → 1.09 → 1.04 → 1.00).',
   category: 'Kinetic',
   description: '白字 + 黄色 active，克制的 pop（1.00→1.09→1.04→1.00）。',
   tags: ['pop', 'yellow', 'kinetic', 'none'],

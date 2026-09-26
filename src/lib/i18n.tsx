@@ -1,0 +1,455 @@
+'use client';
+
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+
+/**
+ * i18n — 中文优先，英文完整对照。
+ * 默认语言 = 浏览器语言（zh* → zh，其他 → en），用户切换后写入 localStorage。
+ */
+
+export type Lang = 'zh' | 'en';
+
+const STORAGE_KEY = 'ssf-lang';
+
+export const dict = {
+  zh: {
+    /* app */
+    'app.name': 'Sera 字幕工厂',
+    'app.nameFull': 'Sera Subtitle Factory',
+    'app.tagline': '让每一个字，都跟着声音动。',
+    'app.version': 'v0.1 · 第一阶段',
+
+    /* nav */
+    'nav.home': '首页',
+    'nav.studio': '工作台',
+    'nav.library': '模板库',
+    'nav.recipes': '配方',
+
+    /* display controls */
+    'ui.theme': '主题',
+    'ui.theme.light': '日间',
+    'ui.theme.dark': '夜间',
+    'ui.lang': '语言',
+    'ui.lang.zh': '中文',
+    'ui.lang.en': 'English',
+
+    /* common actions */
+    'ui.undo': '撤销',
+    'ui.redo': '重做',
+    'ui.safeArea': '安全区',
+    'ui.saveRecipe': '保存配方',
+    'ui.play': '播放',
+    'ui.pause': '暂停',
+    'ui.restart': '重播',
+    'ui.copyJson': '复制 JSON',
+    'ui.copyUid': '复制 UID',
+    'ui.useTemplate': '使用此模板',
+    'ui.hoverToPlay': '悬停播放',
+    'ui.search': '搜索…',
+    'ui.all': '全部',
+    'ui.any': '不限',
+    'ui.import': '导入',
+    'ui.export': '导出',
+    'ui.exportAll': '导出全部',
+    'ui.duplicate': '复制一份',
+    'ui.rename': '重命名',
+    'ui.delete': '删除',
+    'ui.open': '打开',
+    'ui.add': '添加',
+    'ui.backToCurrent': '回到当前配方',
+    'ui.none': '无',
+    'ui.light': '浅色',
+    'ui.dark': '深色',
+    'ui.yellow': '黄色',
+    'ui.blue': '蓝色',
+    'ui.white': '白色',
+
+    /* home */
+    'home.kicker': '字幕设计系统',
+    'home.title': '让每一个字，\n都跟着声音动。',
+    'home.subtitle': '单行字幕 · 语音驱动 · 数字自动放大 · 像设计 UI 一样设计字幕。',
+    'home.cta.studio': '打开工作台',
+    'home.cta.library': '浏览模板库',
+    'home.stat.presets': '12 个预设',
+    'home.stat.motions': '9 种逐词动效',
+    'home.stat.singleLine': '单行锁定',
+    'home.stat.numbers': '数字 ×1.20',
+    'home.demos.title': '字幕动效预览',
+    'home.demos.hint': '循环 · 9:16',
+    'home.principles.title': '三条硬规则',
+    'home.principle.1.t': '永远单行',
+    'home.principle.1.d': '字幕永远只有一行。超长就重新分段，绝不换行。maxLines = 1 · nowrap。',
+    'home.principle.2.t': '跟着声音走',
+    'home.principle.2.d': '每个词带 start / end，字幕跟着念稿逐词变化：未念到 → 正在念 → 已念过。',
+    'home.principle.3.t': '数字是主角',
+    'home.principle.3.d': '百分比、货币、数字自动识别并放大 1.20 倍、字重 800 —— 金融内容的核心视觉。',
+    'home.flagship.title': '四个旗舰样式',
+    'home.flagship.link': '查看全部 12 个',
+    'home.browseAll': '查看全部 12 个 →',
+
+    /* studio */
+    'studio.transcript': '转录文本',
+    'studio.aspect': '画面比例',
+    'studio.sidebar.templates': '模板',
+    'studio.sidebar.typography': '排版',
+    'studio.sidebar.colors': '颜色',
+    'studio.sidebar.background': '背景',
+    'studio.sidebar.border': '边框',
+    'studio.sidebar.motion': '动效',
+    'studio.sidebar.emphasis': '强调',
+    'studio.sidebar.recipes': '配方',
+    'studio.locked': '单行原则已锁定',
+    'studio.lockedHint': 'maxLines = 1 · nowrap',
+    'studio.timeline.audio': '音频',
+    'studio.timeline.caps': '字幕段',
+    'studio.timeline.words': '逐词',
+    'studio.timeline.segments': '段落',
+    'studio.timeline.wordsCount': '词',
+    'studio.timeline.line': '单行',
+    'studio.timeline.scrub': '点击或拖动以定位',
+    'studio.hoverHint': '悬停播放',
+
+    /* inspector */
+    'inspector.presets': '预设 · 12',
+    'inspector.typography': '排版',
+    'inspector.fontFamily': '字体',
+    'inspector.weight': '字重',
+    'inspector.fontSize': '字号',
+    'inspector.letterSpacing': '字距',
+    'inspector.textTransform': '大小写',
+    'inspector.asTyped': '原样',
+    'inspector.upper': '全大写',
+    'inspector.positionY': '纵向位置',
+    'inspector.maxWidth': '最大宽度',
+    'inspector.position': '位置',
+    'inspector.pos.top': '顶部',
+    'inspector.pos.middle': '居中',
+    'inspector.pos.bottom': '底部',
+    'inspector.align': '对齐',
+    'inspector.align.left': '居左',
+    'inspector.align.center': '居中',
+    'inspector.align.right': '居右',
+    'inspector.colors': '颜色',
+    'inspector.color.text': '文字颜色',
+    'inspector.color.idle': '未念到 / 半透明',
+    'inspector.color.active': '正在念的词',
+    'inspector.color.keyword': '关键词',
+    'inspector.color.number': '数字',
+    'inspector.activeScale': '当前词放大',
+    'inspector.background': '背景',
+    'inspector.bg.type': '类型',
+    'inspector.bg.opacity': '不透明度',
+    'inspector.bg.radius': '圆角',
+    'inspector.bg.paddingX': '左右内边距',
+    'inspector.bg.paddingY': '上下内边距',
+    'inspector.bg.blur': '模糊（保持轻微）',
+    'inspector.bg.hint': '大圆角矩形，不做胶囊',
+    'inspector.border': '边框',
+    'inspector.border.type': '类型',
+    'inspector.border.width': '宽度',
+    'inspector.border.color': '颜色',
+    'inspector.border.radius': '圆角',
+    'inspector.border.hint': '左侧竖条是主力：3–6px，不要更粗',
+    'inspector.motion': '动效',
+    'inspector.motion.entrance': '入场',
+    'inspector.motion.word': '逐词动效',
+    'inspector.motion.exit': '退场',
+    'inspector.motion.wordHint': 'pop 曲线 1.00→1.09→1.04→1.00，克制优先',
+    'inspector.motion.wordDuration': '逐词时长',
+    'inspector.motion.wordIntensity': '逐词强度',
+    'inspector.motion.entranceDuration': '入场时长',
+    'inspector.emphasis': '强调',
+    'inspector.emphasis.auto': '自动强调',
+    'inspector.emphasis.numbers': '数字 · 1.20 3 100',
+    'inspector.emphasis.percentages': '百分比 · 12% +35%',
+    'inspector.emphasis.currency': '货币 · $68,500 100 USDT',
+    'inspector.emphasis.ai': 'AI 强调（第四阶段）',
+    'inspector.emphasis.numberScale': '数字放大',
+    'inspector.emphasis.numberWeight': '数字字重',
+    'inspector.emphasis.keywordWeight': '关键词字重',
+    'inspector.emphasis.keywords': '常驻关键词',
+    'inspector.emphasis.keywordsPlaceholder': '资金 / 风险 / BTC',
+    'inspector.recipes': '配方',
+    'inspector.recipes.saveCurrent': '保存当前',
+    'inspector.recipes.exportJson': '导出 JSON',
+    'inspector.recipes.importJson': '导入 JSON',
+    'inspector.recipes.empty': '还没有保存的配方。调整任意样式后点「保存当前」，会写入浏览器本地存储（第一阶段不接数据库）。',
+    'inspector.recipes.loadTip': '载入到工作台',
+    'inspector.recipes.note': '配方 = 一份完整的字幕配置（排版 / 颜色 / 背景 / 边框 / 动效 / 强调规则）。复制 JSON 给任何人，即可复刻同款字幕。',
+    'inspector.recipes.savedMsg': '已保存到浏览器本地存储',
+    'inspector.recipes.imported': '已导入',
+    'inspector.recipes.importFail': '导入失败 —— JSON 格式不正确',
+    'inspector.recipes.exported': '已导出当前配方',
+
+    /* library */
+    'library.kicker': '字幕模板库',
+    'library.title': '预设模板',
+    'library.subtitle': '12 个高质量预设 + 你保存的配方。鼠标悬停即播放 1–2 秒动效预览，点「使用此模板」直接进工作台继续改。',
+    'library.searchPlaceholder': '搜索：金融 / 黄色 / 弹跳 / 无背景 / 数据…',
+    'library.filter.style': '风格',
+    'library.filter.background': '背景',
+    'library.filter.motion': '动效',
+    'library.filter.highlight': '强调色',
+    'library.filter.bg.all': '全部',
+    'library.filter.bg.none': '无背景',
+    'library.filter.bg.light': '浅色',
+    'library.filter.bg.dark': '深色',
+    'library.empty': '没有匹配的预设，试试清空过滤条件。',
+
+    /* recipes page */
+    'recipes.kicker': '字幕配方',
+    'recipes.title': '配方',
+    'recipes.subtitle': '一份配方 = 完整的字幕配置（排版 / 颜色 / 背景 / 边框 / 动效 / 强调规则）。复制 JSON 给任何人，即可复刻同款字幕。',
+    'recipes.saved': '已保存',
+    'recipes.empty': '还没有配方。去工作台调一版你喜欢的字幕，然后点「保存配方」—— 会存在浏览器本地存储（第一阶段不接数据库）。',
+    'recipes.json.current': 'JSON · 当前工作台配方',
+    'recipes.imported': '已导入 {n} 份配方',
+    'recipes.importedOne': '已导入 1 份配方',
+    'recipes.importFail': '该文件不是有效配方（需要单份配方或 { recipes: [...] } 打包）',
+    'recipes.savedMsg': '已保存当前工作台配方'
+  },
+
+  en: {
+    'app.name': 'Sera Subtitle Factory',
+    'app.nameFull': 'Sera Subtitle Factory',
+    'app.tagline': 'Make captions move with every word.',
+    'app.version': 'v0.1 · phase 1',
+
+    'nav.home': 'Home',
+    'nav.studio': 'Studio',
+    'nav.library': 'Library',
+    'nav.recipes': 'Recipes',
+
+    'ui.theme': 'Theme',
+    'ui.theme.light': 'Light',
+    'ui.theme.dark': 'Dark',
+    'ui.lang': 'Language',
+    'ui.lang.zh': '中文',
+    'ui.lang.en': 'English',
+
+    'ui.undo': 'Undo',
+    'ui.redo': 'Redo',
+    'ui.safeArea': 'Safe area',
+    'ui.saveRecipe': 'Save Recipe',
+    'ui.play': 'Play',
+    'ui.pause': 'Pause',
+    'ui.restart': 'Restart',
+    'ui.copyJson': 'Copy JSON',
+    'ui.copyUid': 'Copy UID',
+    'ui.useTemplate': 'Use Template',
+    'ui.hoverToPlay': 'hover to play',
+    'ui.search': 'Search…',
+    'ui.all': 'All',
+    'ui.any': 'Any',
+    'ui.import': 'Import',
+    'ui.export': 'Export',
+    'ui.exportAll': 'Export all',
+    'ui.duplicate': 'Duplicate',
+    'ui.rename': 'Rename',
+    'ui.delete': 'Delete',
+    'ui.open': 'Open',
+    'ui.add': 'Add',
+    'ui.backToCurrent': 'Back to current',
+    'ui.none': 'None',
+    'ui.light': 'Light',
+    'ui.dark': 'Dark',
+    'ui.yellow': 'Yellow',
+    'ui.blue': 'Blue',
+    'ui.white': 'White',
+
+    'home.kicker': 'caption design system',
+    'home.title': 'Make captions move\nwith every word.',
+    'home.subtitle': 'Single-line captions · speech-driven · numbers emphasised · design subtitles like UI components.',
+    'home.cta.studio': 'Open Studio',
+    'home.cta.library': 'Browse Library',
+    'home.stat.presets': '12 presets',
+    'home.stat.motions': '9 word motions',
+    'home.stat.singleLine': 'single line locked',
+    'home.stat.numbers': 'numbers ×1.20',
+    'home.demos.title': 'Caption demos',
+    'home.demos.hint': 'loop · 9:16',
+    'home.principles.title': 'Three hard rules',
+    'home.principle.1.t': 'Single line, always',
+    'home.principle.1.d': 'Captions never wrap. Too long? Re-segment instead. maxLines = 1 · nowrap.',
+    'home.principle.2.t': 'Speech-driven',
+    'home.principle.2.d': 'Every word carries start / end, so the caption follows the voice: idle → active → spoken.',
+    'home.principle.3.t': 'Numbers are heroes',
+    'home.principle.3.d': 'Percentages, currency and numbers are detected and scaled ×1.20 at weight 800 — the core look for finance content.',
+    'home.flagship.title': 'The four flagship styles',
+    'home.flagship.link': 'Browse all 12',
+    'home.browseAll': 'Browse all 12 →',
+
+    'studio.transcript': 'Transcript',
+    'studio.aspect': 'Aspect',
+    'studio.sidebar.templates': 'Templates',
+    'studio.sidebar.typography': 'Typography',
+    'studio.sidebar.colors': 'Colors',
+    'studio.sidebar.background': 'Background',
+    'studio.sidebar.border': 'Border',
+    'studio.sidebar.motion': 'Motion',
+    'studio.sidebar.emphasis': 'Emphasis',
+    'studio.sidebar.recipes': 'Recipes',
+    'studio.locked': 'Single-line rule locked',
+    'studio.lockedHint': 'maxLines = 1 · nowrap',
+    'studio.timeline.audio': 'Audio',
+    'studio.timeline.caps': 'Caps',
+    'studio.timeline.words': 'Words',
+    'studio.timeline.segments': 'segments',
+    'studio.timeline.wordsCount': 'words',
+    'studio.timeline.line': '1 line',
+    'studio.timeline.scrub': 'click / drag to scrub',
+    'studio.hoverHint': 'hover to play',
+
+    'inspector.presets': 'Presets · 12',
+    'inspector.typography': 'Typography',
+    'inspector.fontFamily': 'Font family',
+    'inspector.weight': 'Weight',
+    'inspector.fontSize': 'Font size',
+    'inspector.letterSpacing': 'Letter spacing',
+    'inspector.textTransform': 'Text transform',
+    'inspector.asTyped': 'As typed',
+    'inspector.upper': 'UPPER',
+    'inspector.positionY': 'Position Y',
+    'inspector.maxWidth': 'Max width',
+    'inspector.position': 'Position',
+    'inspector.pos.top': 'Top',
+    'inspector.pos.middle': 'Middle',
+    'inspector.pos.bottom': 'Bottom',
+    'inspector.align': 'Align',
+    'inspector.align.left': 'Left',
+    'inspector.align.center': 'Center',
+    'inspector.align.right': 'Right',
+    'inspector.colors': 'Colors',
+    'inspector.color.text': 'Text',
+    'inspector.color.idle': 'Not yet spoken / idle',
+    'inspector.color.active': 'Active word',
+    'inspector.color.keyword': 'Keyword',
+    'inspector.color.number': 'Number',
+    'inspector.activeScale': 'Active word scale',
+    'inspector.background': 'Background',
+    'inspector.bg.type': 'Type',
+    'inspector.bg.opacity': 'Opacity',
+    'inspector.bg.radius': 'Radius',
+    'inspector.bg.paddingX': 'Padding X',
+    'inspector.bg.paddingY': 'Padding Y',
+    'inspector.bg.blur': 'Blur (keep it light)',
+    'inspector.bg.hint': 'Large rounded rectangle — never a pill',
+    'inspector.border': 'Border',
+    'inspector.border.type': 'Type',
+    'inspector.border.width': 'Width',
+    'inspector.border.color': 'Color',
+    'inspector.border.radius': 'Radius',
+    'inspector.border.hint': 'Left Bar is the flagship: 3–6px, never thicker',
+    'inspector.motion': 'Motion',
+    'inspector.motion.entrance': 'Entrance',
+    'inspector.motion.word': 'Word motion',
+    'inspector.motion.exit': 'Exit',
+    'inspector.motion.wordHint': 'pop curve 1.00→1.09→1.04→1.00 — restraint first',
+    'inspector.motion.wordDuration': 'Word duration',
+    'inspector.motion.wordIntensity': 'Word intensity',
+    'inspector.motion.entranceDuration': 'Entrance duration',
+    'inspector.emphasis': 'Emphasis',
+    'inspector.emphasis.auto': 'Auto emphasis',
+    'inspector.emphasis.numbers': 'Numbers · 1.20 3 100',
+    'inspector.emphasis.percentages': 'Percentages · 12% +35%',
+    'inspector.emphasis.currency': 'Currency · $68,500 100 USDT',
+    'inspector.emphasis.ai': 'AI emphasis (phase 4)',
+    'inspector.emphasis.numberScale': 'Number scale',
+    'inspector.emphasis.numberWeight': 'Number weight',
+    'inspector.emphasis.keywordWeight': 'Keyword weight',
+    'inspector.emphasis.keywords': 'Always-on keywords',
+    'inspector.emphasis.keywordsPlaceholder': 'funding / risk / BTC',
+    'inspector.recipes': 'Recipes',
+    'inspector.recipes.saveCurrent': 'Save current',
+    'inspector.recipes.exportJson': 'Export JSON',
+    'inspector.recipes.importJson': 'Import JSON',
+    'inspector.recipes.empty': 'No saved recipes yet. Tweak any style and hit “Save current” — it is stored in localStorage (phase 1 has no database).',
+    'inspector.recipes.loadTip': 'Load into studio',
+    'inspector.recipes.note': 'A recipe is one complete caption config (type / colour / background / border / motion / emphasis). Copy the JSON to anyone and they can reproduce the same captions.',
+    'inspector.recipes.savedMsg': 'Saved to localStorage',
+    'inspector.recipes.imported': 'Imported',
+    'inspector.recipes.importFail': 'Import failed — invalid JSON',
+    'inspector.recipes.exported': 'Current recipe exported',
+
+    'library.kicker': 'caption library',
+    'library.title': 'Presets',
+    'library.subtitle': '12 high-quality presets plus your own recipes. Hover a card to play a 1–2s motion preview, then hit “Use Template” to keep editing in the Studio.',
+    'library.searchPlaceholder': 'Search: finance / yellow / pop / no background / data…',
+    'library.filter.style': 'Style',
+    'library.filter.background': 'Background',
+    'library.filter.motion': 'Motion',
+    'library.filter.highlight': 'Highlight',
+    'library.filter.bg.all': 'All',
+    'library.filter.bg.none': 'None',
+    'library.filter.bg.light': 'Light',
+    'library.filter.bg.dark': 'Dark',
+    'library.empty': 'No preset matches — try clearing the filters.',
+
+    'recipes.kicker': 'caption recipes',
+    'recipes.title': 'Recipes',
+    'recipes.subtitle': 'A recipe is one complete caption config (type / colour / background / border / motion / emphasis). Copy the JSON to anyone and they can reproduce the same captions.',
+    'recipes.saved': 'Saved',
+    'recipes.empty': 'No recipes yet. Build a caption you like in the Studio, then hit “Save Recipe” — it lives in localStorage (phase 1 has no database).',
+    'recipes.json.current': 'JSON · current studio recipe',
+    'recipes.imported': 'Imported {n} recipes',
+    'recipes.importedOne': 'Imported 1 recipe',
+    'recipes.importFail': 'Invalid file — expected a recipe or a { recipes: [] } bundle',
+    'recipes.savedMsg': 'Saved current studio recipe'
+  }
+} as const;
+
+export type DictKey = keyof (typeof dict)['zh'];
+
+interface I18nValue {
+  lang: Lang;
+  setLang: (l: Lang) => void;
+  t: (key: DictKey, vars?: Record<string, string | number>) => string;
+}
+
+const I18nContext = createContext<I18nValue>({
+  lang: 'zh',
+  setLang: () => {},
+  t: (k) => String(k)
+});
+
+export function I18nProvider({ children }: { children: React.ReactNode }) {
+  const [lang, setLangState] = useState<Lang>('zh');
+
+  useEffect(() => {
+    const saved = (typeof localStorage !== 'undefined' ? localStorage.getItem(STORAGE_KEY) : null) as Lang | null;
+    if (saved === 'zh' || saved === 'en') {
+      setLangState(saved);
+      return;
+    }
+    const nav = typeof navigator !== 'undefined' ? navigator.language.toLowerCase() : 'zh';
+    setLangState(nav.startsWith('zh') ? 'zh' : 'en');
+  }, []);
+
+  const setLang = useCallback((l: Lang) => {
+    setLangState(l);
+    try {
+      localStorage.setItem(STORAGE_KEY, l);
+      document.documentElement.lang = l === 'zh' ? 'zh-CN' : 'en';
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
+  const t = useCallback(
+    (key: DictKey, vars?: Record<string, string | number>) => {
+      const table = dict[lang] as Record<string, string>;
+      const fallback = dict.zh as Record<string, string>;
+      let out = table[key] ?? fallback[key] ?? String(key);
+      if (vars) for (const [k, v] of Object.entries(vars)) out = out.replace(`{${k}}`, String(v));
+      return out;
+    },
+    [lang]
+  );
+
+  const value = useMemo(() => ({ lang, setLang, t }), [lang, setLang, t]);
+  return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>;
+}
+
+export function useI18n() {
+  return useContext(I18nContext);
+}

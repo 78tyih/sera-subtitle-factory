@@ -185,6 +185,10 @@ export type PresetCategory =
 export interface CaptionRecipe {
   id: string;
   name: string;
+  /** Chinese display name (falls back to `name`) */
+  nameZh?: string;
+  /** English description (falls back to `description`) */
+  descriptionEn?: string;
   category: PresetCategory;
   description?: string;
   tags?: string[];

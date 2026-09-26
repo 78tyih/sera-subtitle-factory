@@ -4,6 +4,8 @@ import { preset } from './_shared';
 export const minimalWhite = preset({
   id: 'sera-minimal-white',
   name: 'Minimal White',
+  nameZh: '极简白字',
+  descriptionEn: 'White text, no background, active word turns yellow — the most restrained base style.',
   category: 'Minimal',
   description: '白字无背景，active 词转黄，最克制的基础字幕。',
   tags: ['minimal', 'none', 'yellow', 'fade'],

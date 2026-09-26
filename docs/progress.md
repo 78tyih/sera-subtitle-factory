@@ -42,6 +42,12 @@
 **Library（08）**
 - 12 张卡片，Hover 播放 1–2 秒动效，Style / Background / Motion / Highlight 四维过滤 + 搜索
 
+**主题 + 双语（2026-09-27 追加）**
+- 语义 CSS 变量两套（dark / light），Tailwind 颜色全部指向变量，支持透明度修饰
+- `lib/theme.tsx`（ThemeProvider + boot script 防闪烁，默认 dark）+ `lib/i18n.tsx`（中英字典 190+ 条）
+- 顶栏 `ThemeToggle` / `LangToggle`，首页 Hero 也放了紧凑版；选择都写入 localStorage
+- 12 个 preset 补 `nameZh` / `descriptionEn`，转录补 `titleEn`，中文模式下不再满屏英文
+
 ## Current
 - Phase 1 验收全部通过，等指令进入 Phase 2
 - **交付形态修正**：新增静态导出（`npm run static` → `./out` + `scripts/serve.mjs` :4311）。

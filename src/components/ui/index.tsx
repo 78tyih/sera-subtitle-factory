@@ -99,6 +99,39 @@ export function Segmented<T extends string | number>({
   );
 }
 
+/* ---------------------------------------------------------------- Option grid (wraps, never overflows) */
+
+export function OptionGrid<T extends string>({
+  options,
+  value,
+  onChange
+}: {
+  options: Array<{ value: T; label: React.ReactNode; title?: string }>;
+  value: T;
+  onChange: (v: T) => void;
+}) {
+  return (
+    <div className="flex flex-wrap gap-1.5">
+      {options.map((o) => {
+        const on = o.value === value;
+        return (
+          <button
+            key={String(o.value)}
+            onClick={() => onChange(o.value)}
+            title={o.title}
+            className={[
+              'whitespace-nowrap rounded-[8px] border px-2.5 py-1.5 text-[11px] transition-all duration-150 ease-out',
+              on ? 'border-ink bg-chip text-ink' : 'border-line bg-panel2 text-ink2 hover:bg-hover hover:text-ink'
+            ].join(' ')}
+          >
+            {o.label}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 /* ---------------------------------------------------------------- Ratio icon */
 
 /** Aspect-ratio switcher icon: a little rectangle, no text. */

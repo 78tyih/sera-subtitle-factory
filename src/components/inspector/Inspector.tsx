@@ -2,7 +2,7 @@
 
 import { useRef, useState } from 'react';
 import { useCaptionStore } from '@/store/caption-store';
-import { Btn, Divider, Field, Panel, Row, Segmented, Slider, Swatches } from '@/components/ui';
+import { Btn, Divider, Field, OptionGrid, Panel, Row, Segmented, Slider, Swatches } from '@/components/ui';
 import { fontOptions, fontSizePresets, fontWeightOptions } from '@/caption-engine/typography/fonts';
 import { backgroundPresets } from '@/caption-engine/backgrounds';
 import { borderPresets } from '@/caption-engine/borders';
@@ -228,13 +228,13 @@ export function Inspector({ className = '' }: { className?: string }) {
       {s.tab === 'motion' && (
         <Panel title={t('inspector.motion')}>
           <Field label={t('inspector.motion.entrance')}>
-            <Segmented size="sm" options={entranceNames.map((m) => ({ value: m, label: t(`motion.${m}` as never) }))} value={r.motion.entrance.type} onChange={(v) => s.patchRecipe({ motion: { entrance: { type: v as never } } })} />
+            <OptionGrid options={entranceNames.map((m) => ({ value: m, label: t(`motion.${m}` as never) }))} value={r.motion.entrance.type} onChange={(v) => s.patchRecipe({ motion: { entrance: { type: v as never } } })} />
           </Field>
           <Field label={t('inspector.motion.word')} hint={t('inspector.motion.wordHint')}>
-            <Segmented size="sm" options={wordMotionNames.map((m) => ({ value: m, label: t(`motion.${m}` as never) }))} value={r.motion.word.type} onChange={(v) => s.patchRecipe({ motion: { word: { type: v as never } } })} />
+            <OptionGrid options={wordMotionNames.map((m) => ({ value: m, label: t(`motion.${m}` as never) }))} value={r.motion.word.type} onChange={(v) => s.patchRecipe({ motion: { word: { type: v as never } } })} />
           </Field>
           <Field label={t('inspector.motion.exit')}>
-            <Segmented size="sm" options={exitNames.map((m) => ({ value: m, label: t(`motion.${m}` as never) }))} value={r.motion.exit.type} onChange={(v) => s.patchRecipe({ motion: { exit: { type: v as never } } })} />
+            <OptionGrid options={exitNames.map((m) => ({ value: m, label: t(`motion.${m}` as never) }))} value={r.motion.exit.type} onChange={(v) => s.patchRecipe({ motion: { exit: { type: v as never } } })} />
           </Field>
           <Divider />
           <Slider label={t('inspector.motion.wordDuration')} value={r.motion.word.duration} min={100} max={400} step={10} format={(v) => `${v}ms`} onChange={(v) => s.patchRecipe({ motion: { word: { duration: v } } })} />

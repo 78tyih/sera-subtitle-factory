@@ -83,7 +83,7 @@ export function Timeline({ time, duration, onSeek }: { time: number; duration: n
         </div>
 
         <div ref={trackRef} className="relative min-w-0 flex-1 cursor-col-resize select-none">
-          <div className="flex h-5 items-center gap-[2px] overflow-hidden rounded-[6px] bg-sunken px-1">
+          <div className="flex h-5 items-stretch gap-0 overflow-hidden rounded-[6px] bg-sunken px-[2px]">
             {wave.map((w, i) => (
               <span
                 key={i}

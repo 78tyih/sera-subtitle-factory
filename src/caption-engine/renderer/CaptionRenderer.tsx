@@ -100,7 +100,7 @@ export function CaptionRenderer({
                     {segment.words.map((w, i) => (
                       <span key={w.id}>
                         <WordRenderer word={w} recipe={recipe} k={k} inverseText={bg.needsInverseText} animate={animate} />
-                        {i < segment.words.length - 1 && !/^[，。！？、；：,.!?;:]$/.test(segment.words[i + 1].text) ? ' ' : ''}
+                        {i < segment.words.length - 1 && !/^[，。！？、；：,.!?;:]$/.test(segment.words[i + 1].text) ? <span style={{ display: 'inline-block', width: '0.24em' }} /> : ''}
                       </span>
                     ))}
                   </span>

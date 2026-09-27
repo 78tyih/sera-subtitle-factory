@@ -39,6 +39,10 @@ export function WordRenderer({ word, recipe, k, inverseText, animate }: WordRend
   if (isKeyword) color = text.keyword;
   if (isBig) color = numberStyle.color || text.number;
   if (word.isActive) color = activeWord.color ?? text.active;
+  /* karaoke: words already spoken stay filled in the emphasis colour */
+  if ((recipe.motion?.word?.type ?? '') === 'karaoke' && word.isSpoken && !isBig && !isKeyword) {
+    color = activeWord.color ?? text.active;
+  }
 
   /* ---------- type ---------- */
   const fontSize = typography.fontSize * k;

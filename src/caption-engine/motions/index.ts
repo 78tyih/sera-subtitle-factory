@@ -11,10 +11,9 @@ import { pop } from './pop';
 import { bounce } from './bounce';
 import { glow, blurReveal } from './glow';
 import { weightShift, highlight } from './weightShift';
-import { marquee } from './marquee';
 import { typewriter } from './typewriter';
 import { wave } from './wave';
-import { flip } from './flip';
+import { karaoke } from './karaoke';
 
 import type { EntranceMotionName, WordMotionName, ExitMotionName } from '@/types/caption';
 
@@ -83,10 +82,8 @@ export function getWordMotion(name: WordMotionName, env: WordMotionEnv) {
       return weightShift.word(env.baseWeight, env.emphasisWeight, duration);
     case 'wave':
       return wave.word(duration, intensity);
-    case 'flip':
-      return flip.word(duration);
-    case 'marquee':
-      return marquee.word(duration);
+    case 'karaoke':
+      return karaoke.word(duration, intensity);
     case 'highlight':
       return highlight.word(duration);
     default:
@@ -105,8 +102,7 @@ export const wordMotionNames: WordMotionName[] = [
   'weightShift',
   'blurReveal',
   'wave',
-  'flip',
-  'marquee'
+  'karaoke'
 ];
 
 export const exitNames: ExitMotionName[] = ['none', 'fade', 'slideDown', 'scale', 'blurReveal'];

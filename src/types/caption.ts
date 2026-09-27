@@ -144,8 +144,7 @@ export type WordMotionName =
   | 'weightShift'
   | 'blurReveal'
   | 'wave'
-  | 'flip'
-  | 'marquee';
+  | 'karaoke';
 
 export type ExitMotionName = 'none' | 'fade' | 'slideDown' | 'scale' | 'blurReveal';
 

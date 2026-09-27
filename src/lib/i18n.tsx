@@ -231,10 +231,9 @@ export const dict = {
     'cat.Clean': '清爽',
     'cat.Bold': '醒目',
     'cat.Kinetic': '动感',
-    'motion.marquee': '跑马灯',
     'motion.typewriter': '打字机',
     'motion.wave': '波浪',
-    'motion.flip': '翻转',
+    'motion.karaoke': '卡拉OK',
 
     /* export */
     'export.title': '导出',
@@ -474,10 +473,9 @@ export const dict = {
     'cat.Clean': 'Clean',
     'cat.Bold': 'Bold',
     'cat.Kinetic': 'Kinetic',
-    'motion.marquee': 'Marquee',
     'motion.typewriter': 'Typewriter',
     'motion.wave': 'Wave',
-    'motion.flip': 'Flip',
+    'motion.karaoke': 'Karaoke',
 
     /* export */
     'export.title': 'Export',

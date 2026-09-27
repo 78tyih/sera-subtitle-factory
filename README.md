@@ -83,9 +83,11 @@ Caption Recipe = Layout + Typography + Color + ActiveWord + Number
 
 ## 动效（18 种）
 
-逐词：`highlight` · `pop`（1.00→1.09→1.04→1.00）· `bounce`（Y 0→-5→1→0）· `float`（≤8px）· `scale` · `glow` · `weightShift` · `blurReveal` · `wave`（波浪）· `flip`（翻转）· `none`
+逐词：`highlight`（高亮）· `karaoke`（卡拉OK：念过的词保持填充）· `pop`（1.00→1.09→1.04→1.00）· `bounce`（Y 0→-5→1→0）· `float`（≤8px）· `scale` · `glow` · `weightShift` · `blurReveal` · `wave`（波浪）· `none`
 
-入场：`fade` · `float` · `slideUp` · `slideDown` · `scale` · `blurReveal` · `typewriter`（打字机）· `marquee`（跑马灯）
+入场：`fade` · `float` · `slideUp` · `slideDown` · `scale` · `blurReveal` · `typewriter`（打字机）
+
+> 已移除 `flip`（翻转 90° 时字会消失）与 `marquee`（跑马灯会滚出画面且不停留）——两者都违背“字幕随时可读”。
 
 ## 目录
 

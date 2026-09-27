@@ -31,6 +31,12 @@ export const dict = {
     'library.tabs.experimental': 'Experimental',
     'library.tabs.lab': 'Variants Lab',
     'library.tabs.primitives': 'Primitives',
+    'family.master': 'Master',
+    'family.variants': '变体',
+    'family.dos': '要做',
+    'family.donts': '不要做',
+    'library.openFamily': '打开 Family 页',
+
     'library.featuredTitle': 'Explore caption styles',
     'library.labNote': '变体实验区：系统生成的参数组合（同一 Master 的不同配色 / 动效 / 背景），不算独立 Signature。',
     /* nav */
@@ -306,6 +312,11 @@ export const dict = {
     'library.tabs.experimental': 'Experimental',
     'library.tabs.lab': 'Variants Lab',
     'library.tabs.primitives': 'Primitives',
+    'family.master': 'Master',
+    'family.variants': 'Variants',
+    'family.dos': 'Do',
+    'family.donts': "Don't",
+    'library.openFamily': 'Open family page',
     'library.featuredTitle': 'Explore caption styles',
     'library.labNote': 'Variants Lab: systematic parameter combinations of a master — not separate signature styles.',
 

@@ -24,7 +24,16 @@ if (!fs.existsSync(src)) {
   process.exit(1);
 }
 
-const ROUTES = ['studio', 'library', 'recipes'];
+/* discover every exported route (incl. /library/<family>/) instead of hardcoding */
+const ROUTES = [];
+(function discover(dir, prefix) {
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    if (!entry.isDirectory() || entry.name === '_next') continue;
+    const route = prefix ? `${prefix}/${entry.name}` : entry.name;
+    if (fs.existsSync(path.join(dir, entry.name, 'index.html'))) ROUTES.push(route);
+    discover(path.join(dir, entry.name), route);
+  }
+})(src, '');
 
 function copyTree(from, to) {
   fs.mkdirSync(to, { recursive: true });

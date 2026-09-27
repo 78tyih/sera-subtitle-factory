@@ -199,6 +199,11 @@ function StyleCard({ recipe, lang }: { recipe: CaptionRecipe; lang: string }) {
               <Btn size="sm" onClick={() => navigator.clipboard?.writeText(JSON.stringify(recipe, null, 2))}>
                 {zh ? '复制 Recipe' : 'Copy Recipe'}
               </Btn>
+              {fam && (
+                <Link href={`/library/${fam.key}/`} className="rounded-[9px] border border-line2 px-3 py-1.5 text-[12px] text-ink2 hover:bg-hover hover:text-ink">
+                  {zh ? '打开 Family 页' : 'Open family'}
+                </Link>
+              )}
             </Row>
           </div>
         </div>

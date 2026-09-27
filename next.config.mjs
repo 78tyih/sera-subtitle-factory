@@ -15,7 +15,8 @@ const nextConfig = {
     ? {
         output: 'export',
         trailingSlash: true,
-        images: { unoptimized: true }
+        /* GitHub Pages serves from /<repo>/ — asset URLs must carry that prefix */
+        basePath: '/sera-subtitle-factory'
       }
     : {})
 };

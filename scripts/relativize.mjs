@@ -43,25 +43,31 @@ function prefixFor(htmlPath) {
 }
 
 function rewrite(htmlPath) {
-  const p = prefixFor(htmlPath);
+  const root = prefixFor(htmlPath);
   let s = fs.readFileSync(htmlPath, 'utf8');
   const before = s;
 
   /* assets */
-  s = s.replace(/(href|src|content)="\/_next\//g, `$1="${p}_next/`);
-  s = s.replace(/url\(\/_next\//g, `url(${p}_next/`);
+  s = s.replace(/(href|src|content)="\/sera-subtitle-factory\/_next\//g, `$1="${root}_next/`);
+  s = s.replace(/(href|src|content)="\/_next\//g, `$1="${root}_next/`);
+  s = s.replace(/url\(\/sera-subtitle-factory\/_next\//g, `url(${root}_next/`);
+  s = s.replace(/url\(\/_next\//g, `url(${root}_next/`);
 
   /* routes → real files so a double click navigates correctly */
-  s = s.replace(/href="\/"/g, `href="${p}index.html"`);
+  s = s.replace(/href="\/sera-subtitle-factory\/?"/g, `href="${root}index.html"`);
+  s = s.replace(/href="\/"/g, `href="${root}index.html"`);
   for (const r of ROUTES) {
-    s = s.replace(new RegExp(`href="/${r}/?"`, 'g'), `href="${p}${r}/index.html"`);
+    s = s.replace(new RegExp(`href="/sera-subtitle-factory/${r}/?"`, 'g'), `href="${root}${r}/index.html"`);
+    s = s.replace(new RegExp(`href="/${r}/?"`, 'g'), `href="${root}${r}/index.html"`);
   }
 
   /* embedded RSC payload route strings (keeps hydration calm under file://) */
   for (const r of ROUTES) {
-    s = s.replace(new RegExp(`"/${r}/"`, 'g'), `"${p}${r}/index.html"`);
+    s = s.replace(new RegExp(`"/sera-subtitle-factory/${r}/"`, 'g'), `"${root}${r}/index.html"`);
+    s = s.replace(new RegExp(`"/${r}/"`, 'g'), `"${root}${r}/index.html"`);
   }
-  s = s.replace(/"\/_next\//g, `"${p}_next/`);
+  s = s.replace(/"\/sera-subtitle-factory\/_next\//g, `"${root}_next/`);
+  s = s.replace(/"\/_next\//g, `"${root}_next/`);
 
   if (s !== before) fs.writeFileSync(htmlPath, s, 'utf8');
   return s !== before;

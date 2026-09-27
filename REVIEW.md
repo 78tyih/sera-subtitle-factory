@@ -11,6 +11,17 @@
 
 源码仓库（public）：https://github.com/78tyih/sera-subtitle-factory
 
+> 部署：`npm run pages`（把 `out/` 推到 `gh-pages` 分支；Pages source = gh-pages / root；`basePath` = `/sera-subtitle-factory`）
+
+## 一句话自检清单
+
+- [ ] 首页 12 张卡尺寸一致、标签在画面下方、无文字重合
+- [ ] 逐词动效 10 个，无「翻转」/「跑马灯」
+- [ ] 颜色面板有「背景颜色」+ HEX 输入
+- [ ] 播放头与波形 / 字幕段同步推进
+- [ ] 模板库 200 张卡、中文分类过滤
+- [ ] 主题 / 语言图标切换正常
+
 ## 这是什么
 
 一个「字幕设计工厂」：字幕样式 = Typography × Color × Background × Border × Motion × Timing × Emphasis 的可组合配置（CaptionRecipe，JSON）。

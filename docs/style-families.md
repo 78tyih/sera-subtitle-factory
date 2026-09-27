@@ -1,5 +1,8 @@
 # Style Families（18）
 
+> 进度：V2.3 完成 6 个 Master，V2.4 给每个 Master 派生 2 个 Variant → **18 Signature Presets**。
+> 剩余 12 个 Family 按 V2.3/V2.4 同一套流程补齐，最终 18 × 3 = 54。
+
 > 以后所有 Agent 做模板前**必须先读本文件**。定义见 `src/styles/families.ts`（唯一真源）。
 >
 > **Family = 设计作品；Variant = 参数组合。** 只有颜色不同的两个 preset 不算两个 Signature（PART N）。Signature 之间至少要有 3 项不同（字体类、版式语法、Treatment、动效语法、Rhythm、背景、强调策略。

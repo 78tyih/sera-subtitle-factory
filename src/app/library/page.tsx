@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
-import { signaturePresets, variantPresets, isMaster } from '@/presets';
+import { signaturePresets, variantPresets, isMaster, signatureCount } from '@/presets';
 import { familyByKey, familyOfPreset } from '@/styles/families';
 import { primitives } from '@/caption-engine/primitives';
 import { DemoTile } from '@/components/preview/DemoTile';
@@ -12,7 +12,18 @@ import { Btn, Row } from '@/components/ui';
 import type { CaptionRecipe } from '@/types/caption';
 import { DEFAULT_CONTEXT } from '@/preview-contexts';
 
-const TABS = ['featured', 'creator', 'editorial', 'business', 'podcast', 'tech', 'experimental', 'primitives', 'lab'];
+/* family tabs use the real family keys — 'creator' etc. never matched a family */
+const TABS = [
+  'featured',
+  'creator-impact',
+  'editorial-serif',
+  'broadcast',
+  'podcast-quiet',
+  'tech-terminal',
+  'neon-glow',
+  'primitives',
+  'lab'
+];
 
 export default function LibraryPage() {
   const { t, lang } = useI18n();
@@ -35,7 +46,7 @@ export default function LibraryPage() {
         <p className="mb-2 font-mono text-[10.5px] uppercase tracking-[0.16em] text-muted">Library</p>
         <h1 className="text-[26px] font-semibold tracking-[-0.02em] text-ink">{t('library.featuredTitle' as never)}</h1>
         <p className="mt-2 text-[13px] text-muted">
-          {t('home.stat.families' as never)} · {t('home.stat.signature' as never)} · {t('home.stat.variations' as never)}
+          {t('home.stat.families' as never)} · {signatureCount} {t('home.stat.signature' as never)} · {t('home.stat.variations' as never)}
         </p>
       </header>
 
@@ -123,11 +134,15 @@ function StyleCard({ recipe, lang }: { recipe: CaptionRecipe; lang: string }) {
           <div className="min-w-0">
             <div className="flex items-center gap-1.5">
               <span className="truncate text-[13px] font-medium text-ink">{name}</span>
-              {isMaster(recipe.id) && (
+              {isMaster(recipe.id) ? (
                 <span className="shrink-0 rounded-[4px] border border-line2 px-1 py-[1px] font-mono text-[9px] uppercase tracking-[0.08em] text-ink2">
                   {zh ? '主样式' : 'Master'}
                 </span>
-              )}
+              ) : recipe.masterId ? (
+                <span className="shrink-0 rounded-[4px] border border-line px-1 py-[1px] font-mono text-[9px] uppercase tracking-[0.08em] text-muted">
+                  {zh ? '变体' : 'Variant'}
+                </span>
+              ) : null}
             </div>
             <div className="truncate font-mono text-[9.5px] uppercase tracking-[0.08em] text-muted">{fam?.name ?? recipe.category}</div>
           </div>
@@ -151,6 +166,7 @@ function StyleCard({ recipe, lang }: { recipe: CaptionRecipe; lang: string }) {
             <dl className="mt-4 grid grid-cols-2 gap-x-4 gap-y-2 text-[11.5px]">
               {[
                 ['Family', fam?.name ?? '—'],
+                ...(recipe.masterId ? ([['Derived from', recipe.masterId]] as [string, string][]) : []),
                 ['Context', (fam?.contexts ?? [DEFAULT_CONTEXT]).join(' / ')],
                 ['Font', recipe.typography.fontFamily],
                 ['Size', `${recipe.typography.fontSize}px`],

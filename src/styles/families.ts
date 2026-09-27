@@ -42,7 +42,7 @@ export const families: FamilyDef[] = [
     rhythm: 'creator',
     treatment: T({ stroke: { enabled: true, color: '#000000', width: 4 }, shadow: { enabled: true, x: 0, y: 2, blur: 10, color: 'rgba(0,0,0,0.5)' }}),
     masterId: 'sera-m-creator-impact',
-    variantIds: ['sera-crimson-strong', 'sera-marker-yellow'],
+    variantIds: ['sera-v-creator-impact-blue', 'sera-v-creator-impact-white'],
     dos: ['粗体 + 描边 + 轻微投影', 'current word 强调色', 'maxWords 3'],
     donts: ['巨大 bounce', 'scale 1.4', '卡通跳']
   },
@@ -56,7 +56,7 @@ export const families: FamilyDef[] = [
     rhythm: 'creator',
     treatment: T(),
     masterId: 'sera-m-clean-spoken',
-    variantIds: ['sera-soft-shadow', 'sera-classic-subtitle'],
+    variantIds: ['sera-v-clean-spoken-low', 'sera-v-clean-spoken-warm'],
     dos: ['weight shift', 'soft fade'],
     donts: ['任何背景块', '持续运动']
   },
@@ -70,7 +70,7 @@ export const families: FamilyDef[] = [
     rhythm: 'creator',
     treatment: T({ marker: { enabled: true, color: '#FFD400', opacity: 0.85, rotation: -0.5 }}),
     masterId: 'sera-m-marker-note',
-    variantIds: ['sera-underline-accent'],
+    variantIds: ['sera-v-marker-note-blue', 'sera-v-marker-note-slim'],
     dos: ['sweep 从左到右', '轻微 rotate(-0.5deg)'],
     donts: ['瞬间出现矩形块']
   },
@@ -84,7 +84,7 @@ export const families: FamilyDef[] = [
     rhythm: 'business',
     treatment: T(),
     masterId: 'sera-m-active-box',
-    variantIds: ['sera-clean-white-card', 'sera-left-box'],
+    variantIds: ['sera-v-active-box-white', 'sera-v-active-box-blue'],
     dos: ['radius 4–10px', '黄/蓝/白/黑色块'
     ],
     donts: ['pill / 999px', '胶囊']
@@ -99,7 +99,7 @@ export const families: FamilyDef[] = [
     rhythm: 'creator',
     treatment: T({ fill: { type: 'karaoke' } }),
     masterId: 'sera-m-karaoke-sweep',
-    variantIds: ['sera-karaoke-blue'],
+    variantIds: ['sera-v-karaoke-sweep-blue', 'sera-v-karaoke-sweep-white'],
     dos: ['progressive fill', '黄/蓝/白'],
     donts: ['整词瞬间变色']
   },
@@ -113,7 +113,7 @@ export const families: FamilyDef[] = [
     rhythm: 'editorial',
     treatment: T(),
     masterId: 'sera-m-editorial-serif',
-    variantIds: ['sera-serif-minimal', 'sera-quote-serif'],
+    variantIds: ['sera-v-editorial-serif-ink', 'sera-v-editorial-serif-red'],
     dos: ['serif + italic keyword', 'cream / white / black / deep red'],
     donts: ['SaaS 卡片感']
   },

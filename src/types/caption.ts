@@ -215,6 +215,8 @@ export interface CaptionRecipe {
   categories?: PresetCategory[];
   /** signature = hand-designed · variant = parameter combination */
   priority?: 'signature' | 'variant';
+  /** set when this preset is a variant of a master (PART B/N) */
+  masterId?: string;
   /** per-role typography: a keyword can be serif italic while the line is sans */
   keywordTypography?: TypographyOverride;
   numberTypography?: TypographyOverride;

@@ -14,6 +14,7 @@ import { wordPop } from './word-pop';
 import { wordFloat } from './word-float';
 import { extendedPresets } from './extended';
 import { masterPresets } from '@/styles/masters';
+import { variantPresetsByFamily as signatureVariants } from '@/styles/variants';
 import { generatedPresets } from './generated';
 
 /** Core pack (12 hand-tuned styles, spec §34) + extended pack (28 more). */
@@ -33,7 +34,13 @@ export const corePresets: CaptionRecipe[] = [
 ];
 
 /* V2.3 masters come first — the Library's Featured row is built from the head of this list. */
-export const presets: CaptionRecipe[] = [...masterPresets, ...corePresets, ...extendedPresets, ...generatedPresets];
+export const presets: CaptionRecipe[] = [
+  ...masterPresets,
+  ...signatureVariants,
+  ...corePresets,
+  ...extendedPresets,
+  ...generatedPresets
+];
 
 export const presetCategories: PresetCategory[] = [
   'Minimal',
@@ -77,15 +84,30 @@ export { minimalWhite, minimalBlack, editorial, financeYellow, financeBlue, data
 
 /* ------------------------------------------------------------------ V2 tiers */
 
-/** Signature = hand-designed styles (6 V2.3 masters + core 12 + curated 28). */
-export const signaturePresets: CaptionRecipe[] = [...masterPresets, ...corePresets, ...extendedPresets];
+/**
+ * Signature = hand-designed styles: 6 V2.3 masters + their 12 variants (V2.4)
+ * + core 12 + curated 28. The Library's Featured row takes the head of this
+ * list, so the 18 master+variant presets are what a new visitor sees first.
+ */
+export const signaturePresets: CaptionRecipe[] = [
+  ...masterPresets,
+  ...signatureVariants,
+  ...corePresets,
+  ...extendedPresets
+];
 
 /** Variants Lab = systematic parameter combinations (generated). */
 export const variantPresets: CaptionRecipe[] = generatedPresets;
 
 export function tierOf(id: string): 'signature' | 'variant' {
-  return generatedPresets.some((p) => p.id === id) ? 'variant' : 'signature';
+  if (generatedPresets.some((p) => p.id === id)) return 'variant';
+  /* a derived preset (has masterId) is a variant, not a signature (PART N) */
+  if (presets.find((p) => p.id === id)?.masterId) return 'variant';
+  return 'signature';
 }
+
+/** Real signature count: masters + their variants (grows to 54 as families land). */
+export const signatureCount = masterPresets.length + signatureVariants.length;
 
 /** The six V2.3 master styles — always shown first in Featured. */
 export const masterIds = masterPresets.map((p) => p.id);

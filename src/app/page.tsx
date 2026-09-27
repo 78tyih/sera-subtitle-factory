@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { signaturePresets, presets } from '@/presets';
+import { signaturePresets, presets, signatureCount } from '@/presets';
 import { families } from '@/styles/families';
 import { DemoTile } from '@/components/preview/DemoTile';
 import { useI18n } from '@/lib/i18n';
@@ -73,7 +73,7 @@ export default function HomePage() {
           </motion.div>
 
           <motion.p {...rise(0.24)} className="mt-8 font-mono text-[10.5px] uppercase tracking-[0.1em] text-muted">
-            {t('home.stat.families' as never)} · {t('home.stat.signature' as never)} · {t('home.stat.variations' as never)}
+            {t('home.stat.families' as never)} · {signatureCount} {t('home.stat.signature' as never)} · {t('home.stat.variations' as never)}
           </motion.p>
           <motion.p {...rise(0.28)} className="mt-2 text-[11px] text-muted">
             {t('app.powered' as never)}

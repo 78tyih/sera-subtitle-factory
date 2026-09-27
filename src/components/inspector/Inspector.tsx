@@ -17,15 +17,56 @@ const BG_COLORS = ['#000000', '#0F1720', '#1C2432', '#2B3446', '#FFFFFF', '#F5F3
 
 const labelOf = <T extends string>(arr: Array<{ type: T; label: string }>, v: T) => arr.find((x) => x.type === v)?.label ?? v;
 
-export function Inspector({ className = '' }: { className?: string }) {
+export function Inspector({
+  className = '',
+  level = 'advanced',
+  onLevel
+}: {
+  className?: string;
+  /** PART J §71 — basic shows the six knobs people actually touch */
+  level?: 'basic' | 'advanced';
+  onLevel?: (l: 'basic' | 'advanced') => void;
+}) {
   const { t, lang } = useI18n();
   const s = useCaptionStore();
   const r = s.recipe;
   /* 200 presets is a long scroll — show the curated set by default */
   const [showAll, setShowAll] = useState(false);
 
+  if (level === 'basic') {
+    return (
+      <aside className={`w-[336px] shrink-0 overflow-y-auto border-l border-line bg-panel p-3 ${className}`}>
+        <div className="mb-3 flex items-center justify-between">
+          <span className="font-mono text-[10.5px] uppercase tracking-[0.14em] text-muted">{t('inspector.title' as never)}</span>
+          <Segmented
+            size="sm"
+            options={[
+              { value: 'basic', label: t('inspector.basic' as never) },
+              { value: 'advanced', label: t('inspector.advanced' as never) }
+            ]}
+            value={level}
+            onChange={(v) => onLevel?.(v as 'basic' | 'advanced')}
+          />
+        </div>
+        <BasicPanel />
+      </aside>
+    );
+  }
+
   return (
     <aside className={`w-[336px] shrink-0 overflow-y-auto border-l border-line bg-panel p-3 ${className}`}>
+      <div className="mb-3 flex items-center justify-between">
+        <span className="font-mono text-[10.5px] uppercase tracking-[0.14em] text-muted">{t('inspector.title' as never)}</span>
+        <Segmented
+          size="sm"
+          options={[
+            { value: 'basic', label: t('inspector.basic' as never) },
+            { value: 'advanced', label: t('inspector.advanced' as never) }
+          ]}
+          value={level}
+          onChange={(v) => onLevel?.(v as 'basic' | 'advanced')}
+        />
+      </div>
       {/* ------------------------------------------------ TEMPLATES */}
       {s.tab === 'templates' && (
         <>
@@ -467,5 +508,92 @@ function RecipesPanel() {
       <Divider />
       <p className="text-[10.5px] leading-relaxed text-muted">{t('inspector.recipes.note')}</p>
     </Panel>
+  );
+}
+
+/** PART J §71 — Basic: Font · Size · Highlight · Background · Motion · Position */
+function BasicPanel() {
+  const { t, lang } = useI18n();
+  const s = useCaptionStore();
+  const r = s.recipe;
+
+  const setAccent = (c: string) =>
+    s.patchRecipe({
+      text: { active: c, keyword: c, number: c },
+      activeWord: { color: c },
+      number: { color: c },
+      emphasis: { numberColor: c }
+    });
+
+  const quickFonts = fontOptions.filter((f) => f.group !== 'Hand / Kai').slice(0, 9);
+
+  return (
+    <>
+      <Panel title={t('inspector.fontFamily' as never)}>
+        <div className="grid grid-cols-3 gap-1.5">
+          {quickFonts.map((f) => {
+            const on = r.typography.fontFamily === f.key;
+            return (
+              <button
+                key={f.key}
+                onClick={() => s.patchRecipe({ typography: { fontFamily: f.key } })}
+                title={f.label}
+                className={[
+                  'truncate rounded-[8px] border px-2 py-1.5 text-[10.5px] transition-all duration-150 ease-out',
+                  on ? 'border-ink bg-chip text-ink' : 'border-line bg-panel2 text-ink2 hover:bg-hover'
+                ].join(' ')}
+              >
+                {f.label}
+              </button>
+            );
+          })}
+        </div>
+        <div className="mt-3">
+          <Slider label={t('inspector.fontSize' as never)} value={r.typography.fontSize} min={40} max={110} step={2} format={(v) => `${v}px`} onChange={(v) => s.patchRecipe({ typography: { fontSize: v } })} />
+        </div>
+      </Panel>
+
+      <Panel title={t('inspector.color.active' as never)}>
+        <Swatches colors={ACCENTS} value={r.activeWord.color ?? r.text.active} onChange={setAccent} />
+      </Panel>
+
+      <Panel title={t('inspector.background' as never)}>
+        <Segmented
+          size="sm"
+          options={backgroundPresets.map((b) => ({ value: b.type, label: labelOf(backgroundPresets, b.type) }))}
+          value={r.background.type}
+          onChange={(v) => s.patchRecipe({ background: { type: v as BgType } })}
+        />
+        {r.background.color && (
+          <div className="mt-3">
+            <Btn size="sm" onClick={() => s.patchRecipe({ background: { color: undefined } })}>{t('inspector.bg.resetColor' as never)}</Btn>
+          </div>
+        )}
+      </Panel>
+
+      <Panel title={t('inspector.motion.word' as never)}>
+        <OptionGrid
+          options={wordMotionNames.map((m) => ({ value: m, label: t(`motion.${m}` as never) }))}
+          value={r.motion.word.type}
+          onChange={(v) => s.patchRecipe({ motion: { word: { type: v as never } } })}
+        />
+      </Panel>
+
+      <Panel title={t('inspector.group.layout' as never)}>
+        <Slider label={t('inspector.positionY' as never)} value={r.layout.yOffset} min={0.05} max={0.45} step={0.005} format={(v) => `${(v * 100).toFixed(1)}%`} onChange={(v) => s.patchRecipe({ layout: { yOffset: v } })} />
+        <Field label={t('inspector.align' as never)}>
+          <Segmented
+            size="sm"
+            options={[
+              { value: 'left', label: lang === 'zh' ? '左' : 'L' },
+              { value: 'center', label: lang === 'zh' ? '中' : 'C' },
+              { value: 'right', label: lang === 'zh' ? '右' : 'R' }
+            ]}
+            value={r.layout.align}
+            onChange={(v) => s.patchRecipe({ layout: { align: v as 'left' | 'center' | 'right' } })}
+          />
+        </Field>
+      </Panel>
+    </>
   );
 }

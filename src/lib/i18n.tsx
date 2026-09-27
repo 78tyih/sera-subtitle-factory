@@ -131,6 +131,9 @@ export const dict = {
     'studio.hoverHint': '悬停播放',
 
     /* inspector */
+    'inspector.title': '设置',
+    'inspector.basic': '基础',
+    'inspector.advanced': '高级',
     'inspector.presets': '预设',
     'inspector.typography': '排版',
     'inspector.fontFamily': '字体',
@@ -406,6 +409,9 @@ export const dict = {
     'studio.timeline.scrub': 'click / drag to scrub',
     'studio.hoverHint': 'hover to play',
 
+    'inspector.title': 'Settings',
+    'inspector.basic': 'Basic',
+    'inspector.advanced': 'Advanced',
     'inspector.presets': 'Presets',
     'inspector.typography': 'Typography',
     'inspector.fontFamily': 'Font family',

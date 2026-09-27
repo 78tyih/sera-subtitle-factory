@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import { signaturePresets, variantPresets } from '@/presets';
 import { familyByKey, familyOfPreset } from '@/styles/families';
+import { primitives } from '@/caption-engine/primitives';
 import { DemoTile } from '@/components/preview/DemoTile';
 import { useCaptionStore } from '@/store/caption-store';
 import { useI18n } from '@/lib/i18n';
@@ -11,7 +12,7 @@ import { Btn, Row } from '@/components/ui';
 import type { CaptionRecipe } from '@/types/caption';
 import { DEFAULT_CONTEXT } from '@/preview-contexts';
 
-const TABS = ['featured', 'creator', 'editorial', 'business', 'podcast', 'tech', 'experimental', 'lab'];
+const TABS = ['featured', 'creator', 'editorial', 'business', 'podcast', 'tech', 'experimental', 'primitives', 'lab'];
 
 export default function LibraryPage() {
   const { t, lang } = useI18n();
@@ -46,7 +47,9 @@ export default function LibraryPage() {
               ? t('library.tabs.featured' as never)
               : k === 'lab'
                 ? t('library.tabs.lab' as never)
-                : familyByKey(k)?.name ?? k;
+                : k === 'primitives'
+                  ? t('library.tabs.primitives' as never)
+                  : familyByKey(k)?.name ?? k;
           return (
             <button
               key={k}
@@ -68,11 +71,37 @@ export default function LibraryPage() {
         </p>
       )}
 
-      <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {list.map((p) => (
-          <StyleCard key={p.id} recipe={p} lang={lang} />
-        ))}
-      </div>
+      {tab === 'primitives' ? (
+        <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {primitives.map((p) => {
+            const base = (signaturePresets.find((r) => r.id === 'sera-finance-yellow') ?? signaturePresets[0]) as CaptionRecipe;
+            const withPrim: CaptionRecipe = {
+              ...base,
+              motion: { ...base.motion, decorator: p.name } as CaptionRecipe['motion']
+            };
+            return (
+              <div key={p.name} className="overflow-hidden rounded-[14px] border border-line bg-panel">
+                <DemoTile recipe={withPrim} width={380} autoplay context="creator" showContextLabel className="overflow-hidden rounded-t-[14px]" />
+                <div className="flex items-center justify-between px-3 py-3">
+                  <div>
+                    <div className="font-mono text-[12px] text-ink">{p.name}</div>
+                    <div className="font-mono text-[9.5px] uppercase tracking-[0.08em] text-muted">{p.kind}</div>
+                  </div>
+                  <Btn size="sm" onClick={() => { useCaptionStore.getState().patchRecipe({ motion: { decorator: p.name } as never }); window.location.href = '/studio/'; }}>
+                    {lang === 'zh' ? '应用' : 'Apply'}
+                  </Btn>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {list.map((p) => (
+            <StyleCard key={p.id} recipe={p} lang={lang} />
+          ))}
+        </div>
+      )}
     </main>
   );
 }

@@ -5,6 +5,7 @@ import type { AspectRatio, CaptionRecipe, WordTimestamp } from '@/types/caption'
 import { CaptionRenderer } from '@/caption-engine/renderer/CaptionRenderer';
 import { findSegment, resolveSegment } from '@/caption-engine/resolve';
 import { useSegments } from '@/lib/hooks';
+import { previewContexts, DEFAULT_CONTEXT, type PreviewContextKey } from '@/preview-contexts';
 
 export const ASPECT: Record<AspectRatio, number> = {
   '16:9': 16 / 9,
@@ -23,7 +24,12 @@ export interface CaptionStageProps {
   width: number;
   showSafeArea?: boolean;
   animate?: boolean;
+  /** PART G — render inside one of the nine demo contexts */
+  context?: PreviewContextKey;
+  /** legacy flag, kept so old call sites still compile */
   backdrop?: 'plain' | 'finance' | 'none';
+  /** optional on-frame label (context name) */
+  showContextLabel?: boolean;
   className?: string;
 }
 
@@ -35,7 +41,9 @@ export function CaptionStage({
   width,
   showSafeArea = false,
   animate = true,
+  context,
   backdrop = 'finance',
+  showContextLabel = false,
   className = ''
 }: CaptionStageProps) {
   const { segments, scales } = useSegments(words, recipe);
@@ -48,9 +56,23 @@ export function CaptionStage({
 
   const scale = segment ? scales[segment.id] ?? 1 : 1;
 
+  const ctx = context ? previewContexts[context] : null;
+  const surface = ctx ? ctx.background : undefined;
+
+  /* legacy finance chart backdrop only when no context is supplied */
+  const useLegacy = !ctx && backdrop !== 'none';
+
   return (
-    <div className={`relative overflow-hidden ${className}`} style={{ width, height, borderRadius: 10, background: '#000' }}>
-      {backdrop !== 'none' && <Backdrop variant={backdrop} width={width} height={height} />}
+    <div
+      className={`relative overflow-hidden ${className}`}
+      style={{ width, height, borderRadius: 10, background: surface ?? '#000' }}
+    >
+      {useLegacy && <Backdrop variant={backdrop} width={width} height={height} />}
+      {ctx && showContextLabel && (
+        <div className="absolute left-3 top-3 font-mono text-[9px] uppercase tracking-[0.16em]" style={{ color: ctx.label }}>
+          {ctx.name}
+        </div>
+      )}
       <CaptionRenderer
         recipe={recipe}
         segment={segment}
@@ -64,9 +86,7 @@ export function CaptionStage({
   );
 }
 
-/* ---------------------------------------------------------------- backdrop */
-
-/** Demo "video frame" — flat black + one quiet price line. No cheap gradients. */
+/** Demo "video frame" — the old flat black + one quiet price line. Kept as a fallback. */
 function Backdrop({ variant, width, height }: { variant: 'plain' | 'finance'; width: number; height: number }) {
   if (variant === 'plain') {
     return <div className="absolute inset-0 bg-sunken" />;
@@ -89,3 +109,5 @@ function Backdrop({ variant, width, height }: { variant: 'plain' | 'finance'; wi
     </div>
   );
 }
+
+export const DEFAULT_PREVIEW_CONTEXT = DEFAULT_CONTEXT;

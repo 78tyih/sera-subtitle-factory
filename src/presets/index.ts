@@ -72,3 +72,15 @@ export const FLAGSHIP_IDS = ['sera-finance-yellow', 'sera-finance-blue', 'sera-e
 export const flagshipPresets = presets.filter((p) => FLAGSHIP_IDS.includes(p.id));
 
 export { minimalWhite, minimalBlack, editorial, financeYellow, financeBlue, dataFocus, leftBar, cleanWhiteCard, cleanBlackCard, neonBlue, wordPop, wordFloat };
+
+/* ------------------------------------------------------------------ V2 tiers */
+
+/** Signature = hand-designed styles (core 12 + curated 28). */
+export const signaturePresets: CaptionRecipe[] = [...corePresets, ...extendedPresets];
+
+/** Variants Lab = systematic parameter combinations (generated). */
+export const variantPresets: CaptionRecipe[] = generatedPresets;
+
+export function tierOf(id: string): 'signature' | 'variant' {
+  return generatedPresets.some((p) => p.id === id) ? 'variant' : 'signature';
+}

@@ -41,6 +41,8 @@ export type FontKey =
   | 'sourceHanSans' | 'notoSansSC' | 'harmonyOS' | 'alibaba' | 'smiley' | 'system'
   /* serif */
   | 'editorial' | 'sourceHanSerif' | 'notoSerif' | 'playfair' | 'lora' | 'instrumentSerif'
+  /* display / condensed */
+  | 'uppercaseTight'
   /* mono / hand */
   | 'mono' | 'jetbrains' | 'firaCode' | 'lxgw';
 

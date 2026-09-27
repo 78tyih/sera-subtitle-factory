@@ -35,8 +35,13 @@ if (!fs.existsSync(outDir)) {
   process.exit(1);
 }
 
+const BASE = process.env.SSF_BASE_PATH || '/sera-subtitle-factory';
+
 function resolveFile(urlPath) {
-  const clean = decodeURIComponent(urlPath.split('?')[0]).replace(/^\/+/, '');
+  let raw = decodeURIComponent(urlPath.split('?')[0]);
+  /* static export uses basePath — strip it so the local server can serve the files */
+  if (raw === BASE || raw.startsWith(BASE + '/')) raw = raw.slice(BASE.length) || '/';
+  const clean = raw.replace(/^\/+/, '');
   const candidates = [];
   if (!clean) candidates.push('index.html');
   else {

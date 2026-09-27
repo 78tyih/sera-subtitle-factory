@@ -1,46 +1,55 @@
 'use client';
 
 import { useState } from 'react';
-import type { AspectRatio, CaptionRecipe, WordTimestamp } from '@/types/caption';
+import type { CaptionRecipe, WordTimestamp } from '@/types/caption';
 import { CaptionStage } from './CaptionStage';
 import { usePlayback } from '@/lib/hooks';
+import { familyOfPreset } from '@/styles/families';
+import { synthesizeWords } from '@/lib/demo-transcripts';
+import type { PreviewContextKey } from '@/preview-contexts';
 
 /**
- * DemoTile — a self-contained caption demo.
- *  · Library: plays on hover (spec §64)
- *  · Home: loops automatically (spec §55)
+ * DemoTile — a caption shown inside its own PreviewContext (PART G) with the
+ * family's own demo line (PART T). Hovering plays the motion.
  */
 export function DemoTile({
   recipe,
   words,
-  width,
+  width = 360,
   aspect = '16:9',
   autoplay = false,
-  animate = true,
-  showSafeArea = false,
+  context,
+  showContextLabel = false,
   className = ''
 }: {
   recipe: CaptionRecipe;
-  words: WordTimestamp[];
-  width: number;
-  aspect?: AspectRatio;
+  words?: WordTimestamp[];
+  width?: number;
+  aspect?: '16:9' | '4:3' | '1:1' | '9:16' | '4:5';
   autoplay?: boolean;
-  animate?: boolean;
-  showSafeArea?: boolean;
+  context?: PreviewContextKey;
+  showContextLabel?: boolean;
   className?: string;
 }) {
   const [hover, setHover] = useState(false);
-  const duration = words.length ? words[words.length - 1].end + 0.6 : 4;
-  const playing = autoplay || hover;
-  const { time } = usePlayback(duration, playing);
-
-  /* frozen frame sits on an active word so the thumbnail never looks dead */
-  const frozen = duration * 0.44;
-  const t = playing ? time : frozen;
+  const fam = familyOfPreset(recipe.id);
+  const ctxKey = context ?? fam?.contexts[0] ?? 'creator';
+  const demoWords = words ?? synthesizeWords(fam?.demoText ?? '让每一个字，都跟着声音动起来。');
+  const duration = demoWords.length ? demoWords[demoWords.length - 1].end + 0.8 : 5;
+  const { time } = usePlayback(duration, autoplay || hover);
 
   return (
     <div className={className} onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
-      <CaptionStage recipe={recipe} words={words} time={t} aspect={aspect} width={width} animate={animate && playing} showSafeArea={showSafeArea} backdrop="finance" />
+      <CaptionStage
+        recipe={recipe}
+        words={demoWords}
+        time={time}
+        aspect={aspect}
+        width={width}
+        animate={autoplay || hover}
+        context={ctxKey}
+        showContextLabel={showContextLabel}
+      />
     </div>
   );
 }

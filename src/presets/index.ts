@@ -13,6 +13,7 @@ import { neonBlue } from './neon-blue';
 import { wordPop } from './word-pop';
 import { wordFloat } from './word-float';
 import { extendedPresets } from './extended';
+import { masterPresets } from '@/styles/masters';
 import { generatedPresets } from './generated';
 
 /** Core pack (12 hand-tuned styles, spec §34) + extended pack (28 more). */
@@ -31,7 +32,8 @@ export const corePresets: CaptionRecipe[] = [
   wordFloat
 ];
 
-export const presets: CaptionRecipe[] = [...corePresets, ...extendedPresets, ...generatedPresets];
+/* V2.3 masters come first — the Library's Featured row is built from the head of this list. */
+export const presets: CaptionRecipe[] = [...masterPresets, ...corePresets, ...extendedPresets, ...generatedPresets];
 
 export const presetCategories: PresetCategory[] = [
   'Minimal',
@@ -75,12 +77,19 @@ export { minimalWhite, minimalBlack, editorial, financeYellow, financeBlue, data
 
 /* ------------------------------------------------------------------ V2 tiers */
 
-/** Signature = hand-designed styles (core 12 + curated 28). */
-export const signaturePresets: CaptionRecipe[] = [...corePresets, ...extendedPresets];
+/** Signature = hand-designed styles (6 V2.3 masters + core 12 + curated 28). */
+export const signaturePresets: CaptionRecipe[] = [...masterPresets, ...corePresets, ...extendedPresets];
 
 /** Variants Lab = systematic parameter combinations (generated). */
 export const variantPresets: CaptionRecipe[] = generatedPresets;
 
 export function tierOf(id: string): 'signature' | 'variant' {
   return generatedPresets.some((p) => p.id === id) ? 'variant' : 'signature';
+}
+
+/** The six V2.3 master styles — always shown first in Featured. */
+export const masterIds = masterPresets.map((p) => p.id);
+
+export function isMaster(id: string): boolean {
+  return masterIds.includes(id);
 }

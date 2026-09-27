@@ -41,7 +41,7 @@ export const families: FamilyDef[] = [
     demoText: '你只需要记住这一件事。',
     rhythm: 'creator',
     treatment: T({ stroke: { enabled: true, color: '#000000', width: 4 }, shadow: { enabled: true, x: 0, y: 2, blur: 10, color: 'rgba(0,0,0,0.5)' }}),
-    masterId: 'sera-finance-yellow',
+    masterId: 'sera-m-creator-impact',
     variantIds: ['sera-crimson-strong', 'sera-marker-yellow'],
     dos: ['粗体 + 描边 + 轻微投影', 'current word 强调色', 'maxWords 3'],
     donts: ['巨大 bounce', 'scale 1.4', '卡通跳']
@@ -55,7 +55,7 @@ export const families: FamilyDef[] = [
     demoText: '你只需要记住这一件事。',
     rhythm: 'creator',
     treatment: T(),
-    masterId: 'sera-minimal-white',
+    masterId: 'sera-m-clean-spoken',
     variantIds: ['sera-soft-shadow', 'sera-classic-subtitle'],
     dos: ['weight shift', 'soft fade'],
     donts: ['任何背景块', '持续运动']
@@ -69,7 +69,7 @@ export const families: FamilyDef[] = [
     demoText: '你只需要记住这一件事。',
     rhythm: 'creator',
     treatment: T({ marker: { enabled: true, color: '#FFD400', opacity: 0.85, rotation: -0.5 }}),
-    masterId: 'sera-marker-yellow',
+    masterId: 'sera-m-marker-note',
     variantIds: ['sera-underline-accent'],
     dos: ['sweep 从左到右', '轻微 rotate(-0.5deg)'],
     donts: ['瞬间出现矩形块']
@@ -83,7 +83,7 @@ export const families: FamilyDef[] = [
     demoText: '市场正在重新寻找新的增长方向。',
     rhythm: 'business',
     treatment: T(),
-    masterId: 'sera-clean-black-card',
+    masterId: 'sera-m-active-box',
     variantIds: ['sera-clean-white-card', 'sera-left-box'],
     dos: ['radius 4–10px', '黄/蓝/白/黑色块'
     ],
@@ -98,7 +98,7 @@ export const families: FamilyDef[] = [
     demoText: '你只需要记住这一件事。',
     rhythm: 'creator',
     treatment: T({ fill: { type: 'karaoke' } }),
-    masterId: 'sera-karaoke-yellow',
+    masterId: 'sera-m-karaoke-sweep',
     variantIds: ['sera-karaoke-blue'],
     dos: ['progressive fill', '黄/蓝/白'],
     donts: ['整词瞬间变色']
@@ -112,7 +112,7 @@ export const families: FamilyDef[] = [
     demoText: '真正重要的变化，往往发生得很安静。',
     rhythm: 'editorial',
     treatment: T(),
-    masterId: 'sera-editorial',
+    masterId: 'sera-m-editorial-serif',
     variantIds: ['sera-serif-minimal', 'sera-quote-serif'],
     dos: ['serif + italic keyword', 'cream / white / black / deep red'],
     donts: ['SaaS 卡片感']

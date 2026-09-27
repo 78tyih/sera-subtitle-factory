@@ -30,6 +30,13 @@ type EntranceFactory = (duration?: number) => {
 
 const ENTRANCES: Partial<Record<EntranceMotionName, EntranceFactory>> = {
   fade: fade.entrance,
+  /* V2 — softFade is a slower fade with a gentler ease (Clean Spoken / Editorial) */
+  softFade: (duration = 240) => ({
+    initial: { opacity: 0 },
+    animate: { opacity: 1 },
+    exit: { opacity: 0 },
+    transition: { duration: duration / 1000, ease: [0.16, 1, 0.3, 1] }
+  }),
   float: float.entrance,
   slideUp: slideUp.entrance,
   slideDown: slideDown.entrance,

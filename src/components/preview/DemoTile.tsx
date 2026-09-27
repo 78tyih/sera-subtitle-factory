@@ -33,8 +33,13 @@ export function DemoTile({
 }) {
   const [hover, setHover] = useState(false);
   const fam = familyOfPreset(recipe.id);
-  const ctxKey = context ?? fam?.contexts[0] ?? 'creator';
-  const demoWords = words ?? synthesizeWords(fam?.demoText ?? '让每一个字，都跟着声音动起来。');
+  /* PART G/T — the recipe's own context + demo line win over the family default */
+  const ctxKey = (context ??
+    recipe.preview?.contexts?.[0] ??
+    fam?.contexts[0] ??
+    'creator') as PreviewContextKey;
+  const demoText = fam?.demoText ?? '让每一个字，都跟着声音动起来。';
+  const demoWords = words ?? synthesizeWords(recipe.preview?.demoText ?? demoText);
   const duration = demoWords.length ? demoWords[demoWords.length - 1].end + 0.8 : 5;
   const { time } = usePlayback(duration, autoplay || hover);
 

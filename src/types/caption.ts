@@ -5,6 +5,10 @@
  * A caption that is too long gets RE-SEGMENTED, never wrapped.
  */
 
+/* V2 additive types (Treatment / Rhythm / TypographyOverride) live in caption-v2.
+   They are imported type-only, so V1 presets keep compiling unchanged. */
+import type { Rhythm, Treatment, TypographyOverride } from './caption-v2';
+
 /* ---------- transcript ---------- */
 
 export type WordType =
@@ -130,6 +134,8 @@ export interface BorderStyle {
 export type EntranceMotionName =
   | 'none'
   | 'fade'
+  /** V2 — a slower, gentler fade (Clean Spoken / Editorial) */
+  | 'softFade'
   | 'float'
   | 'slideUp'
   | 'slideDown'
@@ -156,6 +162,8 @@ export interface MotionStyle {
   entrance: { type: EntranceMotionName; duration: number }; // ms
   word: { type: WordMotionName; duration: number; intensity: number };
   exit: { type: ExitMotionName; duration: number };
+  /** PART E — name of a primitive from the registry, applied to the active word */
+  decorator?: string;
 }
 
 /* ---------- layout ---------- */
@@ -201,6 +209,19 @@ export interface CaptionRecipe {
   author?: string;
   version?: string;
   createdAt?: string;
+
+  /* ---- V2 additive: every field is optional so V1 presets keep working ---- */
+  /** a preset can belong to more than one family/category */
+  categories?: PresetCategory[];
+  /** signature = hand-designed · variant = parameter combination */
+  priority?: 'signature' | 'variant';
+  /** per-role typography: a keyword can be serif italic while the line is sans */
+  keywordTypography?: TypographyOverride;
+  numberTypography?: TypographyOverride;
+  treatment?: Treatment;
+  /** when to cut the next segment (still maxLines = 1) */
+  rhythm?: Rhythm;
+  preview?: { contexts?: string[]; demoText?: string };
 
   layout: LayoutStyle;
   typography: TypographyStyle;

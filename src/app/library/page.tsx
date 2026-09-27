@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
-import { signaturePresets, variantPresets } from '@/presets';
+import { signaturePresets, variantPresets, isMaster } from '@/presets';
 import { familyByKey, familyOfPreset } from '@/styles/families';
 import { primitives } from '@/caption-engine/primitives';
 import { DemoTile } from '@/components/preview/DemoTile';
@@ -121,7 +121,14 @@ function StyleCard({ recipe, lang }: { recipe: CaptionRecipe; lang: string }) {
         </button>
         <div className="flex items-center justify-between gap-2 px-3 py-3">
           <div className="min-w-0">
-            <div className="truncate text-[13px] font-medium text-ink">{name}</div>
+            <div className="flex items-center gap-1.5">
+              <span className="truncate text-[13px] font-medium text-ink">{name}</span>
+              {isMaster(recipe.id) && (
+                <span className="shrink-0 rounded-[4px] border border-line2 px-1 py-[1px] font-mono text-[9px] uppercase tracking-[0.08em] text-ink2">
+                  {zh ? '主样式' : 'Master'}
+                </span>
+              )}
+            </div>
             <div className="truncate font-mono text-[9.5px] uppercase tracking-[0.08em] text-muted">{fam?.name ?? recipe.category}</div>
           </div>
           <Btn size="sm" onClick={() => { applyPreset(recipe.id); window.location.href = '/studio/'; }}>
@@ -148,6 +155,8 @@ function StyleCard({ recipe, lang }: { recipe: CaptionRecipe; lang: string }) {
                 ['Font', recipe.typography.fontFamily],
                 ['Size', `${recipe.typography.fontSize}px`],
                 ['Motion', recipe.motion.word.type],
+                ['Decorator', (recipe.motion as { decorator?: string }).decorator ?? '—'],
+                ['Rhythm', recipe.rhythm ? `${recipe.rhythm.mode} · ${recipe.rhythm.maxWords} words · ${recipe.rhythm.combineWithinMs}ms` : '—'],
                 ['Background', recipe.background.type]
               ].map(([k, v]) => (
                 <div key={k} className="flex items-baseline justify-between gap-2 border-b border-line pb-1.5">

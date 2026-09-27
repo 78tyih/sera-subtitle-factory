@@ -43,7 +43,8 @@ export function StudioShell() {
     if (pid) useCaptionStore.getState().usePreset(pid);
   }, []);
   const words = useCurrentWords();
-  const { time, seek, restart } = usePlayback(s.duration, s.playing);
+  const [speed, setSpeed] = useState(1);
+  const { time, seek, restart } = usePlayback(s.duration, s.playing, undefined, speed);
   const { segments } = useSegments(words, s.recipe);
 
   const [aiOpen, setAiOpen] = useState(false);
@@ -148,18 +149,25 @@ export function StudioShell() {
               />
             </div>
 
-            <div className="flex shrink-0 items-center justify-center gap-3 border-t border-line bg-panel py-2">
+            <div className="flex shrink-0 items-center justify-center gap-4 border-t border-line bg-panel py-2.5">
               <IconBtn title={t('ui.restart')} onClick={restart}>
                 {ICON.restart}
               </IconBtn>
               <button
                 onClick={s.togglePlaying}
                 title={s.playing ? t('ui.pause') : t('ui.play')}
-                className="grid h-10 w-10 place-items-center rounded-full bg-ink text-bg transition-transform duration-150 ease-out hover:scale-105 active:scale-[0.98]"
+                className="grid h-12 w-12 place-items-center rounded-full bg-ink text-bg transition-transform duration-150 ease-out hover:scale-105 active:scale-[0.98]"
               >
                 {s.playing ? ICON.pause : ICON.play}
               </button>
-              <span className="font-mono text-[10.5px] text-muted">
+              <button
+                onClick={() => setSpeed((v) => (v === 1 ? 0.5 : v === 0.5 ? 2 : 1))}
+                title={t('ui.speed')}
+                className="min-w-[46px] rounded-[10px] px-2 py-1.5 font-mono text-[11px] text-ink2 transition-all duration-150 ease-out hover:bg-hover hover:text-ink"
+              >
+                {speed}×
+              </button>
+              <span className="font-mono text-[11px] text-muted">
                 {time.toFixed(2)} / {s.duration.toFixed(2)}s
               </span>
             </div>

@@ -39,7 +39,7 @@ export function useSegments(words: WordTimestamp[], recipe: CaptionRecipe) {
  * Playback clock. Drives `currentTime` at 60fps and loops,
  * so the studio always shows a moving caption (spec §56).
  */
-export function usePlayback(duration: number, playing: boolean, onTick?: (t: number) => void) {
+export function usePlayback(duration: number, playing: boolean, onTick?: (t: number) => void, speed = 1) {
   const [time, setTime] = useState(0);
   const raf = useRef<number | null>(null);
   const last = useRef<number>(0);
@@ -53,7 +53,7 @@ export function usePlayback(duration: number, playing: boolean, onTick?: (t: num
       const dt = (now - last.current) / 1000;
       last.current = now;
       setTime((t) => {
-        const next = t + dt;
+        const next = t + dt * speed;
         if (next >= duration) {
           tickRef.current?.(0);
           return 0;
@@ -67,7 +67,7 @@ export function usePlayback(duration: number, playing: boolean, onTick?: (t: num
     return () => {
       if (raf.current) cancelAnimationFrame(raf.current);
     };
-  }, [playing, duration]);
+  }, [playing, duration, speed]);
 
   const seek = (t: number) => setTime(Math.max(0, Math.min(duration, t)));
   const restart = () => setTime(0);

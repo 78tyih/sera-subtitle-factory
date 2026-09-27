@@ -36,7 +36,6 @@ const ENTRANCES: Partial<Record<EntranceMotionName, EntranceFactory>> = {
   slideDown: slideDown.entrance,
   scale: scale.entrance,
   blurReveal: blurReveal.entrance,
-  marquee: marquee.entrance as unknown as EntranceFactory,
   typewriter: typewriter.entrance as unknown as EntranceFactory
 };
 
@@ -53,7 +52,7 @@ export function getEntrance(name: EntranceMotionName, duration: number) {
   return f(duration);
 }
 
-export const entranceNames: EntranceMotionName[] = ['none', 'fade', 'float', 'slideUp', 'slideDown', 'scale', 'blurReveal', 'typewriter', 'marquee'];
+export const entranceNames: EntranceMotionName[] = ['none', 'fade', 'float', 'slideUp', 'slideDown', 'scale', 'blurReveal', 'typewriter'];
 
 /* ---------- word ---------- */
 
@@ -86,6 +85,8 @@ export function getWordMotion(name: WordMotionName, env: WordMotionEnv) {
       return wave.word(duration, intensity);
     case 'flip':
       return flip.word(duration);
+    case 'marquee':
+      return marquee.word(duration);
     case 'highlight':
       return highlight.word(duration);
     default:
@@ -104,7 +105,8 @@ export const wordMotionNames: WordMotionName[] = [
   'weightShift',
   'blurReveal',
   'wave',
-  'flip'
+  'flip',
+  'marquee'
 ];
 
 export const exitNames: ExitMotionName[] = ['none', 'fade', 'slideDown', 'scale', 'blurReveal'];

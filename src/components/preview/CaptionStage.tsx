@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import type { AspectRatio, CaptionRecipe, WordTimestamp } from '@/types/caption';
 import { CaptionRenderer } from '@/caption-engine/renderer/CaptionRenderer';
 import { findSegment, resolveSegment } from '@/caption-engine/resolve';
@@ -47,7 +47,26 @@ export function CaptionStage({
   className = ''
 }: CaptionStageProps) {
   const { segments, scales } = useSegments(words, recipe);
-  const height = Math.round(width / ASPECT[aspect]);
+
+  /* The stage is fluid: `width` is the DESIGN width, but the rendered box never
+     exceeds its container — so a 640px stage on a 390px phone shrinks instead of
+     pushing the page sideways (the caption scales with it, one line stays one
+     line). */
+  const boxRef = useRef<HTMLDivElement>(null);
+  const [measured, setMeasured] = useState(width);
+  useEffect(() => {
+    const el = boxRef.current;
+    if (!el || typeof ResizeObserver === 'undefined') return;
+    const ro = new ResizeObserver(([entry]) => {
+      const w = Math.round(entry.contentRect.width);
+      if (w > 0) setMeasured(Math.min(w, width));
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [width]);
+
+  const w = Math.min(measured || width, width);
+  const height = Math.round(w / ASPECT[aspect]);
 
   const segment = useMemo(() => {
     const raw = findSegment(segments, time);
@@ -64,10 +83,17 @@ export function CaptionStage({
 
   return (
     <div
+      ref={boxRef}
       className={`relative overflow-hidden ${className}`}
-      style={{ width, height, borderRadius: 10, background: surface ?? '#000' }}
+      style={{
+        width: '100%',
+        maxWidth: width,
+        aspectRatio: `${ASPECT[aspect]}`,
+        borderRadius: 10,
+        background: surface ?? '#000'
+      }}
     >
-      {useLegacy && <Backdrop variant={backdrop} width={width} height={height} />}
+      {useLegacy && <Backdrop variant={backdrop} width={w} height={height} />}
       {ctx && showContextLabel && (
         <div className="absolute left-3 top-3 font-mono text-[9px] uppercase tracking-[0.16em]" style={{ color: ctx.label }}>
           {ctx.name}
@@ -76,7 +102,7 @@ export function CaptionStage({
       <CaptionRenderer
         recipe={recipe}
         segment={segment}
-        width={width}
+        width={w}
         height={height}
         segmentScale={scale}
         showSafeArea={showSafeArea}

@@ -99,6 +99,49 @@ export function Segmented<T extends string | number>({
   );
 }
 
+/* ---------------------------------------------------------------- Collapsible section (keeps the panel tidy) */
+
+export function Collapsible({
+  title,
+  children,
+  defaultOpen = true,
+  hint
+}: {
+  title: string;
+  children: React.ReactNode;
+  defaultOpen?: boolean;
+  hint?: string;
+}) {
+  const [open, setOpen] = React.useState(defaultOpen);
+  return (
+    <div className="border-t border-line py-3 first:border-t-0 first:pt-0">
+      <button
+        onClick={() => setOpen((v) => !v)}
+        className="flex w-full items-center justify-between gap-2 text-left"
+        aria-expanded={open}
+      >
+        <span className="text-[11.5px] font-medium text-ink2">{title}</span>
+        <span className="flex items-center gap-1.5">
+          {hint && !open && <span className="font-mono text-[9.5px] text-muted">{hint}</span>}
+          <svg
+            width="13"
+            height="13"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            className={['text-muted transition-transform duration-200 ease-out', open ? 'rotate-180' : ''].join(' ')}
+          >
+            <path d="M6 9l6 6 6-6" />
+          </svg>
+        </span>
+      </button>
+      {open && <div className="mt-3">{children}</div>}
+    </div>
+  );
+}
+
 /* ---------------------------------------------------------------- Option grid (wraps, never overflows) */
 
 export function OptionGrid<T extends string>({

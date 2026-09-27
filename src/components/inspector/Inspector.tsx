@@ -2,17 +2,18 @@
 
 import { useRef, useState } from 'react';
 import { useCaptionStore } from '@/store/caption-store';
-import { Btn, Divider, Field, OptionGrid, Panel, Row, Segmented, Slider, Swatches } from '@/components/ui';
+import { Btn, Collapsible, Divider, Field, OptionGrid, Panel, Row, Segmented, Slider, Swatches } from '@/components/ui';
 import { fontOptions, fontSizePresets, fontWeightOptions } from '@/caption-engine/typography/fonts';
 import { backgroundPresets } from '@/caption-engine/backgrounds';
 import { borderPresets } from '@/caption-engine/borders';
 import { entranceNames, exitNames, wordMotionNames } from '@/caption-engine/motions';
-import { presets, presetCategories } from '@/presets';
+import { corePresets, presets, presetCategories } from '@/presets';
 import type { BackgroundType as BgType, BorderType as BdType } from '@/types/caption';
 import { useI18n } from '@/lib/i18n';
 
 const TEXT_COLORS = ['#FFFFFF', '#111111', '#B4B4B8', '#FFD400', '#3B82F6', '#35D07F', '#E63946', '#FF8A3D', '#B77CFF'];
 const ACCENTS = ['#FFD400', '#3B82F6', '#FFFFFF', '#35D07F', '#E63946', '#FF8A3D', '#B77CFF', '#111111'];
+const BG_COLORS = ['#000000', '#0F1720', '#1C2432', '#2B3446', '#FFFFFF', '#F5F3EE', '#E63946', '#FFD400', '#4F8CFF'];
 
 const labelOf = <T extends string>(arr: Array<{ type: T; label: string }>, v: T) => arr.find((x) => x.type === v)?.label ?? v;
 
@@ -20,6 +21,8 @@ export function Inspector({ className = '' }: { className?: string }) {
   const { t, lang } = useI18n();
   const s = useCaptionStore();
   const r = s.recipe;
+  /* 200 presets is a long scroll — show the curated set by default */
+  const [showAll, setShowAll] = useState(false);
 
   return (
     <aside className={`w-[336px] shrink-0 overflow-y-auto border-l border-line bg-panel p-3 ${className}`}>
@@ -42,8 +45,25 @@ export function Inspector({ className = '' }: { className?: string }) {
                 ))}
             </Row>
             <Divider />
+            <div className="mb-2 flex gap-1.5">
+              {[
+                { on: !showAll, label: `${t('inspector.presets.core')} ${corePresets.length}`, fn: () => setShowAll(false) },
+                { on: showAll, label: `${t('inspector.presets.all')} ${presets.length}`, fn: () => setShowAll(true) }
+              ].map((b) => (
+                <button
+                  key={b.label}
+                  onClick={b.fn}
+                  className={[
+                    'rounded-[7px] border px-2 py-1 text-[10.5px] transition-all duration-150 ease-out',
+                    b.on ? 'border-ink bg-chip text-ink' : 'border-line2 text-ink2 hover:bg-hover hover:text-ink'
+                  ].join(' ')}
+                >
+                  {b.label}
+                </button>
+              ))}
+            </div>
             <div className="flex flex-col gap-1.5">
-              {presets.map((p) => {
+              {(showAll ? presets : corePresets).map((p) => {
                 const on = p.id === r.id;
                 return (
                   <button
@@ -140,8 +160,8 @@ export function Inspector({ className = '' }: { className?: string }) {
             />
           </Field>
 
-          <Divider />
-          <Slider label={t('inspector.positionY')} value={r.layout.yOffset} min={0.05} max={0.45} step={0.005} format={(v) => `${(v * 100).toFixed(1)}%`} onChange={(v) => s.patchRecipe({ layout: { yOffset: v } })} />
+          <Collapsible title={t('inspector.group.layout')} defaultOpen={false}>
+            <Slider label={t('inspector.positionY')} value={r.layout.yOffset} min={0.05} max={0.45} step={0.005} format={(v) => `${(v * 100).toFixed(1)}%`} onChange={(v) => s.patchRecipe({ layout: { yOffset: v } })} />
           <Slider label={t('inspector.maxWidth')} value={r.layout.maxWidth} min={0.5} max={0.98} step={0.01} format={(v) => `${Math.round(v * 100)}%`} onChange={(v) => s.patchRecipe({ layout: { maxWidth: v } })} />
           <Field label={t('inspector.position')}>
             <Segmented
@@ -167,19 +187,34 @@ export function Inspector({ className = '' }: { className?: string }) {
               onChange={(v) => s.patchRecipe({ layout: { align: v as 'left' | 'center' | 'right' } })}
             />
           </Field>
+          </Collapsible>
         </Panel>
       )}
 
       {/* ------------------------------------------------ COLORS */}
       {s.tab === 'colors' && (
         <Panel title={t('inspector.colors')}>
-          <Field label={t('inspector.color.text')}><Swatches colors={TEXT_COLORS} value={r.text.text} onChange={(c) => s.patchRecipe({ text: { text: c } })} /></Field>
-          <Field label={t('inspector.color.idle')}><Swatches colors={TEXT_COLORS} value={r.text.idle} onChange={(c) => s.patchRecipe({ text: { idle: c } })} /></Field>
-          <Field label={t('inspector.color.active')}><Swatches colors={ACCENTS} value={r.text.active} onChange={(c) => s.patchRecipe({ text: { active: c }, activeWord: { color: c } })} /></Field>
-          <Field label={t('inspector.color.keyword')}><Swatches colors={ACCENTS} value={r.text.keyword} onChange={(c) => s.patchRecipe({ text: { keyword: c } })} /></Field>
-          <Field label={t('inspector.color.number')}><Swatches colors={ACCENTS} value={r.number.color} onChange={(c) => s.patchRecipe({ number: { color: c }, emphasis: { numberColor: c } })} /></Field>
-          <Divider />
-          <Slider label={t('inspector.activeScale')} value={r.activeWord.scale} min={1} max={1.3} step={0.01} format={(v) => `${v.toFixed(2)}×`} onChange={(v) => s.patchRecipe({ activeWord: { scale: v } })} />
+          <Collapsible title={t('inspector.group.text')}>
+            <Field label={t('inspector.color.text')}><Swatches colors={TEXT_COLORS} value={r.text.text} onChange={(c) => s.patchRecipe({ text: { text: c } })} /></Field>
+            <Field label={t('inspector.color.idle')}><Swatches colors={TEXT_COLORS} value={r.text.idle} onChange={(c) => s.patchRecipe({ text: { idle: c } })} /></Field>
+          </Collapsible>
+
+          <Collapsible title={t('inspector.group.accent')}>
+            <Field label={t('inspector.color.active')}><Swatches colors={ACCENTS} value={r.text.active} onChange={(c) => s.patchRecipe({ text: { active: c }, activeWord: { color: c } })} /></Field>
+            <Field label={t('inspector.color.keyword')}><Swatches colors={ACCENTS} value={r.text.keyword} onChange={(c) => s.patchRecipe({ text: { keyword: c } })} /></Field>
+            <Field label={t('inspector.color.number')}><Swatches colors={ACCENTS} value={r.number.color} onChange={(c) => s.patchRecipe({ number: { color: c }, emphasis: { numberColor: c } })} /></Field>
+            <Slider label={t('inspector.activeScale')} value={r.activeWord.scale} min={1} max={1.3} step={0.01} format={(v) => `${v.toFixed(2)}×`} onChange={(v) => s.patchRecipe({ activeWord: { scale: v } })} />
+          </Collapsible>
+
+          {/* 背景色 — 之前只能选预设类型，现在可以直接取色 / 填 HEX */}
+          <Collapsible title={t('inspector.bg.color')} hint={r.background.type === 'none' ? t('inspector.bg.none') : r.background.color ?? labelOf(backgroundPresets, r.background.type)}>
+            <Field label={t('inspector.bg.color')} hint={t('inspector.bg.colorHint')}>
+              <Swatches colors={BG_COLORS} value={r.background.color ?? '#000000'} onChange={(c) => s.patchRecipe({ background: { color: c, type: r.background.type === 'none' ? 'black80' : r.background.type } })} />
+            </Field>
+            {r.background.color && (
+              <Btn size="sm" onClick={() => s.patchRecipe({ background: { color: undefined } })}>{t('inspector.bg.resetColor')}</Btn>
+            )}
+          </Collapsible>
         </Panel>
       )}
 
@@ -196,13 +231,19 @@ export function Inspector({ className = '' }: { className?: string }) {
           </Field>
           {r.background.type !== 'none' && (
             <>
-              <Slider label={t('inspector.bg.opacity')} value={r.background.opacity} min={0.2} max={1} step={0.02} format={(v) => `${Math.round(v * 100)}%`} onChange={(v) => s.patchRecipe({ background: { opacity: v } })} />
-              <Slider label={t('inspector.bg.radius')} value={r.background.radius} min={0} max={40} format={(v) => `${v}px`} onChange={(v) => s.patchRecipe({ background: { radius: v } })} />
-              <Slider label={t('inspector.bg.paddingX')} value={r.background.paddingX} min={8} max={48} format={(v) => `${v}px`} onChange={(v) => s.patchRecipe({ background: { paddingX: v } })} />
-              <Slider label={t('inspector.bg.paddingY')} value={r.background.paddingY} min={4} max={32} format={(v) => `${v}px`} onChange={(v) => s.patchRecipe({ background: { paddingY: v } })} />
-              {r.background.type === 'glass' && (
-                <Slider label={t('inspector.bg.blur')} value={r.background.blur} min={2} max={14} format={(v) => `${v}px`} onChange={(v) => s.patchRecipe({ background: { blur: v } })} />
-              )}
+              <Collapsible title={t('inspector.bg.color')} hint={r.background.color ?? labelOf(backgroundPresets, r.background.type)}>
+                <Swatches colors={BG_COLORS} value={r.background.color ?? '#000000'} onChange={(c) => s.patchRecipe({ background: { color: c } })} />
+                {r.background.color && <div className="mt-2"><Btn size="sm" onClick={() => s.patchRecipe({ background: { color: undefined } })}>{t('inspector.bg.resetColor')}</Btn></div>}
+              </Collapsible>
+              <Collapsible title={t('inspector.group.shape')} defaultOpen={false}>
+                <Slider label={t('inspector.bg.radius')} value={r.background.radius} min={0} max={40} format={(v) => `${v}px`} onChange={(v) => s.patchRecipe({ background: { radius: v } })} />
+                <Slider label={t('inspector.bg.paddingX')} value={r.background.paddingX} min={8} max={48} format={(v) => `${v}px`} onChange={(v) => s.patchRecipe({ background: { paddingX: v } })} />
+                <Slider label={t('inspector.bg.paddingY')} value={r.background.paddingY} min={4} max={32} format={(v) => `${v}px`} onChange={(v) => s.patchRecipe({ background: { paddingY: v } })} />
+                <Slider label={t('inspector.bg.opacity')} value={r.background.opacity} min={0.2} max={1} step={0.02} format={(v) => `${Math.round(v * 100)}%`} onChange={(v) => s.patchRecipe({ background: { opacity: v } })} />
+                {r.background.type === 'glass' && (
+                  <Slider label={t('inspector.bg.blur')} value={r.background.blur} min={2} max={14} format={(v) => `${v}px`} onChange={(v) => s.patchRecipe({ background: { blur: v } })} />
+                )}
+              </Collapsible>
             </>
           )}
         </Panel>
@@ -233,13 +274,14 @@ export function Inspector({ className = '' }: { className?: string }) {
           <Field label={t('inspector.motion.word')} hint={t('inspector.motion.wordHint')}>
             <OptionGrid options={wordMotionNames.map((m) => ({ value: m, label: t(`motion.${m}` as never) }))} value={r.motion.word.type} onChange={(v) => s.patchRecipe({ motion: { word: { type: v as never } } })} />
           </Field>
-          <Field label={t('inspector.motion.exit')}>
+          <Collapsible title={t('inspector.motion.exit')} defaultOpen={false} hint={t(`motion.${r.motion.exit.type}` as never)}>
             <OptionGrid options={exitNames.map((m) => ({ value: m, label: t(`motion.${m}` as never) }))} value={r.motion.exit.type} onChange={(v) => s.patchRecipe({ motion: { exit: { type: v as never } } })} />
-          </Field>
-          <Divider />
-          <Slider label={t('inspector.motion.wordDuration')} value={r.motion.word.duration} min={100} max={400} step={10} format={(v) => `${v}ms`} onChange={(v) => s.patchRecipe({ motion: { word: { duration: v } } })} />
-          <Slider label={t('inspector.motion.wordIntensity')} value={r.motion.word.intensity} min={0.4} max={1.6} step={0.05} format={(v) => `${v.toFixed(2)}×`} onChange={(v) => s.patchRecipe({ motion: { word: { intensity: v } } })} />
-          <Slider label={t('inspector.motion.entranceDuration')} value={r.motion.entrance.duration} min={80} max={500} step={10} format={(v) => `${v}ms`} onChange={(v) => s.patchRecipe({ motion: { entrance: { duration: v } } })} />
+          </Collapsible>
+          <Collapsible title={t('inspector.group.timing')} defaultOpen={false}>
+            <Slider label={t('inspector.motion.wordDuration')} value={r.motion.word.duration} min={100} max={400} step={10} format={(v) => `${v}ms`} onChange={(v) => s.patchRecipe({ motion: { word: { duration: v } } })} />
+            <Slider label={t('inspector.motion.wordIntensity')} value={r.motion.word.intensity} min={0.4} max={1.6} step={0.05} format={(v) => `${v.toFixed(2)}×`} onChange={(v) => s.patchRecipe({ motion: { word: { intensity: v } } })} />
+            <Slider label={t('inspector.motion.entranceDuration')} value={r.motion.entrance.duration} min={80} max={500} step={10} format={(v) => `${v}ms`} onChange={(v) => s.patchRecipe({ motion: { entrance: { duration: v } } })} />
+          </Collapsible>
         </Panel>
       )}
 
@@ -258,6 +300,8 @@ function EmphasisPanel() {
   const { t } = useI18n();
   const s = useCaptionStore();
   const r = s.recipe;
+  /* 200 presets is a long scroll — show the curated set by default */
+  const [showAll, setShowAll] = useState(false);
   const [kw, setKw] = useState('');
 
   const addKeyword = () => {

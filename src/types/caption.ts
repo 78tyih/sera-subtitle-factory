@@ -103,6 +103,8 @@ export type BackgroundType =
 
 export interface BackgroundStyle {
   type: BackgroundType;
+  /** custom fill colour (hex) — overrides the preset's default colour */
+  color?: string;
   opacity: number; // 0..1 (overrides preset alpha when !== 1)
   blur: number; // px, glass only, keep low
   radius: number; // 16–24 recommended, never a pill

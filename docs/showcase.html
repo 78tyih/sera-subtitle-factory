@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sera Subtitle Factory — 交互展示</title>
+<style>
+  :root{
+    --bg:#F7F8FA; --panel:#FFFFFF; --panel2:#F0F2F5; --ink:#1a1d21; --ink2:#5a6270; --ink3:#9aa2ae;
+    --line:#e2e5ea; --line2:#d4d8df;
+    --blue:#4F8CFF; --blue-soft:#E8F0FE; --gold:#D9A400; --gold-soft:#FAF1D8;
+    --up:#2F9E6E; --up-soft:#E2F2EB; --down:#D64545; --down-soft:#FBE9EA;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --stage:#0E1116;
+  }
+  html[data-theme="dark"]{
+    --bg:#121417; --panel:#1a1d22; --panel2:#22262c; --ink:#e8eaee; --ink2:#a8b0ba; --ink3:#6b7280;
+    --line:#2a2f36; --line2:#363c45;
+    --blue:#6ba3ff; --blue-soft:#1c2942; --gold:#e5b93c; --gold-soft:#383021;
+    --up:#4CC58F; --up-soft:#1b3328; --down:#F06666; --down-soft:#3a2224;
+    --stage:#090B0E;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;font-size:15px;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1100px;margin:0 auto;padding:0 26px 90px}
+  header{position:sticky;top:0;z-index:50;background:var(--panel);border-bottom:1px solid var(--line);backdrop-filter:blur(10px)}
+  .hbar{max-width:1100px;margin:0 auto;padding:11px 26px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .logo{font-weight:750;font-size:15px;display:flex;align-items:center;gap:9px}
+  .logo .sq{width:11px;height:11px;background:var(--gold);border-radius:3.5px}
+  .hbar .spacer{flex:1}
+  .transport{display:flex;align-items:center;gap:9px;font-family:var(--mono);font-size:12px;color:var(--ink2)}
+  .tbtn{border:1px solid var(--line2);background:var(--panel);color:var(--ink2);border-radius:7px;padding:4px 12px;font-size:12px;cursor:pointer;font-family:var(--mono)}
+  .tbtn:hover{color:var(--ink);border-color:var(--blue)}
+  #scrub{width:150px;accent-color:var(--gold)}
+  select.tbtn{padding:4px 5px}
+  .toggle{border:1px solid var(--line2);background:var(--panel);color:var(--ink2);border-radius:7px;padding:4px 11px;font-size:12px;cursor:pointer}
+  .toggle:hover{color:var(--ink);border-color:var(--blue)}
+  .repo-link{font-size:12.5px;color:var(--ink2);text-decoration:none;font-family:var(--mono)}
+  .repo-link:hover{color:var(--blue)}
+
+  .hero{padding:48px 0 28px;border-bottom:1px solid var(--line)}
+  .kicker{font-size:11.5px;letter-spacing:.22em;color:var(--gold);font-weight:700;margin-bottom:13px;text-transform:uppercase;font-family:var(--mono)}
+  h1{font-size:33px;font-weight:780;letter-spacing:-.015em;line-height:1.25;margin-bottom:12px}
+  .sub{color:var(--ink2);font-size:15px;max-width:680px}
+  .metaline{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+  .chip{font-size:12px;color:var(--ink2);background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:4px 12px;font-family:var(--mono)}
+  .chip b{color:var(--ink);font-weight:650}
+  .chip.hl{background:var(--gold-soft);border-color:transparent;color:var(--gold)}
+  .chip.hl b{color:var(--gold)}
+
+  section{padding:40px 0 6px}
+  .sec-head{display:flex;align-items:baseline;gap:13px;margin-bottom:18px}
+  .sec-no{font-family:var(--mono);font-size:11.5px;color:var(--ink3);border:1px solid var(--line2);border-radius:6px;padding:2px 8px}
+  h2{font-size:20px;font-weight:740;letter-spacing:-.01em}
+  .sec-q{font-size:12.5px;color:var(--ink3);margin-left:auto;text-align:right}
+  .note{font-size:13.5px;color:var(--ink2);max-width:720px;margin-bottom:16px}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px 24px}
+
+  /* stage (16:9 dark frame) */
+  .stage{position:relative;background:var(--stage);border-radius:13px;overflow:hidden;aspect-ratio:16/9;display:flex;align-items:flex-end;justify-content:center;border:1px solid var(--line)}
+  .stage::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 30%,rgba(255,255,255,.05),transparent 60%)}
+  .stage .safe{position:absolute;inset:7% 5%;border:1px dashed rgba(255,255,255,.07);border-radius:6px}
+  .stage .tl-tag{position:absolute;top:12px;left:16px;font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.35);letter-spacing:.12em}
+  .capline{position:absolute;left:5%;right:5%;bottom:14%;display:flex;justify-content:center;gap:.34em;white-space:nowrap;align-items:baseline;will-change:transform,opacity}
+  .w{display:inline-block;transform-origin:50% 78%;will-change:transform;transition:none}
+
+  /* selector rows */
+  .selrow{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:14px}
+  .selrow .lab{font-family:var(--mono);font-size:10.5px;color:var(--ink3);letter-spacing:.12em;margin-right:2px}
+  .sel{border:1px solid var(--line2);background:var(--panel);border-radius:8px;padding:4px 12px;font-size:12px;cursor:pointer;color:var(--ink2);font-family:var(--mono)}
+  .sel.on{border-color:var(--gold);color:var(--ink);background:var(--gold-soft);font-weight:600}
+  .sel:not(.on):hover{border-color:var(--gold)}
+
+  /* word timeline */
+  .wtl{margin-top:16px;background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:14px 16px}
+  .wtl .lab{font-family:var(--mono);font-size:10px;color:var(--ink3);letter-spacing:.12em;margin-bottom:8px}
+  .track{position:relative;height:26px;border-radius:6px;background:var(--panel2);overflow:hidden}
+  .wb{position:absolute;top:3px;bottom:3px;border-radius:4px;background:var(--blue-soft);border:1px solid transparent;font-family:var(--mono);font-size:9px;color:var(--ink2);display:flex;align-items:center;justify-content:center;overflow:hidden;white-space:nowrap}
+  .wb.em{background:var(--gold-soft);color:var(--gold)}
+  .wb.act{background:var(--gold);color:#0E1116;font-weight:700}
+  .playhead{position:absolute;top:0;bottom:0;width:2px;background:var(--down)}
+
+  /* rules */
+  .rules{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+  .rule{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:17px 18px}
+  .rule .rn{font-family:var(--mono);font-size:10.5px;font-weight:700;color:var(--gold);letter-spacing:.14em;margin-bottom:6px}
+  .rule h3{font-size:14.5px;font-weight:700;margin-bottom:8px}
+  .rule p{font-size:12.5px;color:var(--ink2);margin-bottom:12px;line-height:1.6}
+  .mini{position:relative;background:var(--stage);border-radius:9px;height:110px;overflow:hidden;display:flex;align-items:flex-end;justify-content:center;padding-bottom:18px}
+  .mini .mw{font-size:13px;white-space:nowrap;display:inline-block;transform-origin:50% 80%}
+  .rule svg{display:block;width:100%;height:auto}
+  .xmark{position:absolute;top:8px;right:10px;font-family:var(--mono);font-size:10px;color:var(--down);background:var(--down-soft);border-radius:4px;padding:1px 6px}
+  .okmark{position:absolute;top:8px;right:10px;font-family:var(--mono);font-size:10px;color:var(--up);background:var(--up-soft);border-radius:4px;padding:1px 6px}
+
+  /* motion gallery */
+  .mgal{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}
+  .mcell{border-radius:11px;overflow:hidden;border:1px solid var(--line)}
+  .mcell .mstage{position:relative;background:var(--stage);height:84px;display:flex;align-items:center;justify-content:center;gap:.3em;white-space:nowrap}
+  .mcell .mstage .mw{font-size:14px;display:inline-block;transform-origin:50% 80%}
+  .mcell .mcap{background:var(--panel);border-top:1px solid var(--line);padding:7px 12px;font-size:11.5px;color:var(--ink2);display:flex;justify-content:space-between;font-family:var(--mono)}
+  .mcell .mcap b{color:var(--ink);font-weight:650}
+
+  /* recipe json */
+  .recipe-grid{display:grid;grid-template-columns:1fr 1.15fr;gap:16px;align-items:start}
+  pre.json{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:18px 20px;font-family:var(--mono);font-size:12px;line-height:1.75;overflow-x:auto;color:var(--ink2)}
+  pre.json .k{color:var(--blue)} pre.json .s{color:var(--gold)} pre.json .c{color:var(--ink3);font-style:italic}
+  .patch-hint{display:flex;gap:10px;align-items:flex-start;background:var(--blue-soft);border-radius:10px;padding:13px 16px;font-size:13px;line-height:1.6;margin-top:14px}
+  .patch-hint b{color:var(--blue)}
+
+  /* Q sections */
+  .vs{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .vs .side{border-radius:12px;padding:18px 20px;border:1px solid var(--line);background:var(--panel)}
+  .vs .side.good{background:var(--gold-soft);border-color:transparent}
+  .vs .side h3{font-size:14.5px;margin-bottom:9px}
+  .vs .side.bad h3{color:var(--down)} .vs .side.good h3{color:var(--gold)}
+  .vs li{list-style:none;font-size:13px;color:var(--ink2);padding:6px 0;border-top:1px solid var(--line);line-height:1.55}
+  .vs li b{color:var(--ink)}
+  table.mx{width:100%;border-collapse:collapse;font-size:13px}
+  table.mx th{text-align:left;font-size:11px;font-family:var(--mono);color:var(--ink3);letter-spacing:.08em;padding:7px 9px;border-bottom:1px solid var(--line2);font-weight:600;text-transform:uppercase}
+  table.mx td{padding:10px 9px;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.55}
+  table.mx tr:last-child td{border-bottom:none}
+  .ok-pill{font-family:var(--mono);font-size:11px;background:var(--up-soft);color:var(--up);border-radius:5px;padding:2px 8px;white-space:nowrap;display:inline-block}
+  .reuse-note{display:flex;gap:11px;align-items:flex-start;background:var(--down-soft);border-radius:10px;padding:13px 16px;font-size:13px;margin-top:14px;line-height:1.6}
+  .reuse-note b{color:var(--down)}
+  .preset-cloud{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}
+  .pc{font-size:11.5px;font-family:var(--mono);color:var(--ink2);background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:3px 11px}
+  .pc.flag{border-color:var(--gold);color:var(--gold);background:var(--gold-soft);font-weight:600}
+
+  footer{margin-top:54px;padding-top:18px;border-top:1px solid var(--line);font-size:12px;color:var(--ink3);display:flex;gap:16px;flex-wrap:wrap}
+  footer a{color:var(--ink2);text-decoration:none} footer a:hover{color:var(--blue)}
+  .en{display:none}
+  html[data-lang="en"] .zh{display:none}
+  html[data-lang="en"] .en{display:inline}
+  @media (max-width:920px){ .rules,.mgal,.recipe-grid,.vs{grid-template-columns:1fr} h1{font-size:27px} }
+</style>
+</head>
+<body>
+<header>
+  <div class="hbar">
+    <div class="logo"><span class="sq"></span>Sera Subtitle Factory</div>
+    <div class="spacer"></div>
+    <div class="transport">
+      <button class="tbtn" id="playBtn">⏸ pause</button>
+      <input type="range" id="scrub" min="0" max="8" step="0.01" value="0">
+      <span id="clockLab">0.0s</span>
+      <select class="tbtn" id="speedSel">
+        <option value="0.25">0.25×</option><option value="0.5">0.5×</option>
+        <option value="1" selected>1×</option><option value="2">2×</option>
+      </select>
+    </div>
+    <a class="repo-link" href="https://github.com/78tyih/sera-subtitle-factory" target="_blank">78tyih/sera-subtitle-factory ↗</a>
+    <button class="toggle" id="langBtn" onclick="toggleLang()">EN</button>
+    <button class="toggle" id="themeBtn" onclick="toggleTheme()">☀︎ Dark</button>
+  </div>
+</header>
+
+<div class="wrap">
+
+<div class="hero">
+  <div class="kicker">tool · phase 1 mvp · captions as UI components</div>
+  <h1><span class="zh">像设计 UI 组件一样设计字幕<br>每一个字，都跟着声音动</span><span class="en">Design subtitles like UI components<br>Every word moves with the voice</span></h1>
+  <p class="sub zh">永远单行 · 逐词语音驱动 · active 词不推挤邻词。下面的演示是活的：拖进度条、换 preset、换动效——数字放大（×1.20 / 800 字重）、卡拉OK填充、pop 峰值 1.09，全部按仓库文档的规格数值实现。</p>
+  <p class="sub en">Always single-line, word-synced, never pushing neighbors. The demo below is live: scrub, switch presets and motions — number emphasis (×1.20 / weight 800), karaoke fill, pop peak 1.09, all rebuilt to the repo's documented spec values.</p>
+  <div class="metaline">
+    <span class="chip hl"><b>200</b> presets</span>
+    <span class="chip hl"><b>18</b> motions</span>
+    <span class="chip"><b>31</b> fonts</span>
+    <span class="chip"><b>4</b> exports · SRT / VTT / ASS / JSON</span>
+    <span class="chip">maxLines: <b>1</b>（类型字面量）</span>
+    <span class="chip">undo/redo <b>40</b> 步</span>
+  </div>
+</div>
+
+<!-- hero demo -->
+<section id="demo">
+  <div class="sec-head"><span class="sec-no">▶</span><h2><span class="zh">活演示 · 换肤即换 Recipe</span><span class="en">Live demo · switching = patching the Recipe</span></h2><span class="sec-q"><span class="zh">数字与百分比被规则引擎自动强调</span><span class="en">numbers auto-emphasized by rule engine</span></span></div>
+  <div class="stage" id="heroStage">
+    <div class="safe"></div>
+    <div class="tl-tag">16:9 · safe area · single line</div>
+    <div class="capline" id="capline"></div>
+  </div>
+  <div class="selrow">
+    <span class="lab">PRESET</span>
+    <button class="sel on" data-preset="minimal-white">Minimal White</button>
+    <button class="sel" data-preset="editorial">Editorial</button>
+    <button class="sel" data-preset="finance-yellow">Finance Yellow</button>
+    <button class="sel" data-preset="finance-blue">Finance Blue</button>
+  </div>
+  <div class="selrow">
+    <span class="lab">WORD MOTION</span>
+    <button class="sel" data-motion="highlight">highlight</button>
+    <button class="sel" data-motion="karaoke">karaoke</button>
+    <button class="sel" data-motion="pop">pop</button>
+    <button class="sel" data-motion="bounce">bounce</button>
+    <button class="sel" data-motion="float">float</button>
+    <button class="sel" data-motion="glow">glow</button>
+    <button class="sel" data-motion="weightShift">weightShift</button>
+    <button class="sel" data-motion="blurReveal">blurReveal</button>
+    <button class="sel" data-motion="wave">wave</button>
+  </div>
+  <div class="wtl">
+    <div class="lab">WORD TIMELINE · <span class="zh">每个词带 start / end，播放头决定状态</span><span class="en">each word carries start/end; the playhead decides state</span></div>
+    <div class="track" id="track"><div class="playhead" id="ph"></div></div>
+  </div>
+</section>
+
+<!-- rules -->
+<section id="rules">
+  <div class="sec-head"><span class="sec-no">§</span><h2><span class="zh">三条硬规则</span><span class="en">The Three Hard Rules</span></h2><span class="sec-q"><span class="zh">写进类型与 CSS，不是口头约定</span><span class="en">enforced in types &amp; CSS, not by convention</span></span></div>
+  <div class="rules">
+    <div class="rule">
+      <div class="rn">RULE #1</div>
+      <h3><span class="zh">永远单行</span><span class="en">Always single-line</span></h3>
+      <p><span class="zh">`maxLines: 1` 是类型字面量，`white-space: nowrap` 写死在 CSS。超宽不换行——重新分段。左边是错误示范（两行，已被产品禁止），右边是正确做法。</span><span class="en">`maxLines: 1` is a type literal; `nowrap` is hard-coded. Overflow never wraps — it re-segments. Left: forbidden two-liner. Right: the rule.</span></p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div class="mini" id="r1bad" style="align-items:flex-start;padding-top:16px;padding-bottom:0">
+          <span class="xmark">✕ 2 lines</span>
+          <div style="text-align:center">
+            <div class="mw" style="color:rgba(255,255,255,.75)">第三季度营收增长35%</div>
+            <div class="mw" style="color:rgba(255,255,255,.75)">净利润1.2亿美元</div>
+          </div>
+        </div>
+        <div class="mini" id="r1ok">
+          <span class="okmark">✓ re-segment</span>
+          <div class="mw" id="r1line" style="color:#fff"></div>
+        </div>
+      </div>
+    </div>
+    <div class="rule">
+      <div class="rn">RULE #2</div>
+      <h3><span class="zh">跟着声音走</span><span class="en">Voice-driven states</span></h3>
+      <p><span class="zh">每个词带 start / end。任一时刻 currentTime 决定词的状态，所有动效围绕状态设计：</span><span class="en">Every word carries start/end; currentTime alone decides state, and every motion is designed around it:</span></p>
+      <svg viewBox="0 0 300 118">
+        <rect x="18" y="18" width="70" height="30" rx="8" fill="var(--panel2)" stroke="var(--line2)"/>
+        <text x="53" y="37" text-anchor="middle" font-size="11.5" fill="var(--ink3)" font-family="var(--mono)">idle</text>
+        <rect x="115" y="18" width="70" height="30" rx="8" fill="var(--gold-soft)" stroke="var(--gold)"/>
+        <text x="150" y="37" text-anchor="middle" font-size="11.5" fill="var(--gold)" font-family="var(--mono)" font-weight="700">active</text>
+        <rect x="212" y="18" width="70" height="30" rx="8" fill="var(--blue-soft)" stroke="var(--blue)"/>
+        <text x="247" y="37" text-anchor="middle" font-size="11.5" fill="var(--blue)" font-family="var(--mono)">spoken</text>
+        <path d="M88,33 L111,33" stroke="var(--ink3)" stroke-width="1.2" marker-end="url(#ar3)"/>
+        <path d="M185,33 L208,33" stroke="var(--ink3)" stroke-width="1.2" marker-end="url(#ar3)"/>
+        <text x="150" y="68" text-anchor="middle" font-size="10" fill="var(--ink3)" font-family="var(--mono)">word.start ≤ t &lt; word.end</text>
+        <text x="150" y="84" text-anchor="middle" font-size="10" fill="var(--ink3)" font-family="var(--mono)">resolve(currentTime) → ResolvedSegment</text>
+        <text x="150" y="104" text-anchor="middle" font-size="10.5" fill="var(--ink2)">
+          <tspan class="zh">强调词（数字/百分比/货币）永久保持强调样式</tspan>
+          <tspan class="en">emphasized words keep their emphasis forever</tspan>
+        </text>
+        <defs><marker id="ar3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--ink3)"/></marker></defs>
+      </svg>
+    </div>
+    <div class="rule">
+      <div class="rn">RULE #3</div>
+      <h3><span class="zh">不推挤邻词</span><span class="en">Never push neighbors</span></h3>
+      <p><span class="zh">active / 强调只改 `transform` 与 `color`，不改 layout 尺寸——整句永远不左右跳动。看演示：数字放大时基线网格纹丝不动。</span><span class="en">Active/emphasis change only transform &amp; color, never layout — the line never jumps. Watch: the number scales, the baseline grid doesn't move.</span></p>
+      <div class="mini" id="r3" style="align-items:center;padding-bottom:0">
+        <div style="position:relative;text-align:center">
+          <div style="position:absolute;left:-24px;right:-24px;top:50%;border-top:1px dashed rgba(255,255,255,.18)"></div>
+          <div style="white-space:nowrap">
+            <span class="mw" id="r3a" style="color:rgba(255,255,255,.8)">营收增长</span>
+            <span class="mw" id="r3b" style="color:var(--gold,#FFD400);font-weight:800">35%</span>
+            <span class="mw" id="r3c" style="color:rgba(255,255,255,.8)">，净利润创新高</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- motion gallery -->
+<section id="motions">
+  <div class="sec-head"><span class="sec-no">18</span><h2><span class="zh">动效规格 · 九种逐词动效活演示</span><span class="en">Motion Spec · Nine Word Motions Live</span></h2><span class="sec-q"><span class="zh">克制标准：pop 1.09 · bounce 5px · float 8px</span><span class="en">restraint: pop 1.09 · bounce 5px · float 8px</span></span></div>
+  <p class="note zh">每种动效一帧小舞台，同一句话、同一时钟。数值按仓库 motion-tokens 的公开规格复现；已被移除的 flip / marquee 不在此列（违背「字幕随时可读」）。</p>
+  <p class="note en">One mini stage per motion, same sentence, same clock. Values reproduce the repo's published motion-tokens; the removed flip / marquee are absent (they violated "captions must stay readable").</p>
+  <div class="mgal" id="mgal"></div>
+</section>
+
+<!-- recipe -->
+<section id="recipe">
+  <div class="sec-head"><span class="sec-no">{} </span><h2><span class="zh">Recipe = JSON，一份配方复刻同款</span><span class="en">Recipe = JSON, copy to replicate</span></h2><span class="sec-q"><span class="zh">左侧随上面选择器实时变化</span><span class="en">left panel mirrors your selectors above</span></span></div>
+  <div class="recipe-grid">
+    <pre class="json" id="jsonPanel"></pre>
+    <div>
+      <div class="panel">
+        <table class="mx">
+          <thead><tr><th><span class="zh">维度</span><span class="en">Dimension</span></th><th><span class="zh">能力</span><span class="en">Capability</span></th></tr></thead>
+          <tbody>
+            <tr><td><b>Typography</b></td><td><span class="zh">31 种字体，四分组（无衬线 / 中文黑体 / 衬线 / 等宽手写）</span><span class="en">31 fonts in four groups</span></td></tr>
+            <tr><td><b>Color</b></td><td><span class="zh">16 色预设 + 系统取色器 + HEX 输入</span><span class="en">16 presets + picker + HEX input</span></td></tr>
+            <tr><td><b>Number</b></td><td><span class="zh">数字默认 ×1.20 / 800 字重 / 黄色</span><span class="en">numbers default ×1.20 / 800 / yellow</span></td></tr>
+            <tr><td><b>Emphasis</b></td><td><span class="zh">规则引擎：百分比 / 货币 / 数字 / 实体（BTC·CPI）</span><span class="en">rules: percentage / currency / number / entity</span></td></tr>
+            <tr><td><b>Background / Border</b></td><td><span class="zh">含 leftBar 等背景边框族</span><span class="en">backgrounds &amp; borders incl. leftBar</span></td></tr>
+            <tr><td><b>Motion</b></td><td><span class="zh">入场 6 种 + 逐词 11 种 + 退场（只存名字，registry 解析）</span><span class="en">6 entrance + 11 word + exit (names, resolved by registry)</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="patch-hint"><b>⇄</b><span><span class="zh"><b>一个字段 = 一个 patch。</b>在真实产品里，换字体/颜色/动效只 patch 一个字段，Preview 即时重渲染；Hero 演示区的选择器就是在做同样的事。Recipe 存 localStorage，导出 JSON 分享即复刻。</span><span class="en"><b>One field = one patch.</b> In the product, changing font/color/motion patches one field and the preview re-renders instantly — exactly what the selectors above do. Recipes persist in localStorage; export JSON to share.</span></span></div>
+    </div>
+  </div>
+  <div class="preset-cloud">
+    <span style="font-family:var(--mono);font-size:10.5px;color:var(--ink3);letter-spacing:.12em;align-self:center">200 PRESETS = 12 + 28 + 160 ·</span>
+    <span class="pc flag">Minimal White</span><span class="pc flag">Editorial</span><span class="pc flag">Finance Yellow</span><span class="pc flag">Finance Blue</span>
+    <span class="pc">Minimal Black</span><span class="pc">Data Focus</span><span class="pc">Left Bar</span><span class="pc">Clean White Card</span><span class="pc">Clean Black Card</span>
+    <span class="pc">Neon Blue</span><span class="pc">Word Pop</span><span class="pc">Word Float</span>
+    <span class="pc">Karaoke Yellow</span><span class="pc">Outline Hollow</span><span class="pc">Marker Yellow</span><span class="pc">Number Hero</span><span class="pc">Glass Soft</span><span class="pc">Mono Terminal</span>
+    <span class="pc" style="border-style:dashed">… 28 扩展 + 160 系统枚举</span>
+  </div>
+</section>
+
+<!-- Q1 -->
+<section id="q1">
+  <div class="sec-head"><span class="sec-no">Q1</span><h2><span class="zh">解决什么问题</span><span class="en">Problem</span></h2></div>
+  <div class="vs">
+    <div class="side bad">
+      <h3>✕ <span class="zh">字幕的现状</span><span class="en">Status quo</span></h3>
+      <ul>
+        <li><span class="zh"><b>剪辑软件内样式</b> — 锁在工程文件里，换个片就没了，无法复用</span><span class="en"><b>Locked in editing software</b> — styles die with the project file</span></li>
+        <li><span class="zh"><b>灰色默认款</b> — 自动字幕的观感，专业感为零</span><span class="en"><b>Gray defaults</b> — auto-captions with zero professional feel</span></li>
+        <li><span class="zh"><b>逐词动效无处可做</b> — 想要卡拉OK填充/数字放大，得逐帧手 K</span><span class="en"><b>No word-level motion</b> — karaoke fill means hand-keying frames</span></li>
+      </ul>
+    </div>
+    <div class="side good">
+      <h3>✓ Subtitle Factory</h3>
+      <ul>
+        <li><span class="zh"><b>Recipe = JSON</b> — 字幕样式成为可分享、可复用的资产</span><span class="en"><b>Recipe = JSON</b> — caption styles become shareable assets</span></li>
+        <li><span class="zh"><b>200 个 preset</b> — 四个旗舰定义整个视觉系统的基准</span><span class="en"><b>200 presets</b> — four flagships define the visual baseline</span></li>
+        <li><span class="zh"><b>词级时间轴引擎</b> — idle→active→spoken 状态机自动驱动一切动效</span><span class="en"><b>Word-timeline engine</b> — the state machine drives every motion</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- Q2 -->
+<section id="q2">
+  <div class="sec-head"><span class="sec-no">Q2</span><h2><span class="zh">什么场景，得到什么结果</span><span class="en">Scenario → Outcome</span></h2></div>
+  <div class="panel" style="padding:6px 20px">
+    <table class="mx">
+      <thead><tr><th><span class="zh">场景</span><span class="en">Scenario</span></th><th><span class="zh">做法</span><span class="en">How</span></th><th><span class="zh">结果</span><span class="en">Outcome</span></th></tr></thead>
+      <tbody>
+        <tr><td><b><span class="zh">知识/财经视频要专业字幕</span><span class="en">Professional captions</span></b></td><td><span class="zh">选 preset → 微调 → 导出</span><span class="en">preset → tweak → export</span></td><td><span class="ok-pill">SRT · VTT · ASS · JSON</span></td></tr>
+        <tr><td><b><span class="zh">团队统一字幕视觉系统</span><span class="en">Unified caption system</span></b></td><td><span class="zh">配方存 Recipe 库，导入导出 JSON</span><span class="en">recipes import/export as JSON</span></td><td><span class="ok-pill">copy = replicate</span></td></tr>
+        <tr><td><b><span class="zh">口播稿直接变字幕</span><span class="en">Script → captions</span></b></td><td><span class="zh">AI 助手写字幕（无 Key 走本地规则）</span><span class="en">AI box, local rules without a key</span></td><td><span class="ok-pill">text + style in one pass</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="panel" style="margin-top:14px">
+    <div class="zh" style="font-size:13.5px;color:var(--ink2)"><b style="color:var(--ink)">最小使用路径：</b><code style="font-family:var(--mono);font-size:.85em">npm install && npm run static</code> → 打开 <code style="font-family:var(--mono);font-size:.85em">127.0.0.1:4311/studio/</code>。四页：/（Hero+6 demo）· /studio（工作台）· /library（12 preset，四维过滤）· /recipes（配方管理）。</div>
+    <div class="en" style="font-size:13.5px;color:var(--ink2)"><b style="color:var(--ink)">Minimal path:</b> <code style="font-family:var(--mono);font-size:.85em">npm install && npm run static</code> → open <code style="font-family:var(--mono);font-size:.85em">127.0.0.1:4311/studio/</code>. Four pages: home, studio, library, recipes.</div>
+  </div>
+</section>
+
+<!-- Q3 -->
+<section id="q3">
+  <div class="sec-head"><span class="sec-no">Q3</span><h2><span class="zh">什么结构</span><span class="en">Architecture</span></h2><span class="sec-q"><span class="zh">两个契约撑起 Phase 2/3</span><span class="en">two contracts carry Phase 2/3</span></span></div>
+  <div class="panel">
+    <svg viewBox="0 0 960 208" style="width:100%;height:auto" role="img" aria-label="architecture">
+      <defs><marker id="ar4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--ink3)"/></marker></defs>
+      <rect x="16" y="30" width="150" height="62" rx="10" fill="var(--gold-soft)" stroke="var(--gold)" stroke-width="1.3"/>
+      <text x="91" y="54" text-anchor="middle" font-size="12.5" font-weight="700" fill="var(--ink)">transcript</text>
+      <text x="91" y="72" text-anchor="middle" font-size="10" fill="var(--ink2)" font-family="var(--mono)">words + start/end</text>
+      <rect x="216" y="30" width="158" height="62" rx="10" fill="var(--panel2)" stroke="var(--line2)"/>
+      <text x="295" y="50" text-anchor="middle" font-size="12" font-weight="700" fill="var(--ink)">segmenter</text>
+      <text x="295" y="67" text-anchor="middle" font-size="9.5" fill="var(--ink2)">RULE #1 单行</text>
+      <text x="295" y="82" text-anchor="middle" font-size="9.5" fill="var(--ink2)">canvas.measureText</text>
+      <rect x="424" y="30" width="158" height="62" rx="10" fill="var(--panel2)" stroke="var(--line2)"/>
+      <text x="503" y="50" text-anchor="middle" font-size="12" font-weight="700" fill="var(--ink)">emphasis</text>
+      <text x="503" y="67" text-anchor="middle" font-size="9.5" fill="var(--ink2)">percentage·currency</text>
+      <text x="503" y="82" text-anchor="middle" font-size="9.5" fill="var(--ink2)">number·entity 正则</text>
+      <rect x="632" y="30" width="150" height="62" rx="10" fill="var(--panel2)" stroke="var(--line2)"/>
+      <text x="707" y="50" text-anchor="middle" font-size="12" font-weight="700" fill="var(--ink)">resolve</text>
+      <text x="707" y="67" text-anchor="middle" font-size="9.5" fill="var(--ink2)">currentTime →</text>
+      <text x="707" y="82" text-anchor="middle" font-size="9.5" fill="var(--ink2)">active / spoken</text>
+      <rect x="812" y="30" width="132" height="62" rx="10" fill="var(--blue-soft)" stroke="var(--blue)" stroke-width="1.2"/>
+      <text x="878" y="54" text-anchor="middle" font-size="12" font-weight="700" fill="var(--ink)">renderer</text>
+      <text x="878" y="72" text-anchor="middle" font-size="9.5" fill="var(--ink2)">word·bg·motion</text>
+      <line x1="166" y1="61" x2="211" y2="61" stroke="var(--ink3)" stroke-width="1.3" marker-end="url(#ar4)"/>
+      <line x1="374" y1="61" x2="419" y2="61" stroke="var(--ink3)" stroke-width="1.3" marker-end="url(#ar4)"/>
+      <line x1="582" y1="61" x2="627" y2="61" stroke="var(--ink3)" stroke-width="1.3" marker-end="url(#ar4)"/>
+      <line x1="782" y1="61" x2="807" y2="61" stroke="var(--ink3)" stroke-width="1.3" marker-end="url(#ar4)"/>
+      <!-- phase 2/3 contracts -->
+      <rect x="16" y="132" width="300" height="56" rx="10" fill="var(--up-soft)" stroke="var(--up)" stroke-width="1.1" stroke-dasharray="5 3"/>
+      <text x="166" y="153" text-anchor="middle" font-size="11.5" font-weight="700" fill="var(--ink)">Phase 2 · faster-whisper</text>
+      <text x="166" y="171" text-anchor="middle" font-size="9.5" fill="var(--ink2)">上传视频 → 抽音频 → 词级时间戳</text>
+      <rect x="344" y="132" width="300" height="56" rx="10" fill="var(--up-soft)" stroke="var(--up)" stroke-width="1.1" stroke-dasharray="5 3"/>
+      <text x="494" y="153" text-anchor="middle" font-size="11.5" font-weight="700" fill="var(--ink)">Phase 3 · Remotion + FFmpeg</text>
+      <text x="494" y="171" text-anchor="middle" font-size="9.5" fill="var(--ink2)">渲染 MP4 · 导出 SRT/ASS/VTT</text>
+      <rect x="672" y="132" width="272" height="56" rx="10" fill="var(--panel2)" stroke="var(--line2)"/>
+      <text x="808" y="153" text-anchor="middle" font-size="11" font-weight="700" fill="var(--ink)" font-family="var(--mono)">WordTimestamp[] + CaptionRecipe</text>
+      <text x="808" y="171" text-anchor="middle" font-size="9.5" fill="var(--ink2)">
+        <tspan class="zh">契约不变 → UI 层不用改</tspan><tspan class="en">contracts stable → UI unchanged</tspan>
+      </text>
+      <line x1="166" y1="132" x2="300" y2="95" stroke="var(--ink3)" stroke-width="1" stroke-dasharray="4 3"/>
+      <line x1="494" y1="132" x2="760" y2="95" stroke="var(--ink3)" stroke-width="1" stroke-dasharray="4 3"/>
+    </svg>
+  </div>
+</section>
+
+<!-- Q4 -->
+<section id="q4">
+  <div class="sec-head"><span class="sec-no">Q4</span><h2><span class="zh">能复用什么</span><span class="en">Reuse</span></h2></div>
+  <div class="panel" style="padding:6px 20px">
+    <table class="mx">
+      <thead><tr><th><span class="zh">可复用部分</span><span class="en">Part</span></th><th><span class="zh">在哪</span><span class="en">Where</span></th><th><span class="zh">怎么接</span><span class="en">How</span></th></tr></thead>
+      <tbody>
+        <tr><td><b>CaptionRecipe <span class="zh">数据模型</span><span class="en">model</span></b></td><td><code>src/types/caption.ts</code></td><td><span class="zh">TS 项目直接采用九维配方结构</span><span class="en">adopt the 9-dimension recipe in TS projects</span></td></tr>
+        <tr><td><b><span class="zh">三条硬规则</span><span class="en">The three rules</span></b></td><td><code>segmenter · renderer</code></td><td><span class="zh">任何字幕/卡拉OK系统直接采用为约束</span><span class="en">adopt as constraints in any caption system</span></td></tr>
+        <tr><td><b><span class="zh">克制动效数值</span><span class="en">Motion restraint values</span></b></td><td><code>motion-tokens.ts</code></td><td>pop 1.09 · bounce 5px · float 8px · glow <span class="zh">只给关键词</span><span class="en">keywords only</span></td></tr>
+        <tr><td><b>Emphasis <span class="zh">规则引擎</span><span class="en">rule engine</span></b></td><td><code>emphasis/rules.ts</code></td><td><span class="zh">纯正则，零 API 成本</span><span class="en">pure regex, zero API cost</span></td></tr>
+        <tr><td><b>WordTimestamp[] <span class="zh">契约</span><span class="en">contract</span></b></td><td><code>architecture.md</code></td><td><span class="zh">接 whisper / 自家 ASR 都产同一结构</span><span class="en">any ASR can emit the same structure</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="reuse-note"><b>⚖︎</b><span><span class="zh"><b>授权边界：</b>仓库暂无 LICENSE（2026-10-03 实查）——默认版权保留。本展示页按其公开文档复现规则与数值用于讲解，不含其源码；<b>复用其代码需先补授权，三条硬规则与动效数值作为方法论可参考</b>。</span><span class="en"><b>License boundary:</b> no LICENSE as of 2026-10-03 — rights reserved. This showcase reproduces documented rules &amp; values for explanation, not their source; reuse of code needs licensing first.</span></span></div>
+</section>
+
+<footer>
+  <span style="font-family:var(--mono)">Sera Subtitle Factory · showcase v0.1 · 2026-10-03</span>
+  <a href="https://github.com/78tyih/sera-subtitle-factory" target="_blank">GitHub ↗</a>
+  <span><span class="zh">动效原型按仓库公开规格数值实现（pop 1.09 / bounce 5px / float 8px），非引擎本体渲染</span><span class="en">motion prototypes rebuilt from published spec values, not the engine itself</span></span>
+</footer>
+
+</div>
+
+<script>
+(function(){
+'use strict';
+/* ---------- theme / lang ---------- */
+function applyTL(t,l){
+  document.documentElement.setAttribute('data-theme',t);
+  document.documentElement.setAttribute('data-lang',l);
+  document.documentElement.setAttribute('lang',l==='zh'?'zh-CN':'en');
+  localStorage.setItem('ssf-theme',t);localStorage.setItem('ssf-lang',l);
+  document.getElementById('themeBtn').textContent=t==='light'?'☀︎ Dark':'☀︎ Light';
+  document.getElementById('langBtn').textContent=l==='zh'?'EN':'中';
+}
+var pp=new URLSearchParams(location.search);
+var th=pp.get('theme')||localStorage.getItem('ssf-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+var lg=pp.get('lang')||localStorage.getItem('ssf-lang')||'zh';
+applyTL(th,lg);
+window.toggleTheme=function(){applyTL(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark',document.documentElement.getAttribute('data-lang'));};
+window.toggleLang=function(){applyTL(document.documentElement.getAttribute('data-theme'),document.documentElement.getAttribute('data-lang')==='zh'?'en':'zh');};
+
+/* ---------- engine: word timeline + state machine (per repo spec) ---------- */
+var MASTER=8;
+var DICT={
+ zh:[["第三季度",0.3,1.0,0],["营收",1.0,1.5,0],["增长",1.5,2.0,0],["35%",2.0,2.7,1],["净利润",3.1,3.8,0],["1.2亿",3.8,4.5,1],["美元",4.5,5.0,1]],
+ en:[["Revenue",0.3,1.1,0],["grew",1.1,1.6,0],["35%",1.6,2.3,1],["to",2.3,2.6,0],["$120M",2.6,3.5,1],["this",3.7,4.0,0],["quarter",4.0,4.8,0]]
+};
+var PRESETS={
+ 'minimal-white':{idle:'rgba(255,255,255,.42)',active:'#FFFFFF',spoken:'rgba(255,255,255,.88)',em:'#FFFFFF',emScale:1.12,font:'-apple-system,"PingFang SC",sans-serif',weight:600,track:0},
+ 'editorial':{idle:'rgba(255,255,255,.38)',active:'#FFFFFF',spoken:'rgba(255,255,255,.85)',em:'#FFFFFF',emScale:1.12,font:'Georgia,"Songti SC",serif',weight:500,track:.05},
+ 'finance-yellow':{idle:'rgba(255,255,255,.45)',active:'#FFD400',spoken:'rgba(255,255,255,.95)',em:'#FFD400',emScale:1.20,font:'-apple-system,"PingFang SC",sans-serif',weight:600,track:0},
+ 'finance-blue':{idle:'rgba(255,255,255,.45)',active:'#4F8CFF',spoken:'rgba(255,255,255,.95)',em:'#4F8CFF',emScale:1.20,font:'-apple-system,"PingFang SC",sans-serif',weight:600,track:0}
+};
+var curPreset='minimal-white',curMotion='karaoke';
+var capline=document.getElementById('capline'),track=document.getElementById('track'),ph=document.getElementById('ph');
+var words=[]; /* {el, s, e, em} */
+
+function buildLine(){
+  capline.innerHTML='';track.innerHTML='';track.appendChild(ph);words=[];
+  var dict=DICT[document.documentElement.getAttribute('data-lang')==='zh'?'zh':'en']||DICT.zh;
+  var p=PRESETS[curPreset];
+  capline.style.fontFamily=p.font;
+  capline.style.fontWeight=p.weight;
+  capline.style.letterSpacing=p.track+'em';
+  capline.style.fontSize='clamp(20px,3.4vw,34px)';
+  dict.forEach(function(wd){
+    var s=document.createElement('span');s.className='w';s.textContent=wd[0];
+    if(wd[3])s.dataset.em='1';
+    capline.appendChild(s);
+    words.push({el:s,s:wd[1],e:wd[2],em:wd[3]});
+    var b=document.createElement('div');b.className='wb'+(wd[3]?' em':'');b.textContent=wd[0];
+    b.style.left=(wd[1]/MASTER*100)+'%';b.style.width=Math.max(4,((wd[2]-wd[1])/MASTER*100)-0.6)+'%';
+    track.appendChild(b);
+    words[words.length-1].bar=b;
+  });
+  renderJSON();
+}
+/* spec-faithful motion implementations */
+function spring(t,peak,decay){ if(t<0)return 0; return peak*Math.exp(-decay*t)*Math.cos(t*10); }
+var MOTIONS={
+ highlight:function(o,st,tA,p){
+   o.el.style.color=st===1?p.active:(st===2?(o.em?p.em:p.spoken):p.idle);
+   o.el.style.transform='';o.el.style.filter='';o.el.style.textShadow='';
+ },
+ karaoke:function(o,st,tA,p){
+   o.el.style.color=st===1?p.active:(st===2?(o.em?p.em:p.spoken):p.idle);
+   o.el.style.transform='';o.el.style.filter='';o.el.style.textShadow='';
+ },
+ pop:function(o,st,tA,p){
+   var base=st===2?(o.em?p.emScale:1):(st===1?1.045:1);
+   var s=base+(st===1?spring(tA,0.05,9):0);
+   o.el.style.transform='scale('+s.toFixed(3)+')';
+   o.el.style.color=st===1?p.active:(st===2?(o.em?p.em:p.spoken):p.idle);
+ },
+ bounce:function(o,st,tA,p){
+   var y=st===1?spring(tA,-5,7):0; /* spec: Y 0→-5→1→0 */
+   o.el.style.transform='translateY('+y.toFixed(2)+'px)';
+   o.el.style.color=st===1?p.active:(st===2?(o.em?p.em:p.spoken):p.idle);
+ },
+ float:function(o,st,tA,p){
+   var y=st===1?8*Math.sin(tA*5):0; /* spec: ≤8px */
+   o.el.style.transform='translateY('+(-Math.abs(y)).toFixed(2)+'px)';
+   o.el.style.color=st===1?p.active:(st===2?(o.em?p.em:p.spoken):p.idle);
+ },
+ glow:function(o,st,tA,p){
+   var c=st===1?p.active:(st===2?(o.em?p.em:p.spoken):p.idle);
+   o.el.style.color=c;
+   o.el.style.textShadow=(st>=1&&o.em)?('0 0 14px '+p.active+(st===2?'80':'')):'';
+   /* restraint: glow only for emphasized words */
+ },
+ weightShift:function(o,st,tA,p){
+   o.el.style.fontWeight=st===1?800:p.weight;
+   o.el.style.color=st===1?p.active:(st===2?(o.em?p.em:p.spoken):p.idle);
+ },
+ blurReveal:function(o,st,tA,p){
+   o.el.style.filter=st===1?('blur('+Math.max(0,4*(1-Math.min(1,tA/0.28))).toFixed(2)+'px)'):'';
+   o.el.style.color=st===1?p.active:(st===2?(o.em?p.em:p.spoken):p.idle);
+ },
+ wave:function(o,st,tA,p){
+   var y=st===1?8*Math.sin(tA*6+o.idx*0.9):0; /* spec: ≤8px */
+   o.el.style.transform='translateY('+(-Math.abs(y)).toFixed(2)+'px)';
+   o.el.style.color=st===1?p.active:(st===2?(o.em?p.em:p.spoken):p.idle);
+ }
+};
+function renderCaption(t){
+  var p=PRESETS[curPreset],fn=MOTIONS[curMotion];
+  words.forEach(function(o,i){
+    o.idx=i;
+    var st=(t<o.s)?0:(t<o.e?1:2);
+    var tA=t-o.s;
+    fn(o,st,tA,p);
+    if(o.em){o.el.style.fontSize=(1.20*100)+'%';o.el.style.fontWeight=800;} /* number default ×1.20/800 */
+    o.bar.classList.toggle('act',st===1);
+  });
+}
+/* ---------- motion gallery ---------- */
+var GAL=[
+ ['highlight','高亮 · color only'],['karaoke','卡拉OK · 念过保持填充'],['pop','pop · 峰值 1.09'],
+ ['bounce','bounce · Y 0→-5→1→0'],['float','float · ≤8px'],['glow','glow · 只给关键词'],
+ ['weightShift','weightShift · 400→800'],['blurReveal','blurReveal · 4px→0'],['wave','wave · 逐词波浪']
+];
+var galCells=[];
+var mgal=document.getElementById('mgal');
+GAL.forEach(function(g){
+  var c=document.createElement('div');c.className='mcell';
+  var st=document.createElement('div');st.className='mstage';
+  var cp=document.createElement('div');cp.className='mcap';
+  cp.innerHTML='<b>'+g[0]+'</b><span>'+g[1]+'</span>';
+  c.appendChild(st);c.appendChild(cp);mgal.appendChild(c);
+  var ws=[];
+  DICT.zh.slice(0,5).forEach(function(wd,i){
+    var s=document.createElement('span');s.className='mw';s.textContent=wd[0];
+    s.style.color='rgba(255,255,255,.5)';
+    if(wd[3]){s.dataset.em='1';}
+    st.appendChild(s);
+    ws.push({el:s,s:0.6+i*0.75,e:0.6+i*0.75+0.6,em:wd[3],idx:i});
+  });
+  galCells.push({words:ws,motion:g[0]});
+});
+function renderGal(t){
+  var p={idle:'rgba(255,255,255,.5)',active:'#FFD400',spoken:'rgba(255,255,255,.95)',em:'#FFD400',emScale:1.2,weight:600};
+  galCells.forEach(function(gc){
+    var fn=MOTIONS[gc.motion];
+    gc.words.forEach(function(o){
+      var st=(t<o.s)?0:(t<o.e?1:2);
+      fn(o,st,t-o.s,p);
+      if(o.em){o.el.style.fontSize='120%';o.el.style.fontWeight=800;}
+    });
+  });
+}
+/* ---------- rule #1 re-segment + rule #3 pulse ---------- */
+var R1=[["第三季度营收增长35%，",0.2,3.2],["净利润1.2亿美元创新高",3.6,6.6]];
+var r1line=document.getElementById('r1line');
+function renderR1(t){
+  var seg=null;R1.forEach(function(s){if(t>=s[1]&&t<s[2])seg=s;});
+  if(seg){r1line.textContent=seg[0];r1line.style.opacity=Math.min(1,(t-seg[1])/0.3);}
+  else r1line.style.opacity=0;
+}
+var r3b=document.getElementById('r3b');
+function renderR3(t){
+  var cyc=(t%2.4);
+  var s=cyc<1.2?1:1.2; /* ×1.20 emphasis, transform-only */
+  r3b.style.transform='scale('+(s).toFixed(3)+')';
+}
+/* ---------- recipe JSON panel ---------- */
+function renderJSON(){
+  var p=curPreset,m=curMotion;
+  var j='<span class="c">// CaptionRecipe — patches as you click above</span>\n{\n'+
+  '  <span class="k">"layout"</span>:  { <span class="s">"maxLines"</span>: <span class="s">1</span>, <span class="s">"aspect"</span>: <span class="s">"16:9"</span> },\n'+
+  '  <span class="k">"typography"</span>: { <span class="s">"preset"</span>: <span class="s">"'+p+'"</span>, <span class="s">"fonts"</span>: <span class="s">"31 种"</span> },\n'+
+  '  <span class="k">"color"</span>: { <span class="s">"palette"</span>: <span class="s">"16 + picker + HEX"</span> },\n'+
+  '  <span class="k">"activeWord"</span>: { <span class="s">"motion"</span>: <span class="s">"'+m+'"</span> },\n'+
+  '  <span class="k">"number"</span>: { <span class="s">"scale"</span>: <span class="s">1.20</span>, <span class="s">"weight"</span>: <span class="s">800</span> },\n'+
+  '  <span class="k">"emphasis"</span>: { <span class="s">"rules"</span>: <span class="s">"%|currency|number|entity"</span> },\n'+
+  '  <span class="k">"background"</span>: { <span class="s">"style"</span>: <span class="s">"none|card|leftBar|band"</span> },\n'+
+  '  <span class="k">"motion"</span>:  { <span class="s">"entrance"</span>: <span class="s">"fade"</span>, <span class="s">"word"</span>: <span class="s">"'+m+'"</span> }\n'+
+  '}';
+  document.getElementById('jsonPanel').innerHTML=j;
+}
+/* selectors */
+document.querySelectorAll('[data-preset]').forEach(function(b){
+  b.addEventListener('click',function(){
+    document.querySelectorAll('[data-preset]').forEach(function(x){x.classList.remove('on');});
+    b.classList.add('on');curPreset=b.dataset.preset;buildLine();
+  });
+});
+document.querySelectorAll('[data-motion]').forEach(function(b){
+  b.addEventListener('click',function(){
+    document.querySelectorAll('[data-motion]').forEach(function(x){x.classList.remove('on');});
+    b.classList.add('on');curMotion=b.dataset.motion;renderJSON();
+  });
+});
+/* rebuild line on lang switch (keep original toggles) */
+var _tl=window.toggleLang;
+window.toggleLang=function(){_tl();buildLine();};
+/* ---------- transport ---------- */
+var clock=0,playing=true,speed=1;
+var playBtn=document.getElementById('playBtn'),scrub=document.getElementById('scrub'),
+    clockLab=document.getElementById('clockLab'),speedSel=document.getElementById('speedSel');
+playBtn.addEventListener('click',function(){playing=!playing;playBtn.textContent=playing?'⏸ pause':'▶ play';});
+speedSel.addEventListener('change',function(){speed=parseFloat(speedSel.value);});
+var scrubbing=false;
+scrub.addEventListener('pointerdown',function(){scrubbing=true;});
+window.addEventListener('pointerup',function(){scrubbing=false;});
+scrub.addEventListener('input',function(){clock=parseFloat(scrub.value)%MASTER;});
+buildLine();
+var last=performance.now();
+function frame(now){
+  var dt=Math.min(0.1,(now-last)/1000);last=now;
+  if(playing&&!scrubbing)clock=(clock+dt*speed)%MASTER;
+  scrub.value=clock.toFixed(2);
+  clockLab.textContent=clock.toFixed(1)+'s';
+  ph.style.left=(clock/MASTER*100)+'%';
+  renderCaption(clock);
+  renderGal(clock);
+  renderR1(clock);
+  renderR3(clock);
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

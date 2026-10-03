@@ -1,120 +1,90 @@
 # Sera Subtitle Factory
 
-**Make captions move with every word.** 让每一个字，都跟着声音动。
+> 给做知识/财经视频的创作者：像设计 UI 组件一样设计字幕——**永远单行、逐词跟着声音走、active 词不推挤邻词**。一份 Recipe 是一份 JSON，复制给别人就能复刻同款字幕。
 
-像设计 UI 一样设计字幕 —— 单行 · 语音驱动 · 数字放大 · 自由组合 · 实时预览。
+**[交互展示页](https://78tyih.github.io/sera-subtitle-factory/showcase.html)**（ZH/EN × 日/夜，动效规格活演示：preset/动效可切换、进度条可拖）· [架构文档](docs/architecture.md) · [进度日志](docs/progress.md)
 
-> Phase 1 MVP（不含 Whisper / 导出，见 `docs/progress.md`）
+| 类型 | 状态 | 入口 |
+|---|---|---|
+| 字幕设计工具（Next.js Web App） | Phase 1 MVP（不含 Whisper / 导出 MP4） | 下方「快速开始」 |
 
-## 快速开始
+---
+
+## 1. 解决什么问题 · Problem
+
+视频字幕的现状是两个极端：要么锁在剪辑软件工程文件里，换个片就没了；要么是自动生成的灰色默认款，专业感为零。想要「每个词跟着声音动」的效果——卡拉OK填充、数字放大、逐词强调——只能逐帧手 K，且样式无法沉淀为可复用资产。
+
+本工具用组件化思路解决：**字幕 = UI 组件，样式 = Recipe（JSON 配方），复用 = 复制 JSON**。
+
+- **适合谁：** 知识/财经视频作者、需要统一字幕视觉系统的频道与团队
+- **明确排除（Phase 1）：** 两行字幕 · 底部进度条 · 胶囊字幕 · 超大弹跳 · 廉价渐变 · RGB 霓虹 · 复杂纹理 · 传统剪辑软件界面 · 登录/数据库/支付
+
+## 2. 什么场景，得到什么结果 · Scenario → Outcome
+
+| 场景 | 做法 | 结果 |
+|---|---|---|
+| 知识/财经视频要专业字幕 | 选 preset → 微调 → 导出 | SRT · WebVTT · ASS · JSON 四格式 |
+| 团队统一字幕视觉系统 | Recipe 库管理，导入/导出 JSON | 配方即资产，copy = replicate |
+| 口播稿直接变字幕 | AI 助手写字幕（无 Key 走本地规则模式） | 文本 + 推荐样式一步到位 |
+
+### 快速开始
 
 ```bash
 npm install
 npm run dev        # 开发：http://localhost:4310
-```
-
-**推荐入口（静态版，零 SSR、可被任何静态预览面板 / CDN 打开）**
-
-```bash
-npm run static     # 导出 + 起静态服务器 → http://127.0.0.1:4311/studio/
+npm run static     # 静态导出 + 服务器 → http://127.0.0.1:4311/studio/（推荐，零 SSR 可任意静态托管）
 ```
 
 | 命令 | 作用 |
 |---|---|
 | `npm run dev` | 开发服务器 :4310 |
 | `npm run static` | 静态导出(./out) + 静态服务器 :4311 ← **推荐** |
-| `npm run export` | 只做静态导出（`./out`，可直接上传到任意静态托管） |
+| `npm run export` | 只做静态导出（可直接上传任意静态托管） |
 | `npm run build` / `npm start` | 动态构建 / 启动 :4310 |
-| `npm run typecheck` | `tsc --noEmit` |
-| `npm run lint` | ESLint |
 
-> 说明：`npm run export` 与 `npm run build` 共用 `.next`，两者之间切换时需要重新跑对应命令。
+**四个页面：** `/` Hero + 6 个自动循环 Demo · `/studio` 工作台（Sidebar + Preview + Inspector + Timeline）· `/library` 12 Preset（Hover 播放动效，四维过滤）· `/recipes` 配方管理（保存/复制/重命名/导入/导出）
 
-## 主题与语言
+**能力：** 字体 31 种（四分组）· 调色盘 16 色 + 取色器 + HEX · 导出 SRT/VTT/ASS/JSON · AI 助手（配任意 OpenAI 兼容接口；没配 Key 走本地规则）· 比例 16:9/4:3/1:1/9:16 · 日夜主题 + 中英双语（记忆偏好）
 
-- **默认比例 16:9**（可切 4:3 / 1:1 / 9:16），字幕按横屏设计；短视频竖版仍可选。
-- **日间 / 夜间**：右上角切换，默认夜间（spec §50），选择写入 localStorage，刷新保持。
-  全部颜色走语义 CSS 变量（`--c-panel` / `--c-ink` / `--c-line`…），Tailwind 类同时适配两个主题；
-  字幕预览框固定深色（那是视频画面，不随 UI 主题变化）。
-- **中文 / English**：右上角切换，默认跟随浏览器语言（zh → 中文），可随时切换并记忆。
-  所有界面文案走 `src/lib/i18n.tsx` 字典；预设与转录标题也带中英双语字段（`nameZh` / `descriptionEn`）。
+## 3. 什么结构 · Architecture
 
-## 字体 / 调色盘 / 导出 / AI
-
-- **字体 31 种**，按「西文无衬线 / 中文黑体 / 衬线 / 等宽手写」分组
-- **调色盘**：16 色预设 + 系统取色器 + **HEX 输入框**（支持 `#FFF` / `#FFD400`）
-- **导出**（顶栏下载图标）：JSON 配方 · SRT · WebVTT · ASS 字幕
-- **AI 助手**（顶栏星标）：对话框直接写字幕，输完可「用作字幕文本」+「套用推荐样式」；
-  配置任意 OpenAI 兼容接口即可联网，**没配 Key 时走本地规则模式**（关键词匹配样式 + 造句）
-
-## 四个页面
-
-| 路由 | 内容 |
-|---|---|
-| `/` | Hero + 6 个 16:9 自动循环的字幕 Demo + 四个旗舰样式 |
-| `/studio` | **工作台**：Left Sidebar + Center Preview + Right Inspector + Bottom Timeline |
-| `/library` | 12 个 Preset，Hover 播放动效，四维过滤 + 搜索 |
-| `/recipes` | Recipe 管理：保存 / 复制 / 重命名 / 删除 / 导入 / 导出 JSON |
-
-## 核心概念
-
-```text
-Caption Recipe = Layout + Typography + Color + ActiveWord + Number
-               + Emphasis + Background + Border + Motion
+```mermaid
+flowchart LR
+    A["transcript<br/>words + start/end"] --> B["segmenter<br/>RULE#1 永远单行"]
+    B --> C["emphasis<br/>规则识别 % / 货币 / 数字 / 实体"]
+    C --> D["resolve<br/>currentTime → active/spoken"]
+    D --> E["renderer<br/>word · background · motion"]
 ```
 
-一份 Recipe 是一份 JSON。复制给别人就能复刻同款字幕。
+**三条硬规则**（写进类型与 CSS，不是口头约定）：
 
-## 三条硬规则
+1. **永远单行** —— `maxLines: 1` 是类型字面量，`white-space: nowrap` 写死在 CSS。超宽不换行，**重新分段**；不可断 token 允许 ≥0.88 缩放（transform，不改字宽）。
+2. **跟着声音走** —— 每个词带 `start`/`end`，状态机 `idle → active → spoken`，所有动效围绕状态设计。
+3. **不推挤邻词** —— active/强调只改 `transform` + `color`，不改 layout 尺寸，整句永远不跳。
 
-1. **永远单行** —— `maxLines: 1` 写进类型，`white-space: nowrap` 写进 CSS。
-   字幕超宽时**重新分段**，绝不换行。
-2. **跟着声音走** —— 每个词带 `start` / `end`，播放到某一刻就知道哪个词是 `activeWord`。
-   状态机：`idle → active → spoken`。
-3. **不推挤邻词** —— active / 强调只改 `transform` + `color`，不改 layout 尺寸。
+**核心概念：** `CaptionRecipe = Layout + Typography + Color + ActiveWord + Number + Emphasis + Background + Border + Motion`。动效只存名字，由 registry 解析（组件里禁止魔法数字）。
 
-## 200 个 Preset（12 核心 + 28 扩展 + 160 系统枚举）
+**200 个 Preset** = 12 核心（Minimal White · Minimal Black · **Editorial** · **Finance Yellow** · **Finance Blue** · Data Focus · **Left Bar** · Clean White Card · Clean Black Card · Neon Blue · Word Pop · Word Float，粗体为四个旗舰 Demo）+ 28 扩展 + 160 系统枚举。数字默认 ×1.20 / 800 字重 / 黄色。
 
-核心 12：Minimal White · Minimal Black · **Editorial** · **Finance Yellow** · **Finance Blue** · Data Focus · **Left Bar** · Clean White Card · Clean Black Card · Neon Blue · Word Pop · Word Float
+**18 种动效：** 逐词 highlight · karaoke · pop（1.00→1.09→1.04→1.00）· bounce（Y 0→-5→1→0）· float（≤8px）· scale · glow（只给关键词）· weightShift · blurReveal · wave · none；入场 fade · float · slideUp · slideDown · scale · blurReveal · typewriter。已移除 flip 与 marquee（违背「字幕随时可读」）。
 
-扩展 28：Outline Hollow · Uppercase Tight · Wide Tracking · Soft Shadow · Marker Yellow · Underline Accent · Number Hero · Crimson Strong · Amber Alert · Emerald Calm · Purple Glow · Left Box · Glass Soft · Top Band · Quote Serif · Classic Subtitle · News Band · Serif Minimal · Karaoke Yellow · Karaoke Blue · Word Pop Soft · Editorial Weight · Mono Terminal · Split Color · Bold Outline Box · Podcast Lower · Editorial Inverse · Tech Blue Bar
+**目录：** `src/caption-engine/`（renderer·segmenter·emphasis·motions·backgrounds·borders·typography）· `src/presets/` · `src/types/caption.ts`（数据模型 + 4 个 Plugin 接口）· `src/store/`（zustand+persist，undo/redo 双栈 40 步）· `src/design-system/tokens.ts`
 
-粗体 = 四个旗舰 Demo（整个视觉系统的基准）。数字默认 ×1.20 / 字重 800 / 黄色。
+## 4. 能复用什么 · Value & Reuse
 
-## 动效（18 种）
+| 可复用部分 | 在哪 | 怎么接 |
+|---|---|---|
+| CaptionRecipe 数据模型（九维配方） | `src/types/caption.ts` | TS 项目直接采用 |
+| 三条硬规则 | `segmenter` + `renderer` | 任何字幕/卡拉OK系统直接采用为约束 |
+| 克制动效数值（pop 1.09 / bounce 5px / float 8px） | `caption-engine/motion-tokens.ts` | 数值直接抄 |
+| Emphasis 规则引擎（%/货币/数字/实体） | `caption-engine/emphasis/rules.ts` | 纯正则，零 API 成本 |
+| `WordTimestamp[]` + `CaptionRecipe` 两个契约 | `docs/architecture.md` | 任何 ASR 产出同结构即可接入 |
 
-逐词：`highlight`（高亮）· `karaoke`（卡拉OK：念过的词保持填充）· `pop`（1.00→1.09→1.04→1.00）· `bounce`（Y 0→-5→1→0）· `float`（≤8px）· `scale` · `glow` · `weightShift` · `blurReveal` · `wave`（波浪）· `none`
+**建议从这里开始：** 打开[交互展示页](https://78tyih.github.io/sera-subtitle-factory/showcase.html)感受规则与动效 → `npm run static` 跑起工作台 → 从 12 个核心 preset 里挑一个改起。
 
-入场：`fade` · `float` · `slideUp` · `slideDown` · `scale` · `blurReveal` · `typewriter`（打字机）
+## Phase 2 / 3（接口已预留）
 
-> 已移除 `flip`（翻转 90° 时字会消失）与 `marquee`（跑马灯会滚出画面且不停留）——两者都违背“字幕随时可读”。
-
-## 目录
-
-```
-src/
-├── app/                 # 4 个页面
-├── components/          # studio · preview · inspector · timeline · library · ui
-├── caption-engine/      # renderer · segmenter · emphasis · motions · backgrounds · borders · typography
-├── presets/             # 12 个 preset（每文件一个）
-├── types/caption.ts     # 数据模型 + Plugin 接口
-├── lib/                 # demo-transcripts · lexicon（分词）· hooks
-├── store/caption-store.ts
-└── design-system/tokens.ts
-
-docs/
-├── progress.md          # Done / Current / Next / Problems / Decisions
-└── architecture.md      # 引擎 / 动效 / Recipe / Timeline 与 Phase 2·3 接口
-```
-
-## 不做（明确排除）
-
-两行字幕 · 底部进度条 · 胶囊字幕 · 超大弹跳 · 廉价渐变 · RGB 霓虹 · 复杂纹理 ·
-传统剪辑软件界面 · 登录 / 数据库 / 支付（Phase 1）
-
-## Phase 2 / 3
-
-- Phase 2：上传视频 → 抽音频 → faster-whisper word timestamp → 接同一套 segmenter
-- Phase 3：Remotion 渲染 + FFmpeg 导出 MP4 / SRT / ASS / WebVTT
+- **Phase 2：** 上传视频 → 抽音频 → faster-whisper word timestamp → 接同一套 segmenter
+- **Phase 3：** Remotion 渲染 + FFmpeg 导出 MP4 / SRT / ASS / WebVTT
 
 只要 `WordTimestamp[]` 与 `CaptionRecipe` 两个契约不变，UI 层不用改。

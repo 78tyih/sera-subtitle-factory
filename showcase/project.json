@@ -1,0 +1,71 @@
+{
+  "slug": "sera-subtitle-factory",
+  "name": "Sera Subtitle Factory",
+  "type": "tool",
+  "repo": "https://github.com/78tyih/sera-subtitle-factory",
+  "language": "TypeScript · Next.js · zustand · framer-motion",
+  "status": "phase-1-mvp",
+  "last_verified": "2026-10-03",
+  "one_liner": {
+    "zh": "像设计 UI 组件一样设计字幕：永远单行、逐词跟着声音走、active 词不推挤邻词。Recipe 即 JSON，复制即复刻。",
+    "en": "Design subtitles like UI components: always single-line, word-synced to voice, active words never push neighbors. A Recipe is JSON — copy it to replicate the style."
+  },
+  "problem": {
+    "zh": "视频字幕要么是剪辑软件里难复用的样式堆，要么是自动生成的灰色默认款。想做出「每个词跟着声音动」的专业字幕（卡拉OK填充、数字放大、逐词强调），没有顺手的工具，也没有可复用的样式资产。",
+    "en": "Subtitles are either locked inside editing software or plain gray defaults. No tool makes word-synced motion captions (karaoke fill, number emphasis, per-word pops) easy — and no reusable style asset format exists."
+  },
+  "scenarios": [
+    {
+      "zh": "知识/财经视频作者要「专业感」字幕",
+      "en": "Knowledge/finance creators want professional captions",
+      "outcome_zh": "选 preset → 微调 → 导出 SRT/WebVTT/ASS/JSON，Phase 1 内完成",
+      "outcome_en": "Pick a preset, tweak, export SRT/WebVTT/ASS/JSON — all within Phase 1"
+    },
+    {
+      "zh": "团队/频道要统一字幕视觉系统",
+      "en": "Teams need a unified caption visual system",
+      "outcome_zh": "Recipe = JSON 一份配方，复制给别人就能复刻同款字幕",
+      "outcome_en": "A Recipe is JSON — share it and others replicate the exact style"
+    },
+    {
+      "zh": "口播稿直接变字幕",
+      "en": "Turn scripts straight into captions",
+      "outcome_zh": "AI 助手对话框写字幕 → 用作字幕文本 + 套用推荐样式（无 Key 走本地规则模式）",
+      "outcome_en": "Write in the AI box → use as caption text + apply recommended style (local rules without an API key)"
+    }
+  ],
+  "architecture": {
+    "summary_zh": "分层引擎：transcript(词+时间) → segmenter(永远单行，超长重分段) → emphasis(规则识别数字/百分比/货币/实体) → resolve(currentTime→状态) → renderer(逐词/背景/动效)。Recipe 是产品模型，只存名字的动效由 registry 解析。",
+    "summary_en": "Layered engine: transcript → segmenter (single-line, re-segment on overflow) → emphasis (rule-based) → resolve (currentTime→states) → renderer. The Recipe is the product model; motions store names resolved by a registry.",
+    "modules": [
+      {"path": "src/caption-engine/", "role_zh": "renderer / segmenter / emphasis / motions / backgrounds / borders / typography", "role_en": "the caption engine proper"},
+      {"path": "src/presets/", "role_zh": "12 个核心 preset，每文件一个", "role_en": "12 core presets, one file each"},
+      {"path": "src/types/caption.ts", "role_zh": "数据模型 + 4 个 Plugin 接口（Phase 2/3 契约）", "role_en": "data model + 4 plugin interfaces (Phase 2/3 contract)"},
+      {"path": "src/store/caption-store.ts", "role_zh": "zustand+persist：recipe/savedRecipes 持久化，undo/redo 双栈 40 步", "role_en": "zustand+persist store with 40-step undo/redo"},
+      {"path": "src/app/", "role_zh": "四页：/（Hero+6 demo）/ studio / library / recipes", "role_en": "four pages: home, studio, library, recipes"}
+    ]
+  },
+  "reuse": [
+    {"item": "CaptionRecipe 数据模型（Layout+Typography+Color+ActiveWord+Number+Emphasis+Background+Border+Motion）", "where": "src/types/caption.ts", "condition": "TS 项目直接采用"},
+    {"item": "三条硬规则（永远单行/语音驱动/不推挤邻词）", "where": "segmenter + renderer 实现", "condition": "任何字幕/卡拉OK系统可直接采用为约束"},
+    {"item": "克制动效标准（pop 峰值 1.09、bounce 5px、float 8px、glow 只给关键词）", "where": "caption-engine/motion-tokens.ts", "condition": "数值直接抄"},
+    {"item": "Emphasis 规则引擎（percentage/currency/number/entity 正则）", "where": "caption-engine/emphasis/rules.ts", "condition": "纯规则零 API 成本"},
+    {"item": "WordTimestamp[] + CaptionRecipe 两个稳定契约", "where": "architecture.md", "condition": "Phase 2 whisper / Phase 3 remotion 都接同一契约"}
+  ],
+  "evidence": {
+    "verified": [
+      "仓库为 Next.js 工程，含 caption-engine/presets/store/design-system 目录与 docs/architecture.md 描述一致（GitHub API 实查 2026-10-03）",
+      "README 载明 Phase 1 MVP 范围与明确排除项（两行字幕/底部进度条/胶囊/登录/数据库/支付）"
+    ],
+    "self_reported": [
+      "200 presets（12 核心 + 28 扩展 + 160 系统枚举）、18 种动效、31 种字体、四格式导出——均为 README 自述，未逐项运行核对",
+      "npm run static 可静态导出并被任意静态托管打开——未实测"
+    ],
+    "unverified": [
+      "线上部署：仓库无公开部署链接，展示页原型按 README/architecture 规格实现，非引擎本体渲染"
+    ]
+  },
+  "links": {
+    "showcase": "https://78tyih.github.io/sera-subtitle-factory/showcase.html"
+  }
+}

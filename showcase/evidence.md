@@ -10,6 +10,8 @@
 | `docs/architecture.md` 存在（4.4KB），与 README 的目录结构描述一致：caption-engine / presets / store / design-system | GitHub API 实读 | 2026-10-03 |
 | `docs/` 另含 progress.md / font-licenses.md / research-method.md / style-families.md / v2-design-system.md | GitHub API 实查 | 2026-10-03 |
 | README 明示 Phase 1 MVP 范围与「不做」排除清单 | README 实读 | 2026-10-03 |
+| **线上产品站存在**：gh-pages 分支为 Next.js 静态导出（index/studio/library/recipes），https://78tyih.github.io/sera-subtitle-factory/ 全 200（首页/studio/showcase 实测） | gh API + curl | 2026-10-03 |
+| gh-pages 最后部署 2026-09-27「deploy: static site」（比 main 当前提交早，在线版可能落后源码） | gh API commits 实查 | 2026-10-03 |
 | 动效克制标准有明确数值：pop 峰值 1.09 / bounce 5px / float 8px | architecture.md 实读 | 2026-10-03 |
 | 已移除 flip 与 marquee 两种动效（违背「字幕随时可读」） | README 实读 | 2026-10-03 |
 | 无 LICENSE 文件（仓库根目录实查） | GitHub API 实查 | 2026-10-03 |
@@ -26,7 +28,9 @@
 
 | 项 | 说明 |
 |---|---|
-| 线上部署 | 仓库无公开部署链接；展示页的动效原型是按 README/architecture 规格独立实现，用于讲解规则与动效语义，**非引擎本体渲染** |
+| 在线版与源码同步度 | gh-pages 部署于 2026-09-27，main 后续提交是否已反映在线版未核对 |
+
+**展示页动效原型**按仓库公开文档的规则与数值独立实现（pop 1.09 / bounce 5px / float 8px 等），用于讲解，非引擎本体渲染。
 
 ## 授权边界
 

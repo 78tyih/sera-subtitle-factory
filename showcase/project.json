@@ -66,6 +66,8 @@
     ]
   },
   "links": {
-    "showcase": "https://78tyih.github.io/sera-subtitle-factory/showcase.html"
+    "showcase": "https://78tyih.github.io/sera-subtitle-factory/showcase.html",
+    "live_site": "https://78tyih.github.io/sera-subtitle-factory/",
+    "live_studio": "https://78tyih.github.io/sera-subtitle-factory/studio/"
   }
 }

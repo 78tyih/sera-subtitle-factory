@@ -2,11 +2,11 @@
 
 > 给做知识/财经视频的创作者：像设计 UI 组件一样设计字幕——**永远单行、逐词跟着声音走、active 词不推挤邻词**。一份 Recipe 是一份 JSON，复制给别人就能复刻同款字幕。
 
-**[交互展示页](https://78tyih.github.io/sera-subtitle-factory/showcase.html)**（ZH/EN × 日/夜，动效规格活演示：preset/动效可切换、进度条可拖）· [架构文档](docs/architecture.md) · [进度日志](docs/progress.md)
+**[在线试用产品](https://78tyih.github.io/sera-subtitle-factory/studio/)**（工作台直开）· **[交互展示页](https://78tyih.github.io/sera-subtitle-factory/showcase.html)**（ZH/EN × 日/夜，动效规格活演示）· [架构文档](docs/architecture.md) · [进度日志](docs/progress.md)
 
 | 类型 | 状态 | 入口 |
 |---|---|---|
-| 字幕设计工具（Next.js Web App） | Phase 1 MVP（不含 Whisper / 导出 MP4） | 下方「快速开始」 |
+| 字幕设计工具（Next.js Web App） | Phase 1 MVP（不含 Whisper / 导出 MP4）· [在线版已部署](https://78tyih.github.io/sera-subtitle-factory/) | 上表「在线试用」或下方本地运行 |
 
 ---
 

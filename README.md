@@ -8,6 +8,41 @@
 |---|---|---|
 | 字幕设计工具（Next.js Web App） | Phase 1 MVP（不含 Whisper / 导出 MP4）· [在线版已部署](https://78tyih.github.io/sera-subtitle-factory/) | 上表「在线试用」或下方本地运行 |
 
+<p align="center">
+  <img src="docs/assets/cover.jpg" alt="Sera Subtitle Factory 深色首页：同一句财经口播在不同视觉语言下渲染" width="720">
+</p>
+
+---
+
+## 案例 · Case Study
+
+> **把字幕样式写成可复用的 Recipe：同一句话切换视觉语言，逐词跟随语音，激活词不推挤邻词。**
+> 下面所有截图与动图均取自[在线版](https://78tyih.github.io/sera-subtitle-factory/)真实运行界面，非合成、非示意。
+
+### ① 同一句话，五种视觉语言
+
+「成交量增长了35%，记住这一句」——财经口播里最普通的一句，在五个样式家族下的渲染：
+
+<p align="center">
+  <img src="docs/assets/styles-loop.gif" alt="同一句话在 Creator / Data / Tech / Minimal / Editorial 五套视觉语言下切换" width="560">
+</p>
+
+切换只改 Recipe，不碰内容、不碰时间轴——这就是「样式 = 资产」的含义。
+
+### ② 逐词跟随，不是整段淡入
+
+| Creator Impact（卡拉OK填充） | Data Focus（数字 ×1.2 加粗） |
+|---|---|
+| ![Creator Impact 逐词卡拉OK填充](docs/assets/creator-loop.gif) | ![Data Focus 数字放大](docs/assets/data-loop.gif) |
+
+状态机 `idle → active → spoken` 驱动每个词；active 词只改 `transform` + `color`，整句永不跳位。
+
+### ③ 三步从零到四格式
+
+| ① 模板库挑样式 | ② 工作台微调 | ③ 导出 |
+|---|---|---|
+| [![18+ 样式家族网格，四维过滤](docs/assets/library.jpg)](https://78tyih.github.io/sera-subtitle-factory/library/) | [![工作台：Sidebar + Preview + Inspector + Timeline](docs/assets/studio.jpg)](https://78tyih.github.io/sera-subtitle-factory/studio/) | [![导出面板：SRT / WebVTT / ASS / JSON](docs/assets/export.jpg)](https://78tyih.github.io/sera-subtitle-factory/studio/) |
+
 ---
 
 ## 1. 解决什么问题 · Problem

@@ -28,7 +28,7 @@
   <img src="docs/assets/styles-loop.gif" alt="同一句话在 Creator / Data / Tech / Minimal / Editorial 五套视觉语言下切换" width="560">
 </p>
 
-五种风格渲染同一句内容，分段与文本不变（实测：各风格下字幕文本集合一致）；你只动样式，不碰文案与时间轴——这就是「样式 = 资产」。
+五种风格下分段序列完全一致（实测：各采样 15 秒，均为「成交量增长了35%记住这一」↔「件事」交替）；切换只动样式，不碰文案与分段——这就是「样式 = 资产」。
 
 ### ② 逐词跟随，不是整段淡入
 
@@ -44,13 +44,13 @@
 |---|---|---|
 | [![18+ 样式家族网格，四维过滤](docs/assets/library.jpg)](https://78tyih.github.io/sera-subtitle-factory/library/) | [![工作台：Sidebar + Preview + Inspector + Timeline](docs/assets/studio.jpg)](https://78tyih.github.io/sera-subtitle-factory/studio/) | [![导出面板：SRT / WebVTT / ASS / JSON](docs/assets/export.jpg)](https://78tyih.github.io/sera-subtitle-factory/studio/) |
 
-**四种格式各保留了什么**（实测：真实导出并回读文件）：
+**本例实际导出文件保留了什么**（实测：真实导出并回读文件内容）：
 
-| 格式 | 保留内容 |
+| 格式 | 本例保留内容 |
 |---|---|
-| SRT / WebVTT | 文本 + 分段级时间戳（无词级信息、无样式） |
-| ASS | 文本 + 时间 + **样式层**（字体 / 字号 / 描边 / 颜色 / 边距，Recipe 视觉可迁移） |
-| JSON | 完整 Recipe（全部样式语义，copy = replicate 的载体） |
+| SRT / WebVTT | 文本 + 分段级时间戳（本例无词级信息、无样式） |
+| ASS | 文本 + 时间 + 静态样式字段（字体 / 字号 / 描边 / 颜色 / 边距；逐词动效不随文件迁移） |
+| JSON | Recipe 配置（本例 3KB，样式语义的迁移载体） |
 
 **拿走这个示例：** [最小 Recipe JSON（口播冲击 · 黄）](docs/assets/recipe-example.json)——从在线版配方页导出的真实配置（2.4KB，21 个维度）。导入方式已实测：产品「配方 → 导入」上传该文件即出现在已保存列表。
 

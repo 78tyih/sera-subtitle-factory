@@ -27,21 +27,25 @@
   <img src="docs/assets/styles-loop.gif" alt="同一句话在 Creator / Data / Tech / Minimal / Editorial 五套视觉语言下切换" width="560">
 </p>
 
-切换只改 Recipe，不碰内容、不碰时间轴——这就是「样式 = 资产」的含义。
+五种风格渲染同一句内容，分段与文本不变（实测：各风格下字幕文本集合一致）；你只动样式，不碰文案与时间轴——这就是「样式 = 资产」。
 
 ### ② 逐词跟随，不是整段淡入
 
-| Creator Impact（卡拉OK填充） | Data Focus（数字 ×1.2 加粗） |
+| Creator Impact（卡拉OK填充 · 完整循环） | Data Focus（数字 ×1.2 加粗） |
 |---|---|
-| ![Creator Impact 逐词卡拉OK填充](docs/assets/creator-loop.gif) | ![Data Focus 数字放大](docs/assets/data-loop.gif) |
+| ![Creator Impact 完整循环：逐词填充到句末后重新分段](docs/assets/creator-loop.gif) | ![Data Focus 数字放大](docs/assets/data-loop.gif) |
 
-状态机 `idle → active → spoken` 驱动每个词；active 词只改 `transform` + `color`，整句永不跳位。
+左边的循环从句首走到句末，结尾能看到 **超宽不换行 → 重新分段**（RULE#1 的实际行为）。状态机 `idle → active → spoken` 驱动每个词；active 词只改 `transform` + `color`，整句永不跳位。
 
 ### ③ 三步从零到四格式
 
 | ① 模板库挑样式 | ② 工作台微调 | ③ 导出 |
 |---|---|---|
 | [![18+ 样式家族网格，四维过滤](docs/assets/library.jpg)](https://78tyih.github.io/sera-subtitle-factory/library/) | [![工作台：Sidebar + Preview + Inspector + Timeline](docs/assets/studio.jpg)](https://78tyih.github.io/sera-subtitle-factory/studio/) | [![导出面板：SRT / WebVTT / ASS / JSON](docs/assets/export.jpg)](https://78tyih.github.io/sera-subtitle-factory/studio/) |
+
+**拿走这个示例：** [最小 Recipe JSON（口播冲击 · 黄）](docs/assets/recipe-example.json)——从在线版配方页导出的真实配置（2.4KB，21 个维度）。导入方式已实测：产品「配方 → 导入」上传该文件即出现在已保存列表。
+
+> 不管你用不用这个工具，都可以用同一份带词级时间戳的字幕做三个检查：**样式能否一键切换、逐词是否同步、导出各格式各自保留了什么**——这是判断任何字幕系统是否「样式即资产」的通用标尺。
 
 ---
 

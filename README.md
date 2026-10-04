@@ -17,6 +17,7 @@
 ## 案例 · Case Study
 
 > **把字幕样式写成可复用的 Recipe：同一句话切换视觉语言，逐词跟随语音，激活词不推挤邻词。**
+> 同一份字幕，切换五种视觉样式，最后导出 SRT / WebVTT / ASS / JSON。
 > 下面所有截图与动图均取自[在线版](https://78tyih.github.io/sera-subtitle-factory/)真实运行界面，非合成、非示意。
 
 ### ① 同一句话，五种视觉语言
@@ -42,6 +43,14 @@
 | ① 模板库挑样式 | ② 工作台微调 | ③ 导出 |
 |---|---|---|
 | [![18+ 样式家族网格，四维过滤](docs/assets/library.jpg)](https://78tyih.github.io/sera-subtitle-factory/library/) | [![工作台：Sidebar + Preview + Inspector + Timeline](docs/assets/studio.jpg)](https://78tyih.github.io/sera-subtitle-factory/studio/) | [![导出面板：SRT / WebVTT / ASS / JSON](docs/assets/export.jpg)](https://78tyih.github.io/sera-subtitle-factory/studio/) |
+
+**四种格式各保留了什么**（实测：真实导出并回读文件）：
+
+| 格式 | 保留内容 |
+|---|---|
+| SRT / WebVTT | 文本 + 分段级时间戳（无词级信息、无样式） |
+| ASS | 文本 + 时间 + **样式层**（字体 / 字号 / 描边 / 颜色 / 边距，Recipe 视觉可迁移） |
+| JSON | 完整 Recipe（全部样式语义，copy = replicate 的载体） |
 
 **拿走这个示例：** [最小 Recipe JSON（口播冲击 · 黄）](docs/assets/recipe-example.json)——从在线版配方页导出的真实配置（2.4KB，21 个维度）。导入方式已实测：产品「配方 → 导入」上传该文件即出现在已保存列表。
 
